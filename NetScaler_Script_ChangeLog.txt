@@ -2,7 +2,15 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #To contact, please use e-mail address info@barryschiffer.com
 
-#Version 1.0.1 script May 12, 2014
+#Version 1.0.2 20-May-2014
+#	Bring up-to-date with the changes made to the Active Directory and DHCP documentation scripts
+#		Remove all hard-coded values for Word and Table functions
+#		Don't abort script if CompanyName is not provided
+#		Format most Warning and Error messages to make them more readable
+#		Test for existence of "word" variable before removal
+#	Next script update will require PowerShell Version 3.0 or higher
+
+#Version 1.0.1 12-May-2014
 #Minor bug fix release
 *	Load Balancer: Changed the chapter name "Services" to "Services and Service Groups". Thanks to Carl Behrent for the heads up!
 *	Authentication Local Groups: Changed logic for the Group Name. Thanks to Erik Spicer for the heads up!

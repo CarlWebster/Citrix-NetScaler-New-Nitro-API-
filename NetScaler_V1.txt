@@ -144,9 +144,9 @@
 	No objects are output from this script.  This script creates a Word document.
 .NOTES
 	NAME: NetScaler_V1.ps1
-	VERSION: 1.0.1
+	VERSION: 1.0.2
 	AUTHOR: Barry Schiffer
-	LASTEDIT: May 12, 2014
+	LASTEDIT: May 21, 2014
 #>
 #endregion Support
 
@@ -194,6 +194,14 @@ Param(
 #	Warning and Error messages are now offset so they are more easily seen and read
 #Known Issue
 #	Authentication Local Groups: It will sometimes report an extra -option in the name field. This will be fixed soon.
+#Version 1.0.2
+#	Bring up-to-date with the changes made to the Active Directory and DHCP documentation scripts
+#		Remove all hard-coded values for Word and Table functions
+#		Don't abort script if CompanyName is not provided
+#		Format most Warning and Error messages to make them more readable
+#		Test for existence of "word" variable before removal
+#	Next script update will require PowerShell Version 3.0 or higher
+
 
 #Version 1.0 script
 #originally released to the Citrix community on May 6, 2014
@@ -201,6 +209,9 @@ Param(
 
 #force -verbose on
 $PSDefaultParameterValues = @{"*:Verbose"=$True}
+#set $ErrorActionPreference
+$SaveEAPreference = $ErrorActionPreference
+$ErrorActionPreference = 'SilentlyContinue'
 If($PDF -eq $Null)
 {
 	$PDF = $False
@@ -266,6 +277,9 @@ Set-StrictMode -Version 2
 #http://groovy.codehaus.org/modules/scriptom/1.6.0/scriptom-office-2K3-tlb/apidocs/org/codehaus/groovy/scriptom/tlb/office/word/WdLineStyle.html
 [int]$wdLineStyleNone = 0
 [int]$wdLineStyleSingle = 1
+
+[int]$wdHeadingFormatTrue = -1
+[int]$wdHeadingFormatFalse = 0 
 
 [string]$RunningOS = (Get-WmiObject -class Win32_OperatingSystem).Caption
 
@@ -627,6 +641,7 @@ Function CheckWordPrereq
 {
 	If((Test-Path  REGISTRY::HKEY_CLASSES_ROOT\Word.Application) -eq $False)
 	{
+		$ErrorActionPreference = $SaveEAPreference
 		Write-Host "`n`n`t`tThis script directly outputs to Microsoft Word, please install Microsoft Word`n`n"
 		Exit
 	}
@@ -638,6 +653,7 @@ Function CheckWordPrereq
 	[bool]$wordrunning = ((Get-Process 'WinWord' -ea 0)|?{$_.SessionId -eq $SessionID}) -ne $Null
 	If($wordrunning)
 	{
+		$ErrorActionPreference = $SaveEAPreference
 		Write-Host "`n`n`t`tPlease close all instances of Microsoft Word before running this report.`n`n"
 		Exit
 	}
@@ -796,10 +812,18 @@ Function AbortScript
 	[gc]::collect() 
 	[gc]::WaitForPendingFinalizers()
 	Write-Verbose "$(Get-Date): Script has been aborted"
+	$ErrorActionPreference = $SaveEAPreference
 	Exit
 }
 
-[string]$Title = "NetScaler Configuration - $Companyname"
+If([String]::IsNullOrEmpty($CompanyName))
+{
+	[string]$Title = "NetScaler Configuration"
+}
+Else
+{
+	[string]$Title = "NetScaler Configuration - $Companyname"
+}
 [string]$filename1 = "NetScaler.docx"
 If($PDF)
 {
@@ -818,7 +842,8 @@ $Word = New-Object -comobject "Word.Application" -EA 0
 If(!$? -or $Word -eq $Null)
 {
 	Write-Warning "The Word object could not be created.  You may need to repair your Word installation."
-	Write-Error "`n`n`t`tThe Word object could not be created.`n`n`t`tYou may need to repair your Word installation.`n`n`t`tScript cannot continue.`n`n"
+	$ErrorActionPreference = $SaveEAPreference
+	Write-Error "`n`n`t`tThe Word object could not be created.  You may need to repair your Word installation.`n`n`t`tScript cannot continue.`n`n"
 	Exit
 }
 
@@ -837,6 +862,7 @@ ElseIf($WordVersion -eq $wdWord2007)
 }
 Else
 {
+	$ErrorActionPreference = $SaveEAPreference
 	Write-Error "`n`n`t`tYou are running an untested or unsupported version of Microsoft Word.`n`n`t`tScript will end.`n`n`t`tPlease send info on your version of Word to webster@carlwebster.com`n`n"
 	AbortScript
 }
@@ -971,6 +997,7 @@ Write-Verbose "$(Get-Date): Validate cover page"
 [bool]$ValidCP = ValidateCoverPage $WordVersion $CoverPage
 If(!$ValidCP)
 {
+	$ErrorActionPreference = $SaveEAPreference
 	Write-Error "`n`n`t`tFor $WordProduct, $CoverPage is not a valid Cover Page option.`n`n`t`tScript cannot continue.`n`n"
 	AbortScript
 }
@@ -1041,9 +1068,8 @@ If($BuildingBlocks -ne $Null)
 If(!$CoverPagesExist)
 {
 	Write-Verbose "$(Get-Date): Cover Pages are not installed or the Cover Page $($CoverPage) does not exist."
-	Write-Error "`n`n`t`tCover Pages are not installed or the Cover Page $($CoverPage) does not exist.`n`n`t`tScript cannot continue.`n`n"
-	Write-Verbose "$(Get-Date): Closing Word"
-	AbortScript
+	Write-Warning "Cover Pages are not installed or the Cover Page $($CoverPage) does not exist."
+	Write-Warning "This report will not have a Cover Page."
 }
 
 Write-Verbose "$(Get-Date): Create empty word doc"
@@ -1051,6 +1077,7 @@ $Doc = $Word.Documents.Add()
 If($Doc -eq $Null)
 {
 	Write-Verbose "$(Get-Date): "
+	$ErrorActionPreference = $SaveEAPreference
 	Write-Error "`n`n`t`tAn empty Word document could not be created.`n`n`t`tScript cannot continue.`n`n"
 	AbortScript
 }
@@ -1059,6 +1086,7 @@ $Selection = $Word.Selection
 If($Selection -eq $Null)
 {
 	Write-Verbose "$(Get-Date): "
+	$ErrorActionPreference = $SaveEAPreference
 	Write-Error "`n`n`t`tAn unknown error happened selecting the entire Word document for default formatting options.`n`n`t`tScript cannot continue.`n`n"
 	AbortScript
 }
@@ -1424,7 +1452,7 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Rows = 3
 Write-Verbose "$(Get-Date): `t`tTable: Processing NetScaler Version"
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -1467,7 +1495,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Columns = 2
 [int]$Rows = 3
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -1511,7 +1540,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Columns = 1
 [int]$Rows = 2
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -1548,7 +1578,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Rows = 2
 
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -1601,7 +1632,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Columns = 3
 [int]$Rows = 2
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -1652,7 +1684,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Columns = 2
 [int]$Rows = 2
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -1699,11 +1732,12 @@ $SetNS | foreach {
 
 If ($rows -eq 1) {WriteWordLine 0 0 "No Management vLAN has been assigned"} Else {
 
-    $TableRange = $doc.Application.Selection.Range
-    [int]$Columns = 2
-    [int]$Rows = 3
-    $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-    $table.Style = "Table Grid"
+	$TableRange = $doc.Application.Selection.Range
+	[int]$Columns = 2
+	[int]$Rows = 3
+	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleNone
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -1761,15 +1795,16 @@ $SetNS | foreach {
 }
 
 If ($ROWS -eq 2) {WriteWordLine 0 0 "High availability is not Configured"} Else {
-    $TableRange = $doc.Application.Selection.Range
-    [int]$Columns = 2
-    [int]$Rows = $Rows
-    $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-    $table.Style = "Table Grid"
+	$TableRange = $doc.Application.Selection.Range
+	[int]$Columns = 2
+	[int]$Rows = $Rows
+	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleNone
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
-    $xRow = 1
-    $ROWCOUNT = $Rows + 1
+	$xRow = 1
+	$ROWCOUNT = $Rows + 1
     do {
         $xRow++
         $Table.Cell($xRow,1).Range.Font.size = 9
@@ -1829,7 +1864,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Rows = 11
 
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -1901,7 +1937,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Rows = 23
 
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -2001,7 +2038,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Rows = 17
 Write-Verbose "$(Get-Date): `t`tTable: Write Modes"
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -2093,7 +2131,8 @@ $TableRange = $doc.Application.Selection.Range
 
 Write-Verbose "$(Get-Date): `t`tTable: Write IP table"
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleSingle
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -2166,7 +2205,8 @@ $TableRange = $doc.Application.Selection.Range
 
 Write-Verbose "$(Get-Date): `t`tTable: Write Interface table"
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleSingle
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -2234,7 +2274,8 @@ $TableRange = $doc.Application.Selection.Range
 
 Write-Verbose "$(Get-Date): `t`tTable: Write vLAN configuration"
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleSingle
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -2315,7 +2356,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Rows = $ROWS
 Write-Verbose "$(Get-Date): `t`tTable: Write Routing tables"
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -2383,7 +2425,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Rows = $ROWS
 Write-Verbose "$(Get-Date): `t`tTable: Write DNS Server Records"
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -2436,7 +2479,8 @@ $TableRange = $doc.Application.Selection.Range
 [int]$Rows = $ROWS
 Write-Verbose "$(Get-Date): `t`tTable: Write DNS Records"
 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-$table.Style = "Table Grid"
+$Table.Style = $myHash.Word_TableGrid
+$Table.rows.first.headingformat = $wdHeadingFormatTrue
 $table.Borders.InsideLineStyle = $wdLineStyleNone
 $table.Borders.OutsideLineStyle = $wdLineStyleSingle
 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -2501,19 +2545,20 @@ $Add | foreach {
 
 If ($Rows -eq 1) {WriteWordLine 0 0 "No Local Users configured"} else {
 
-    $TableRange = $doc.Application.Selection.Range
-    [int]$Columns = 1
-    [int]$Rows = $Rows
-    Write-Verbose "$(Get-Date): `t`tTable: Write Local User"
-    $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-    $table.Style = "Table Grid"
+	$TableRange = $doc.Application.Selection.Range
+	[int]$Columns = 1
+	[int]$Rows = $Rows
+	Write-Verbose "$(Get-Date): `t`tTable: Write Local User"
+	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
-    $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
-    $Table.Cell(1,1).Range.Font.Bold = $True
-    $Table.Cell(1,1).Range.Text = "Local User"
+	$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+	$Table.Cell(1,1).Range.Font.Bold = $True
+	$Table.Cell(1,1).Range.Text = "Local User"
 
-    $xRow = 1
+	$xRow = 1
 
     $Add | foreach {
         if ($_ -like 'add system user *') {
@@ -2547,16 +2592,17 @@ $Add | foreach {
 WriteWordLine 0 0 " "
 
 If ($Rows -eq 1) {WriteWordLine 0 0 "No Local Groups configured"} else {
-    $TableRange = $doc.Application.Selection.Range
-    [int]$Columns = 2
-    [int]$Rows = $Rows
-    Write-Verbose "$(Get-Date): `t`tTable: Write Local Group"
-    $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-    $table.Style = "Table Grid"
+	$TableRange = $doc.Application.Selection.Range
+	[int]$Columns = 2
+	[int]$Rows = $Rows
+	Write-Verbose "$(Get-Date): `t`tTable: Write Local Group"
+	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
-        
-    $COL = 0
+	  
+	$COL = 0
     do {
         $COL++
         $Table.Cell(1,$COL).Shading.BackgroundPatternColor = $wdColorGray15
@@ -2614,9 +2660,9 @@ If ($Rows -eq 1) {WriteWordLine 0 0 "No LDAP configured"} else {
                     [int]$Rows = 7
                     Write-Verbose "$(Get-Date): `t`tTable: Write LDAP Authentication $($Y[0])"
 		            $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-		            $table.Style = "Table Grid"
-					$table.Borders.InsideLineStyle = $wdLineStyleNone
-					$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+		            $Table.Style = $myHash.Word_TableGrid
+				$table.Borders.InsideLineStyle = $wdLineStyleNone
+				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
                     $ROWC = 0
                         do {
@@ -2717,7 +2763,8 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Traffic Domains have been configured"} e
 
             Write-Verbose "$(Get-Date): `t`tTable: Write Traffic Domain $($Y[0])"
 		    $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-		    $table.Style = "Table Grid"
+		    $Table.Style = $myHash.Word_TableGrid
+			$Table.rows.first.headingformat = $wdHeadingFormatTrue
 			$table.Borders.InsideLineStyle = $wdLineStyleNone
 			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -2779,7 +2826,8 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Traffic Domains have been configured"} e
                 [int]$Rows = $Rows
 
 		        $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-		        $table.Style = "Table Grid"
+		        $Table.Style = $myHash.Word_TableGrid
+				$Table.rows.first.headingformat = $wdHeadingFormatTrue
 				$table.Borders.InsideLineStyle = $wdLineStyleNone
 				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 		        $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -2826,7 +2874,8 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Traffic Domains have been configured"} e
                 [int]$Rows = $Rows
 
 		        $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-		        $table.Style = "Table Grid"
+		        $Table.Style = $myHash.Word_TableGrid
+				$Table.rows.first.headingformat = $wdHeadingFormatTrue
 				$table.Borders.InsideLineStyle = $wdLineStyleNone
 				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 		        $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -2872,15 +2921,16 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Traffic Domains have been configured"} e
                 [int]$Columns = 1
                 [int]$Rows = $Rows
 
-		        $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-		        $table.Style = "Table Grid"
-				$table.Borders.InsideLineStyle = $wdLineStyleNone
-				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
-                $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
-		        $Table.Cell(1,1).Range.Font.Bold = $True
-		        $Table.Cell(1,1).Range.Text = "Service"
-                
-                $xRow = 1
+			$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+			$Table.Style = $myHash.Word_TableGrid
+			$Table.rows.first.headingformat = $wdHeadingFormatTrue
+			$table.Borders.InsideLineStyle = $wdLineStyleNone
+			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+			$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(1,1).Range.Font.Bold = $True
+			$Table.Cell(1,1).Range.Text = "Service"
+
+			$xRow = 1
                 
                 $Service | foreach {
                     if ((Get-StringProperty $_ "-td") -eq $Y[0]) {
@@ -2918,15 +2968,16 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Traffic Domains have been configured"} e
                 [int]$Columns = 1
                 [int]$Rows = $Rows
 
-		        $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-		        $table.Style = "Table Grid"
-				$table.Borders.InsideLineStyle = $wdLineStyleNone
-				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
-		        $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
-		        $Table.Cell(1,1).Range.Font.Bold = $True
-		        $Table.Cell(1,1).Range.Text = "Server"
-                
-                $xRow = 1
+			$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+			$Table.Style = $myHash.Word_TableGrid
+			$Table.rows.first.headingformat = $wdHeadingFormatTrue
+			$table.Borders.InsideLineStyle = $wdLineStyleNone
+			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+			$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(1,1).Range.Font.Bold = $True
+			$Table.Cell(1,1).Range.Text = "Server"
+
+			$xRow = 1
                 
                 $Server | foreach {
                     if ((Get-StringProperty $_ "-td") -eq $Y[0]) {
@@ -2975,21 +3026,22 @@ $Add | foreach {
 
 If ($Rows -eq 1) {WriteWordLine 0 0 "No SNMP Community configured"} else {
 
-    $TableRange = $doc.Application.Selection.Range
-    [int]$Columns = 2
-    [int]$Rows = $ROWS
-    Write-Verbose "$(Get-Date): `t`tTable: Write SNMP Communities"
-    $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-    $table.Style = "Table Grid"
+	$TableRange = $doc.Application.Selection.Range
+	[int]$Columns = 2
+	[int]$Rows = $ROWS
+	Write-Verbose "$(Get-Date): `t`tTable: Write SNMP Communities"
+	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleNone
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
-    $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
-    $Table.Cell(1,1).Range.Font.Bold = $True
-    $Table.Cell(1,1).Range.Text = "SNMP Community"
-    $Table.Cell(1,2).Shading.BackgroundPatternColor = $wdColorGray15
-    $Table.Cell(1,2).Range.Font.Bold = $True
-    $Table.Cell(1,2).Range.Text = "Permission"
-    $xRow = 1
+	$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+	$Table.Cell(1,1).Range.Font.Bold = $True
+	$Table.Cell(1,1).Range.Text = "SNMP Community"
+	$Table.Cell(1,2).Shading.BackgroundPatternColor = $wdColorGray15
+	$Table.Cell(1,2).Range.Font.Bold = $True
+	$Table.Cell(1,2).Range.Text = "Permission"
+	$xRow = 1
 
     $Add | foreach { 
         if ($_ -like 'add snmp community *') {
@@ -3029,21 +3081,22 @@ $Add | foreach {
 
 If ($Rows -eq 1) {WriteWordLine 0 0 "No SNMP Manager configured"} else {
 
-    $TableRange = $doc.Application.Selection.Range
-    [int]$Columns = 2
-    [int]$Rows = $ROWS
-    Write-Verbose "$(Get-Date): `t`tTable: Write SNMP Manager"
-    $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-    $table.Style = "Table Grid"
+	$TableRange = $doc.Application.Selection.Range
+	[int]$Columns = 2
+	[int]$Rows = $ROWS
+	Write-Verbose "$(Get-Date): `t`tTable: Write SNMP Manager"
+	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleNone
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
-    $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
-    $Table.Cell(1,1).Range.Font.Bold = $True
-    $Table.Cell(1,1).Range.Text = "SNMP Manager"
-    $Table.Cell(1,2).Shading.BackgroundPatternColor = $wdColorGray15
-    $Table.Cell(1,2).Range.Font.Bold = $True
-    $Table.Cell(1,2).Range.Text = "Netmask"
-    $xRow = 1
+	$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+	$Table.Cell(1,1).Range.Font.Bold = $True
+	$Table.Cell(1,1).Range.Text = "SNMP Manager"
+	$Table.Cell(1,2).Shading.BackgroundPatternColor = $wdColorGray15
+	$Table.Cell(1,2).Range.Font.Bold = $True
+	$Table.Cell(1,2).Range.Text = "Netmask"
+	$xRow = 1
 
     $Add | foreach { 
         if ($_ -like 'add snmp manager *') {
@@ -3082,27 +3135,28 @@ $Set | foreach {
 
 If ($Rows -eq 1) {WriteWordLine 0 0 "No SNMP Alarms Configured"} else {
 
-    $TableRange = $doc.Application.Selection.Range
-    [int]$Columns = 4
-    [int]$Rows = $ROWS
-    Write-Verbose "$(Get-Date): `t`tTable: Write NetScaler Alarms"
-    $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-    $table.Style = "Table Grid"
+	$TableRange = $doc.Application.Selection.Range
+	[int]$Columns = 4
+	[int]$Rows = $ROWS
+	Write-Verbose "$(Get-Date): `t`tTable: Write NetScaler Alarms"
+	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
-    $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
-    $Table.Cell(1,1).Range.Font.Bold = $True
-    $Table.Cell(1,1).Range.Text = "NetScaler Alarm"
-    $Table.Cell(1,2).Shading.BackgroundPatternColor = $wdColorGray15
-    $Table.Cell(1,2).Range.Font.Bold = $True
-    $Table.Cell(1,2).Range.Text = "State"
-    $Table.Cell(1,3).Shading.BackgroundPatternColor = $wdColorGray15
-    $Table.Cell(1,3).Range.Font.Bold = $True
-    $Table.Cell(1,3).Range.Text = "Time"
-    $Table.Cell(1,4).Shading.BackgroundPatternColor = $wdColorGray15
-    $Table.Cell(1,4).Range.Font.Bold = $True
-    $Table.Cell(1,4).Range.Text = "Time-Out"
-    $xRow = 1
+	$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+	$Table.Cell(1,1).Range.Font.Bold = $True
+	$Table.Cell(1,1).Range.Text = "NetScaler Alarm"
+	$Table.Cell(1,2).Shading.BackgroundPatternColor = $wdColorGray15
+	$Table.Cell(1,2).Range.Font.Bold = $True
+	$Table.Cell(1,2).Range.Text = "State"
+	$Table.Cell(1,3).Shading.BackgroundPatternColor = $wdColorGray15
+	$Table.Cell(1,3).Range.Font.Bold = $True
+	$Table.Cell(1,3).Range.Text = "Time"
+	$Table.Cell(1,4).Shading.BackgroundPatternColor = $wdColorGray15
+	$Table.Cell(1,4).Range.Font.Bold = $True
+	$Table.Cell(1,4).Range.Text = "Time-Out"
+	$xRow = 1
 
     $Set | foreach { 
         if ($_ -like 'set snmp alarm *') {
@@ -3159,7 +3213,7 @@ If ($ROWS -eq 1) {WriteWordLine 0 0 "No Certificates installed"} Else {
             [int]$Rows = 4
 
             $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-            $table.Style = "Table Grid"
+            $Table.Style = $myHash.Word_TableGrid
 			$table.Borders.InsideLineStyle = $wdLineStyleNone
 			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
             $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -3228,10 +3282,11 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Content Switches have been configured"} 
             [int]$Columns = 8
             [int]$Rowst = 2
             Write-Verbose "$(Get-Date): `t`tTable: $RowsC/$RowsTotal Content Switch Table $($Y[0])"
-		    $Table = $doc.Tables.Add($TableRange, $Rowst, $Columns)
-		    $table.Style = "Table Grid"
-			$table.Borders.InsideLineStyle = $wdLineStyleSingle
-			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+		$Table = $doc.Tables.Add($TableRange, $Rowst, $Columns)
+		$Table.Style = $myHash.Word_TableGrid
+		$Table.rows.first.headingformat = $wdHeadingFormatTrue
+		$table.Borders.InsideLineStyle = $wdLineStyleSingle
+		$table.Borders.OutsideLineStyle = $wdLineStyleSingle
             
             $Col = 0
             do {
@@ -3298,9 +3353,10 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Content Switches have been configured"} 
                 [int]$Columns2 = 4
                 [int]$Rows = $ROWS
                 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns2)
-		        $table.Style = "Table Grid"
-				$table.Borders.InsideLineStyle = $wdLineStyleSingle
-				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+		      $Table.Style = $myHash.Word_TableGrid
+			$Table.rows.first.headingformat = $wdHeadingFormatTrue
+			$table.Borders.InsideLineStyle = $wdLineStyleSingle
+			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
                 $Col2 = 0
                 do {
@@ -3359,7 +3415,7 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Content Switches have been configured"} 
                 [int]$Columns = 1
                 [int]$Rows = 2
                 $Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-		        $table.Style = "Table Grid"
+		        $Table.Style = $myHash.Word_TableGrid
 				$table.Borders.InsideLineStyle = $wdLineStyleSingle
 				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
                 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -3438,7 +3494,8 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Load Balancer have been configured"} els
             [int]$Rowst = 2
             Write-Verbose "$(Get-Date): `t`tTable: $RowsC/$RowsTotal Write Load Balancer Table $($Y[0])"
 	        $Table = $doc.Tables.Add($TableRange, $Rowst, $Columns)
-	        $table.Style = "Table Grid"
+	        $Table.Style = $myHash.Word_TableGrid
+		$Table.rows.first.headingformat = $wdHeadingFormatTrue
 			$table.Borders.InsideLineStyle = $wdLineStyleSingle
 			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
             $Col = 0
@@ -3504,7 +3561,8 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Load Balancer have been configured"} els
                 [int]$Columns2 = 1
                 [int]$Rows2 = $ROWS2
                 $Table = $doc.Tables.Add($TableRange, $Rows2, $Columns2)
-		        $table.Style = "Table Grid"
+		        $Table.Style = $myHash.Word_TableGrid
+			$Table.rows.first.headingformat = $wdHeadingFormatTrue
 				$table.Borders.InsideLineStyle = $wdLineStyleSingle
 				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
                 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -3550,7 +3608,8 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Load Balancer have been configured"} els
                 [int]$Columns3 = 4
                 [int]$Rows3 = $Rows3
                 $Table = $doc.Tables.Add($TableRange, $Rows3, $Columns3)
-		        $table.Style = "Table Grid"
+		        $Table.Style = $myHash.Word_TableGrid
+			$Table.rows.first.headingformat = $wdHeadingFormatTrue
 				$table.Borders.InsideLineStyle = $wdLineStyleSingle
 				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
                 
@@ -3601,7 +3660,7 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Load Balancer have been configured"} els
                 [int]$Columns4 = 1
                 [int]$Rows4 = 2
                 $Table = $doc.Tables.Add($TableRange, $Rows4, $Columns4)
-		        $table.Style = "Table Grid"
+		        $Table.Style = $myHash.Word_TableGrid
 				$table.Borders.InsideLineStyle = $wdLineStyleSingle
 				$table.Borders.OutsideLineStyle = $wdLineStyleSingle
                 $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -3754,7 +3813,8 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Services have been configured"} else {
         [int]$Rowst = 2
         Write-Verbose "$(Get-Date): `t`tTable: $RowsC/$RowsTotal Write Service Tables $($Y[0])"
 		$Table = $doc.Tables.Add($TableRange, $Rowst, $Columns)
-		$table.Style = "Table Grid"
+		$Table.Style = $myHash.Word_TableGrid
+		$Table.rows.first.headingformat = $wdHeadingFormatTrue
 		$table.Borders.InsideLineStyle = $wdLineStyleSingle
 		$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -3817,12 +3877,13 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Services have been configured"} else {
             [int]$Rows2 = $ROWS2
                 
             $Table = $doc.Tables.Add($TableRange, $Rows2, $Columns2)
-		    $table.Style = "Table Grid"
-			$table.Borders.InsideLineStyle = $wdLineStyleSingle
-			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+		$Table.Style = $myHash.Word_TableGrid
+		$Table.rows.first.headingformat = $wdHeadingFormatTrue
+		$table.Borders.InsideLineStyle = $wdLineStyleSingle
+		$table.Borders.OutsideLineStyle = $wdLineStyleSingle
             $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
-		    $Table.Cell(1,1).Range.Font.Bold = $True
-		    $Table.Cell(1,1).Range.Text = "Monitor"
+		$Table.Cell(1,1).Range.Font.Bold = $True
+		$Table.Cell(1,1).Range.Text = "Monitor"
             $xRow2 = 1
 
             $ServiceBind | foreach { 
@@ -3916,7 +3977,8 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Service Groups have been configured"} el
         
         Write-Verbose "$(Get-Date): `t`tTable: $RowsC/$RowsTotal Write ServiceGroup Table $($Y[0])"
 		$Table = $doc.Tables.Add($TableRange, $Rowst, $Columns)
-		$table.Style = "Table Grid"
+		$Table.Style = $myHash.Word_TableGrid
+		$Table.rows.first.headingformat = $wdHeadingFormatTrue
 		$table.Borders.InsideLineStyle = $wdLineStyleSingle
 		$table.Borders.OutsideLineStyle = $wdLineStyleSingle
         $xRow = 1
@@ -3974,7 +4036,8 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Service Groups have been configured"} el
             [int]$Rows2 = $ROWS2
                 
             $Table = $doc.Tables.Add($TableRange, $Rows2, $Columns2)
-		    $table.Style = "Table Grid"
+		    $Table.Style = $myHash.Word_TableGrid
+		$Table.rows.first.headingformat = $wdHeadingFormatTrue
 			$table.Borders.InsideLineStyle = $wdLineStyleSingle
 			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
             $Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -4069,7 +4132,8 @@ If ($Rows -eq 1) {WriteWordLine 0 0 "No Servers have been configured"} Else {
     
     Write-Verbose "$(Get-Date): `t`tTable: Write Server Table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
     $Col = 0
@@ -4136,7 +4200,8 @@ if ($ROWS -eq 1) {WriteWordLine 0 0 "No custom monitors have been configured for
     
     Write-Verbose "$(Get-Date): `t`tTable: Write Custom Monitors table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -4221,7 +4286,8 @@ if ($ROWS -eq 1) {WriteWordLine 0 0 "No Pattern Set Policies have been configure
 
     Write-Verbose "$(Get-Date): `t`tTable: Write Pattern Set Policies table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 	$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -4265,7 +4331,8 @@ if ($ROWS -eq 1) {WriteWordLine 0 0 "No Responder Policies have been configured"
 
     Write-Verbose "$(Get-Date): `t`tTable: Responder Policies table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 	$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
@@ -4309,7 +4376,8 @@ if ($ROWS -eq 1) {WriteWordLine 0 0 "No Rewrite Policies have been configured"} 
 
     Write-Verbose "$(Get-Date): `t`tTable: Rewrite Policies table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 	
@@ -4379,7 +4447,8 @@ if ($ROWS -eq 1) {WriteWordLine 0 0 "No Pattern Set Actions have been configured
 
     Write-Verbose "$(Get-Date): `t`tTable: Pattern Set Action table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 	
@@ -4438,7 +4507,8 @@ if ($ROWS -eq 1) {WriteWordLine 0 0 "No Responder Actions have been configured"}
 
     Write-Verbose "$(Get-Date): `t`tTable: Responder Set Action table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 	$COL = 0
@@ -4493,7 +4563,8 @@ if ($ROWS -eq 1) {WriteWordLine 0 0 "No Rewrite Actions have been configured"} e
 
     Write-Verbose "$(Get-Date): `t`tTable: Rewrite Set Action table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleNone
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 	$COL = 0
@@ -4558,7 +4629,8 @@ if ($ROWS -eq 1) {WriteWordLine 0 0 "No TCP Profiles have been configured"} else
     $xRow = 1
     Write-Verbose "$(Get-Date): `t`tTable: TCP Profile table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
     
@@ -4622,7 +4694,8 @@ if ($ROWS -eq 1) {WriteWordLine 0 0 "No HTTP Profiles have been configured"} els
     $xRow = 1
     Write-Verbose "$(Get-Date): `t`tTable: HTTP Profile table"
 	$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
-	$table.Style = "Table Grid"
+	$Table.Style = $myHash.Word_TableGrid
+	$Table.rows.first.headingformat = $wdHeadingFormatTrue
 	$table.Borders.InsideLineStyle = $wdLineStyleSingle
 	$table.Borders.OutsideLineStyle = $wdLineStyleSingle
 
@@ -4694,7 +4767,14 @@ If($CoverPagesExist)
 	#get the abstract XML part
 	$ab = $cp.documentelement.ChildNodes | Where {$_.basename -eq "Abstract"}
 	#set the text
-	[string]$abstract = "Inventory for $CompanyName"
+	If([String]::IsNullOrEmpty($CompanyName))
+	{
+		[string]$abstract = "Inventory"
+	}
+	Else
+	{
+		[string]$abstract = "Inventory for $CompanyName"
+	}
 	$ab.Text = $abstract
 
 	$ab = $cp.documentelement.ChildNodes | Where {$_.basename -eq "PublishDate"}
@@ -4786,7 +4866,10 @@ If($PDF)
 }
 Write-Verbose "$(Get-Date): System Cleanup"
 [System.Runtime.Interopservices.Marshal]::ReleaseComObject($Word) | out-null
-Remove-Variable -Name word
+If(Test-Path variable:global:word)
+{
+	Remove-Variable -Name word -Scope Global
+}
 $SaveFormat = $Null
 [gc]::collect() 
 [gc]::WaitForPendingFinalizers()
