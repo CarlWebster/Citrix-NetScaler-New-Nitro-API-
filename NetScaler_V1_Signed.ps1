@@ -97,7 +97,16 @@
 	This parameter has an alias of UN.
 .PARAMETER PDF
 	SaveAs PDF file instead of DOCX file.
+	This parameter is disabled by default.
+	For Word 2007, the Microsoft add-in for saving as a PDF muct be installed.
+	For Word 2007, please see http://www.microsoft.com/en-us/download/details.aspx?id=9943
 	The PDF file is roughly 5X to 10X larger than the DOCX file.
+.PARAMETER AddDateTime
+	Adds a date time stamp to the end of the file name.
+	Time stamp is in the format of yyyy-MM-dd_HHmm.
+	June 1, 2014 at 6PM is 2014-06-01_1800.
+	Output filename will be ReportName_2014-06-01_1800.docx(or .pdf).
+	This parameter is disabled by default.
 .EXAMPLE
 	PS C:\PSScript > .\NetScaler_v1.ps1
 	
@@ -144,9 +153,9 @@
 	No objects are output from this script.  This script creates a Word document.
 .NOTES
 	NAME: NetScaler_V1.ps1
-	VERSION: 1.0.3
+	VERSION: 1.0.4
 	AUTHOR: Barry Schiffer with help from Carl Webster
-	LASTEDIT: May 26, 2014
+	LASTEDIT: June 2, 2014
 #>
 #endregion Support
 
@@ -184,7 +193,15 @@ Param(
 	Position = 3, 
 	Mandatory=$false )
 	] 
-	[Switch]$PDF=$False)
+	[Switch]$PDF=$False,
+	
+	[parameter(ParameterSetName="Standard",
+	Position = 4, 
+	Mandatory=$False )
+	] 
+	[Switch]$AddDateTime=$False
+	
+	)
 	
 #Version 1.0 script
 #originally released to the Citrix community on May 6, 2014
@@ -209,6 +226,8 @@ Param(
 #	Error check added if ns.conf is not found
 #	Error check added to verify ns.conf file is read successfully
 #	Converted all Advanced Configuration sections to tables
+#Version 1.0.4
+#	Added an AddDateTime parameter
 
 #force -verbose on
 $PSDefaultParameterValues = @{"*:Verbose"=$True}
@@ -218,6 +237,10 @@ $ErrorActionPreference = 'SilentlyContinue'
 If($PDF -eq $Null)
 {
 	$PDF = $False
+}
+If($AddDateTime -eq $Null)
+{
+	$AddDateTime = $False
 }
 
 #info@barryschiffer.com
@@ -961,10 +984,22 @@ Else
 {
 	[string]$Title = "NetScaler Configuration - $Companyname"
 }
-[string]$filename1 = "NetScaler.docx"
-If($PDF)
+#added by Carl Webster 2-June-2014
+If($AddDateTime)
 {
-	[string]$filename2 = "NetScaler.pdf"
+	[string]$filename1  = "$($pwd.path)\NetScaler"
+	If($PDF)
+	{
+		[string]$filename2 = "$($pwd.path)\NetScaler"
+	}
+}
+Else
+{
+	[string]$filename1  = "$($pwd.path)\NetScaler.docx"
+	If($PDF)
+	{
+		[string]$filename2 = "$($pwd.path)\NetScaler.pdf"
+	}
 }
 
 CheckWordPreReq
@@ -1004,16 +1039,16 @@ If(!$?)
 Write-Verbose "$(Get-Date): NetScaler file : $SourceFile"
 
 ## Iain Brighton - Set the output locations to the current working directory
-$filename1 = Join-Path ((Get-Location).ProviderPath) $filename1;
-if($PDF) 
-{ 
-	$filename2 = Join-Path ((Get-Location).ProviderPath) $filename2;
-	Write-Verbose "$(Get-Date): Target Word file : $filename1, PDF file : $filename2";
-}
-else 
-{ 
-	Write-Verbose "$(Get-Date): Target Word file : $filename1"; 
-}
+#$filename1 = Join-Path ((Get-Location).ProviderPath) $filename1;
+#if($PDF) 
+#{ 
+#	$filename2 = Join-Path ((Get-Location).ProviderPath) $filename2;
+#	Write-Verbose "$(Get-Date): Target Word file : $filename1, PDF file : $filename2";
+#}
+#else 
+#{ 
+#	Write-Verbose "$(Get-Date): Target Word file : $filename1"; 
+#}
 
 ## We read the file in once as each Get-Content call goes to disk and also creates a new string[]
 $File = Get-Content $SourceFile
@@ -1206,6 +1241,7 @@ If($PDF)
 {
 	Write-Verbose "$(Get-Date): Filename2    : $filename2"
 }
+Write-Verbose "$(Get-Date): Add DateTime : $AddDateTime"
 Write-Verbose "$(Get-Date): OS Detected  : $RunningOS"
 Write-Verbose "$(Get-Date): PSUICulture  : $PSUICulture"
 Write-Verbose "$(Get-Date): PSCulture    : $PSCulture "
@@ -5519,6 +5555,17 @@ If($WordVersion -eq $wdWord2007)
 	{
 		Write-Verbose "$(Get-Date): Saving DOCX file"
 	}
+
+	#added by Carl Webster 2-June-2014
+	If($AddDateTime)
+	{
+		$FileName1 += "_$(Get-Date -f yyyy-MM-dd_HHmm).docx"
+		If($PDF)
+		{
+			$FileName2 += "_$(Get-Date -f yyyy-MM-dd_HHmm).pdf"
+		}
+	}
+
 	Write-Verbose "$(Get-Date): Running Word 2007 and detected operating system $($RunningOS)"
 	If($RunningOS.Contains("Server 2008 R2") -or $RunningOS.Contains("Server 2012"))
 	{
@@ -5558,6 +5605,17 @@ Else
 	{
 		Write-Verbose "$(Get-Date): Saving DOCX file"
 	}
+
+	#added by Carl Webster 2-June-2014
+	If($AddDateTime)
+	{
+		$FileName1 += "_$(Get-Date -f yyyy-MM-dd_HHmm).docx"
+		If($PDF)
+		{
+			$FileName2 += "_$(Get-Date -f yyyy-MM-dd_HHmm).pdf"
+		}
+	}
+
 	$saveFormat = [Enum]::Parse([Microsoft.Office.Interop.Word.WdSaveFormat], "wdFormatDocumentDefault")
 	$doc.SaveAs([REF]$filename1, [ref]$SaveFormat)
 	If($PDF)
@@ -5616,8 +5674,8 @@ $Str = $Null
 # SIG # Begin signature block
 # MIIiywYJKoZIhvcNAQcCoIIivDCCIrgCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU1g78/ejsaUHw/JJeaacqrPaR
-# ogyggh41MIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUL8/6sYCwHzfoUCLXNIz8R9+C
+# kcKggh41MIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
 # AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMzExMTEwMDAwMDAwWjBlMQsw
@@ -5782,22 +5840,22 @@ $Str = $Null
 # ChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMS4wLAYD
 # VQQDEyVEaWdpQ2VydCBBc3N1cmVkIElEIENvZGUgU2lnbmluZyBDQS0xAhAEpVF+
 # 1fcA0OvDT46NhL3GMAkGBSsOAwIaBQCgQDAZBgkqhkiG9w0BCQMxDAYKKwYBBAGC
-# NwIBBDAjBgkqhkiG9w0BCQQxFgQUi0a6nv31gYQT1fk5DNN8l+xM1IwwDQYJKoZI
-# hvcNAQEBBQAEggEADV3w7uTFN17bsBZEIN7DF9iLGLqWxkGCqQaNtIaNpDni6azi
-# yUrsr8jdSzcVt6mqg022317kNBXvyYbnzFso74WcWyiefuVYzrUPalk7w6Kc8i0T
-# W19A1farL73PIV/ecSOO6ux27A9ThaOYXGn6kd3BjcpElVfc61oe25XxxKK/Otay
-# EYCNsWTcJgc4Hjiv4TaDgrn2h2xUHPHe8VB3kYAQjfGJ/nG4j0m4AzKklhKQ8hqG
-# SPBPoFVBCQ4Ajqpni3smtcjDnSOsOFv46NjvzZVidVmOZ7wi1v+F8vE9xdq8Xs9W
-# Jq4pkts/YpR5KNtdTg1nco+JRQmQ+0EaKEQPLqGCAg8wggILBgkqhkiG9w0BCQYx
+# NwIBBDAjBgkqhkiG9w0BCQQxFgQUt/W3Yq/dtNtqgPHZ+qiil/SGbUswDQYJKoZI
+# hvcNAQEBBQAEggEAuH1Cle7NZcSCQIYchcTBweYWNqpL3xTqzmaKvyqWxiUHmbhs
+# p/CgzuEsPvA1cnzz4heRlNrdRq2uhkoy+X+zaowgF8eIdmH6TV1Q6UgNpzN8I6Ir
+# pBr09MHBM4wO6B+yJ0HwoZWmkAFDOlmuLgTo42QTiiixZc7cDCTP8d2BLgmgWu0o
+# UoNOiQiek1INnv1HXyAPhHqk9s+nFdnwxRgZSoYh0Bna1RrX5KK7f1w4vl+fMy/x
+# FBQbU2Sz6jc5vx/M2WW5389Wc+HcXsjV34ySeqSR0YeRFLfmRf+XzJVeRKR4k5CV
+# /CIRikynblm4wWMTZ+DLnom+8lnKkfne1bhDeqGCAg8wggILBgkqhkiG9w0BCQYx
 # ggH8MIIB+AIBATB2MGIxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJ
 # bmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xITAfBgNVBAMTGERpZ2lDZXJ0
 # IEFzc3VyZWQgSUQgQ0EtMQIQA5/t7ct5W43tMgyJGfA2iTAJBgUrDgMCGgUAoF0w
-# GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTQwNTI2
-# MTAxNzU1WjAjBgkqhkiG9w0BCQQxFgQUXuAmrAJl9jK4sQPfxpKeGmiDirUwDQYJ
-# KoZIhvcNAQEBBQAEggEAnnBMoBmA1C4OrYOLH7qXJmHVm0PcgNyWukfqnED4LsqG
-# fpwQ6CfSnGcOAynp1WmH0o1a2zEeC1zHcaPcxtLcqKyVovbeUUn6o7Utkf+NWV/Q
-# XCxm+HuIOZsn4YAcMJ2ODzcj4qw4V5ojJ09uIBMRGrAfN5mezpOxCnqGW3Cn6NVD
-# RMmNunvhBPPTCspwR8Oq4Q4Y6cvIfKL168CLpvliucOPEp+0gyW7BIlgQiTj5Zfs
-# ShJAccqkhJvrhSnDKQmJE5N7RfbMtdpisjT4ECCJfWQ8wX6BMluvWCT/rF9ISzQQ
-# DZRjuW8cWa6OKuUSX7HPmjjTFsiYd3hoqMfKN/rlvg==
+# GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTQwNjAy
+# MjAyMDEwWjAjBgkqhkiG9w0BCQQxFgQURdrQrFs5YhL4CX/htIzwhIORhDgwDQYJ
+# KoZIhvcNAQEBBQAEggEAnY1QSR4JnjDlzhqf1EdDwjFm6f18Uu/PLpuKc86g3RkV
+# QJX2/JV7eoG0OyL8suxw3pNuK/l3bfsVFT9pMs7PTvLjidtwnLOMv8hnLX5qpQ1m
+# HXJtlhKAvSdCB9+CcTqcg17MjOYHpLkjoB0fV3wGaoSR5Teiptx+83tZTBvsWSuw
+# qai+iGCGGUo5qZTb/TflsreM/N8cUd0VGh0oFv4zJNTDNUwD5+7B5H4njSdzp09b
+# PExZZTMPyjq9znEClVI7LS7z1vYdphwMl6GCAwItsTp7nGcijVNCd0Oic8JG9f2j
+# qXirILxEsr39pmn8KaoOrk8JEq7hejKnlZ/U8kRPyg==
 # SIG # End signature block
