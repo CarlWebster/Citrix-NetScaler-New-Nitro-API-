@@ -1,4 +1,4 @@
-#Requires -Version 3.0
+﻿#Requires -Version 3.0
 #This File is in Unicode format.  Do not edit in an ASCII editor.
 
 <#
@@ -10,6 +10,7 @@
 	Document includes a Cover Page, Table of Contents and Footer.
 	Includes support for the following language versions of Microsoft Word:
 		Catalan
+		Chinese
 		Danish
 		Dutch
 		English
@@ -140,7 +141,7 @@
 	This parameter is disabled by default.
 	This parameter has an alias of SI.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v3_5_Signed.ps1
+	PS C:\PSScript > .\NetScaler_Script_V3_6_Signed.ps1
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -151,7 +152,7 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v3_5_Signed.ps1 -PDF
+	PS C:\PSScript > .\NetScaler_Script_V3_6_Signed.ps1 -PDF
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -162,21 +163,21 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\NetScaler_Script_v3_5_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
+	PS C:\PSScript .\NetScaler_Script_V3_6_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name.
 		Mod for the Cover Page format.
 		Carl Webster for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\NetScaler_Script_v3_5_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
+	PS C:\PSScript .\NetScaler_Script_V3_6_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name (alias CN).
 		Mod for the Cover Page format (alias CP).
 		Carl Webster for the User Name (alias UN).
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v3_5_Signed.ps1 -AddDateTime
+	PS C:\PSScript > .\NetScaler_Script_V3_6_Signed.ps1 -AddDateTime
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -192,7 +193,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.docx
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v3_5_Signed.ps1 -PDF -AddDateTime
+	PS C:\PSScript > .\NetScaler_Script_V3_6_Signed.ps1 -PDF -AddDateTime
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -208,7 +209,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.PDF
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v3_5_Signed.ps1 -Folder \\FileServer\ShareName
+	PS C:\PSScript > .\NetScaler_Script_V3_6_Signed.ps1 -Folder \\FileServer\ShareName
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -221,7 +222,7 @@
 
 	Output file will be saved in the path \\FileServer\ShareName
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v3_5_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
+	PS C:\PSScript > .\NetScaler_Script_V3_6_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -236,7 +237,7 @@
 	Script will use the default SMPTP port 25 and will not use SSL.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v3_5_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
+	PS C:\PSScript > .\NetScaler_Script_V3_6_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -255,7 +256,7 @@
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-	NAME: NetScaler_Script_V3_5_Signed.ps1
+	NAME: NetScaler_Script_V3_6_Signed.ps1
 	VERSION: 3.5
 	AUTHOR: Barry Schiffer, Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
 	LASTEDIT: October 24, 2016
@@ -266,13 +267,25 @@
 .COMMENT
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .NetScaler Documentation Script
-    NAME: NetScaler_Script_v3_1.ps1
-	VERSION NetScaler Script: 3.1
+    NAME: NetScaler_Script_v3_6.ps1
+	VERSION NetScaler Script: 3.6
 	VERSION Script Template: 2016
-	AUTHOR NetScaler script: Barry Schiffer
+	AUTHOR NetScaler script: Barry Schiffer & Andy McCullough
     AUTHOR NetScaler script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: August 25th 2016 
+	LASTEDIT: December 21th 2016 
+
+.Release Notes version 3.6
+    
+    The script is now fully compatible with NetScaler 11.1 released in July 2016.
+
+    * Added NetScaler functionality
+    * Added NetScaler Gateway reporting for Custom Themes
+    * Added HTTPS redirect for Load Balancing
+    * Added Policy Based Routing
+    * Added several items to advanced configuration for Load Balancer and Services
+    * Numerous bug fixes
+
 
 .Release Notes version 3.5
     Most work on version 3.5 has been done by Andy McCullough!
@@ -2680,6 +2693,42 @@ function Get-vNetScalerObject {
     }
 } #end function Get-vNetScalerObject
 
+function Get-vNetScalerFile {
+
+<#
+    .SYNOPSIS
+        Returns a NetScaler Nitro API SystemFile object(s) via its REST API.
+#>
+    [CmdletBinding()]
+    param (
+        # NetScaler Nitro API resource name, e.g. /nitro/v1/config/SystemFile?args=filename:Filename,filelocation:FileLocation
+        [Parameter()] [Alias('Name')][System.String] $FileName,
+        # NetScaler Nitro API optional attributes, e.g. /nitro/v1/config/lbvserver/mylbvserver?ATTRS=<attrib1>,<attrib2>
+        [Parameter()] [Alias('Location')] [System.String] $FileLocation
+        
+    )
+    begin {
+        #Don't lower case these as they are case sensitive
+        #$FileName = $FileName.ToLower();
+        $FileLocation = $FileLocation.Replace("/","%2F");
+        $Container = "config"
+        
+    }
+    process {
+        if ($script:nsSession.UseSSL) { $protocol = 'https'; }
+        else { $protocol = 'http'; }
+        $uri = '{0}://{1}/nitro/v1/config/systemfile/{2}?args=filelocation:{3}' -f $protocol, $script:nsSession.Address, $FileName, $FileLocation;
+        
+        #Don't URI encode as we've already replaced / with %2F as required - URL encoding after this, encodes the % which breaks the request
+        #$uri = [System.Uri]::EscapeUriString($uri);
+        #Write-Output $uri;
+        $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
+        $test = 1
+        if ($null -ne $restResponse.systemfile) { Write-Output $restResponse.systemfile; }
+        else { Write-Output $restResponse }
+    }
+} #end function Get-vNetScalerFile
+
 function InvokevNetScalerNitroMethod {
 <#
     .SYNOPSIS
@@ -2705,6 +2754,7 @@ function InvokevNetScalerNitroMethod {
             Method = 'Get';
             WebSession = $script:nsSession.Session;
             ErrorAction = 'Stop';
+            Verbose = ($PSBoundParameters['Debug'] -eq $true);
         }
         Write-Output (Invoke-RestMethod @irmParameters);
     }
@@ -2746,6 +2796,7 @@ function Connect-vNetScalerSession {
             ContentType = 'application/json';
             SessionVariable = 'nsSessionCookie';
             ErrorAction = 'Stop';
+            Verbose = ($PSBoundParameters['Debug'] -eq $true);
         }
         $restResponse = Invoke-RestMethod @invokeRestMethodParams;
         ## Store the session cookie at the script scope
@@ -2784,6 +2835,66 @@ function Get-vNetScalerObjectCount {
 }
 
 #endregion Nitro Functions
+
+#region CSS Functions
+
+Function Get-AttributeFromCSS {
+
+<#
+.Synopsis
+    Searches for and returns a defined CSS Attribute from a custom portal theme
+#>
+
+    [CmdletBinding()]
+    param (
+        # Search pattern to be used
+        [Parameter(Mandatory)] [string] $SearchPattern,
+        # Name of attribute we're looking for
+        [Parameter(Mandatory)] [string] $Attribute,
+        # NNumber of lines to search for attribute after pattern match
+        [Parameter(Mandatory)] [int] $Lines,
+        # Input string we're going to searching
+        [Parameter(Mandatory)] [string] $Inputstring
+    )
+
+    $arrInput = $InputString.Split([Environment]::NewLine)
+
+    $filteredInput = $arrInput | Select-String -Pattern "$SearchPattern" -Context  0,$Lines
+
+    [String]$filteredOutput = $FilteredInput.Context.PostContext | Select-String -Pattern "$Attribute"
+    
+    If ($filteredOutput) {
+      $arrOutput = $filteredOutput.Split(":");
+      $cleanedOutput = $arrOutput[$arrOutput.Length-1].Trim()
+      $cleanedOutput = $cleanedOutput.Replace(";","") #remove the trailing semi-colon
+      Write-Output $cleanedOutput
+    } Else {
+      Write-Output "Undefined"
+    }
+
+}
+
+#endregion CSS Functions
+
+#region generic functions
+
+function IsNull($objectToCheck) {
+    if ($objectToCheck -eq $null) {
+        return $true
+    }
+
+    if ($objectToCheck -is [String] -and $objectToCheck -eq [String]::Empty) {
+        return $true
+    }
+
+    if ($objectToCheck -is [DBNull] -or $objectToCheck -is [System.Management.Automation.Language.NullString]) {
+        return $true
+    }
+
+    return $false
+}
+
+#endregion generic functions
 
 #region NetScaler Connect
 
@@ -2848,6 +2959,7 @@ If ($NSFEATURES.rep -eq "True") {$FEATrep = "Enabled"} Else {$FEATrep = "Disable
 $NSVersion = Get-vNetScalerObject -Container config -Object nsversion;
 $NSVersion1 = ($NSVersion.version -replace 'NetScaler', '').split()
 $Version = ($NSVersion1[1] -replace ':', '')
+$Version = ($Version -replace 'NS', '')
 $Build = $($NSVersion1[5] + " " + $nsversion1[6] + " " + $nsversion1[7] -replace ',', '')
 
 ## Set script test version
@@ -2878,7 +2990,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
     AutoFit = $wdAutoFitContent;
 }
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -2889,19 +3001,19 @@ $License = Get-vNetScalerObject -Container config -Object nslicense;
 If ($license.isstandardlic -eq $True){$LIC = "Standard"}
 If ($license.isenterpriselic -eq $True){$LIC = "Enterprise"}
 If ($license.isplatinumlic -eq $True){$LIC = "Platinum"}
-
+If ($license.f_sslvpn_users -eq "4294967295"){$sslvpnlicenses = "Unlimited"} else {$sslvpnlicenses = $license.f_sslvpn_users}
 $Params = $null
 $Params = @{
     Hashtable = @{
         Edition = $LIC
-        SSLVPN = $License.f_sslvpn_users;
+        SSLVPN = $sslvpnlicenses;
     }
     Columns = "Edition","SSLVPN";
     Headers = "NetScaler Edition","SSL VPN licenses";
     Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
     AutoFit = $wdAutoFitContent;
 }
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -2912,8 +3024,9 @@ $nshardware = Get-vNetScalerObject -Container config -Object nshardware;
 
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $NSHARDWARETable = @(
-    @{ Description = "Description"; Value = "Value" }
+
     @{ Description = "Hardware Description"; Value = $nshardware.hwdescription }
+    @{ Description = "Model"; Value = $license.modelid }
     @{ Description = "Hardware System ID"; Value = $nshardware.sysid }
     @{ Description = "Host ID"; Value = $nshardware.hostid }
     @{ Description = "Host (MAC)"; Value = $nshardware.host }
@@ -2925,11 +3038,12 @@ $Params = $null
 $Params = @{
     Hashtable = $NSHARDWARETable;
     Columns = "Description","Value";
+    Headers = "Description","Value";
     AutoFit = $wdAutoFitContent
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines -List;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 $TableRange = $null
@@ -2943,6 +3057,7 @@ $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler IP"
 
 WriteWordLine 2 0 "NetScaler Management IP Address"
+WriteWordLine 0 0 " "
 
 $NSIP1 = Get-vNetScalerObject -Container config -Object nsip;
 Foreach ($IP in $NSIP1){ ##Lists all NetScaler IPs while we only need NSIP for this one
@@ -2959,7 +3074,7 @@ Foreach ($IP in $NSIP1){ ##Lists all NetScaler IPs while we only need NSIP for t
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
         }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
         FindWordDocumentEnd;
         WriteWordLine 0 0 " "
         $Table = $null
@@ -3000,7 +3115,7 @@ foreach ($HANODE in $HANodes) {
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
             }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
         FindWordDocumentEnd;
         WriteWordLine 0 0 " "
         $Table = $null
@@ -3027,7 +3142,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
     AutoFit = $wdAutoFitContent;
 }
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -3055,7 +3170,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
     AutoFit = $wdAutoFitContent;
 }
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -3085,7 +3200,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
     AutoFit = $wdAutoFitContent;
 }
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -3108,7 +3223,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
     AutoFit = $wdAutoFitContent;
 }
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 
@@ -3145,7 +3260,7 @@ if ($LOCDBSH.Length -gt 0) {
         AutoFit = $wdAutoFitContent;
         }
 
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
     $Table = $null
@@ -3157,7 +3272,59 @@ if ($LOCDBSH.Length -gt 0) {
 
 
 #endregion NetScaler Location Database
+<# Small bug
+#region NetScaler Custom Location Entries
+$Chapter++
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Custom Location Entries"
+WriteWordLine 3 0 "NetScaler Custom Location Entries"
+WriteWordLine 0 0 " "
+$nslocs = Get-vNetScalerObject -Container config -Object location;
 
+$LOCSH = $null    
+## IB - Use an array of hashtable to store the rows
+[System.Collections.Hashtable[]] $LOCDBSH = @();
+
+foreach ($nsloc in $nslocs) {
+
+If (IsNull($nsloc.preferredlocation)){$locprefferedlocation = ""} Else { $locpreferredlocation = $nsloc.prefferedlocation};
+If (IsNull($nsloc.longitude)){$loclongitude = ""} Else { $loclongitude = $nsloc.longitude};
+If (IsNull($nsloc.latitude)){$loclatitude = ""} Else { $loclatitude = $nsloc.latitude};
+
+
+    ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+    ## IB - command will be about 400 characters wide!
+    $LOCSH += @{
+            IPFrom = $nsloc.ipfrom;
+            IPTo = $nsloc.ipto;
+            Preferred = $locprefferedlocation;
+            Longitude = $loclongitude;
+            Latitude = $loclatitude;
+        }
+    }
+
+if ($LOCSH.Length -gt 0) {
+    $Params = $null
+    $Params = @{
+        Hashtable = $LOCSH;
+        Columns = "IPFrom","IPTo","Preferred","Longitude","Latitude";
+        Headers = "From IP Address", "To IP Address", "Location Name", "Longitude", "Latitude";
+        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+        AutoFit = $wdAutoFitContent;
+        }
+
+    $Table = AddWordTable @Params;
+    FindWordDocumentEnd;
+    WriteWordLine 0 0 " "
+    $Table = $null
+    } Else {
+      WriteWordLine 0 0 " "
+      WriteWordLine 0 0 "No Custom Location Entries have been configured."
+      WriteWordLine 0 0 " "
+    }
+
+
+#endregion NetScaler Custom Location Entries
+#>
 #region NetScaler Administration
 $selection.InsertNewPage()
 $Chapter++
@@ -3192,7 +3359,7 @@ if ($AUTHLOCH.Length -gt 0) {
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
         }
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     FindWordDocumentEnd;
     $Table = $null
     }
@@ -3224,7 +3391,7 @@ if ($AUTHGRPH.Length -gt 0) {
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
         }
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     FindWordDocumentEnd;
     $Table = $null
     }
@@ -3262,7 +3429,7 @@ if($rpcnodecounter.__count -le 0) { WriteWordLine 0 0 "No RPC Nodes have been co
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -3313,7 +3480,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines -List;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 $TableRange = $Null
@@ -3369,7 +3536,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines -List;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 $TableRange = $Null
@@ -3423,7 +3590,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines -List;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 $TableRange = $Null
@@ -3469,7 +3636,7 @@ if($snmpcommunitycount -le 0) { WriteWordLine 0 0 "No SNMP Community has been co
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             $Table = $null
         }
@@ -3506,7 +3673,7 @@ if($snmpmanagercount -le 0) { WriteWordLine 0 0 "No SNMP Manager has been config
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             $Table = $null
         }
@@ -3542,7 +3709,7 @@ foreach ($snmpalarm in $snmpalarms) {
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
             }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
         FindWordDocumentEnd;
         $Table = $null
     }
@@ -3582,7 +3749,7 @@ if($snmptrapscount -le 0) { WriteWordLine 0 0 "No SNMP Trap has been configured"
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             $Table = $null
         }
@@ -3612,7 +3779,7 @@ $syslogparams = Get-vNetScalerObject -Object auditsyslogparams;
 ## IB - about column names as we'll utilise a -List(view)!
 [System.Collections.Hashtable[]] $SYSLOGPARAMH = @(
     ## IB - Each hashtable is a separate row in the table!
-    @{ Column1 = "Description"; Column2 = "Value"; }
+    
     @{ Column1 = "Server IP"; Column2 = $syslogparams.serverip; }
     @{ Column1 = "Server Port"; Column2 = $syslogparams.serverport; }
     @{ Column1 = "Date Format"; Column2 = $syslogparams.dateformat; }
@@ -3635,11 +3802,12 @@ $Params = $null
 $Params = @{
     Hashtable = $SYSLOGPARAMH;
     Columns = "Column1","Column2";
+    Headers = "Description","Value";
     AutoFit = $wdAutoFitContent;
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 
@@ -3680,7 +3848,7 @@ foreach ($syslogpolicy in $syslogpolicies) {
     }
 
     ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
     $Table = $null
@@ -3702,7 +3870,6 @@ foreach ($syslogserver in $syslogservers) {
 
   [System.Collections.Hashtable[]] $SYSLOGSRVH = @(
     ## IB - Each hashtable is a separate row in the table!
-    @{ Column1 = "Description"; Column2 = "Value"; }
     @{ Column1 = "Server IP"; Column2 = $syslogserver.serverip; }
     @{ Column1 = "Server Domain Name"; Column2 = $syslogserver.serverdomainname; }
     @{ Column1 = "DNS Resolution Retry"; Column2 = $syslogserver.domainresolveretry; }
@@ -3732,11 +3899,12 @@ $Params = $null
 $Params = @{
     Hashtable = $SYSLOGSRVH;
     Columns = "Column1","Column2";
+    Headers = "Description","Value";
     AutoFit = $wdAutoFitContent;
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 
@@ -3768,32 +3936,39 @@ $Interfaces = Get-vNetScalerObject -Container config -Object interface;
 
 if($InterfaceCounter.__count -le 0) { WriteWordLine 0 0 "No Interface has been configured"} else {
     
-    ## IB - Use an array of hashtable to store the rows
-    [System.Collections.Hashtable[]] $NICH = @();
+    foreach ($Interface in $Interfaces) { 
+    
+    [System.Collections.Hashtable[]] $NSINTFH = @(
 
-    foreach ($Interface in $Interfaces) {        
-        $NICH += @{
-            InterfaceID = $interface.devicename;
-            InterfaceType = $interface.intftype;
-            HAMonitoring = $interface.hamonitor;
-            State = $interface.state;
-            AutoNegotiate = $interface.autoneg;
-            }
-        }
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Description"; Column2 = "Value"; }
+    @{ Column1 = "Device Name"; Column2 = $interface.devicename; }
+    @{ Column1 = "Device Description"; Column2 = $interface.description; }
+    @{ Column1 = "Interface Type"; Column2 = $interface.intftype; }
+    @{ Column1 = "HA Monitoring"; Column2 = $interface.hamonitor; }
+    @{ Column1 = "State"; Column2 = $interface.state; }
+    @{ Column1 = "Auto Negotiate"; Column2 = $interface.autoneg; }
+    @{ Column1 = "HA Heartbeats"; Column2 = $interface.haheartbeat; }
+    @{ Column1 = "MAC Address"; Column2 = $interface.mac; }
+    @{ Column1 = "Tag All VLANs"; Column2 = $interface.tagall; }
+    );
 
-        if ($NICH.Length -gt 0) {
-            $Params = $null
-            $Params = @{
-                Hashtable = $NICH;
-                Columns = "InterfaceID","InterfaceType","HAMonitoring","State","AutoNegotiate";
-                Headers = "Interface ID","Interface Type","HA Monitoring","State","Auto Negotiate";
-                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
-                AutoFit = $wdAutoFitContent;
-                }
-            $Table = AddWordTable @Params -NoGridLines;
-            FindWordDocumentEnd;
-            WriteWordLine 0 0 " "
-            $Table = $null
+    ## IB - Create the parameters to pass to the AddWordTable function
+    $Params = $null
+    $Params = @{
+        Hashtable = $NSINTFH;
+        Columns = "Column1","Column2";
+        AutoFit = $wdAutoFitContent;
+        Format = -235; ## IB - Word constant for Light List Accent 5
+    }
+
+    $Table = AddWordTable @Params -List;
+
+    FindWordDocumentEnd;
+
+    WriteWordLine 0 0 " "
+    $Table = $null
+    $NSINTFH = $null
             }
         }
 
@@ -3836,7 +4011,7 @@ if($ChannelCounter.__count -le 0) {
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -3877,7 +4052,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
     AutoFit = $wdAutoFitContent;
     }
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 $Table = $null
@@ -3892,41 +4067,89 @@ $VLANCount = $VLANCounter.__count
 $VLANS = Get-vNetScalerObject -Container config -Object vlan;
 
 if($VLANCounter.__count -le 0) { WriteWordLine 0 0 "No vLAN has been configured"} else {
-    $vLANH = $null
-    ## IB - Use an array of hashtable to store the rows
-    [System.Collections.Hashtable[]] $vLANH = @();
 
-    $vLANH += @{
-        vLANName = "default";
-        VLANID = "1";
-        }
 
     foreach ($VLAN in $VLANS) {
-        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
-        ## IB - command will be about 400 characters wide!
-        $vLANH += @{
-            vLANName = $VLAN.aliasname;
-            VLANID = $VLAN.id;
-            }
+    [System.Collections.Hashtable[]] $NSVLANH = @(
+
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Description"; Column2 = "Value"; }
+    @{ Column1 = "VLAN ID"; Column2 = $VLAN.id; }
+    If($VLAN.id -eq "1") {
+    @{ Column1 = "VLAN Name"; Column2 = "Default"; }
+    } else {
+    @{ Column1 = "VLAN Name"; Column2 = $VLAN.aliasname; }
+    }
+    @{ Column1 = "Bound Interfaces"; Column2 = $VLAN.ifaces; }
+    @{ Column1 = "Tagged Interfaces"; Column2 = $VLAN.tagged; }
+    @{ Column1 = "RNAT"; Column2 = $VLAN.rnat; }
+    @{ Column1 = "VXLAN"; Column2 = $VLAN.vxlan; }
+    );
+
+    ## IB - Create the parameters to pass to the AddWordTable function
+    $Params = $null
+    $Params = @{
+        Hashtable = $NSVLANH;
+        Columns = "Column1","Column2";
+        AutoFit = $wdAutoFitContent;
+        Format = -235; ## IB - Word constant for Light List Accent 5
+    }
+
+    $Table = AddWordTable @Params -List;
+
+    FindWordDocumentEnd;
+
+    WriteWordLine 0 0 " "
+    $Table = $null
+    $NSVLANH = $null
         }
-        
-        if ($vLANH.Length -gt 0) {
-            $Params = $null
-            $Params = @{
-                Hashtable = $vLANH;
-                Columns = "VLANNAME","VLANID";
-                Headers = "vLAN Alias","ID";
-                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
-                AutoFit = $wdAutoFitContent;
-                }
-            $Table = AddWordTable @Params -NoGridLines;
-            FindWordDocumentEnd;
-            WriteWordLine 0 0 " "
-            $Table = $null
-            }
-        }
+    }
 
 #endregion NetScaler vLAN
+
+#region NetScaler VXLAN
+
+WriteWordLine 2 0 "NetScaler VXLANs"
+WriteWordLine 0 0 " "
+$VXLANCounter = Get-vNetScalerObjectCount -Container config -Object vxlan; 
+$VXLANCount = $VXLANCounter.__count
+$VXLANS = Get-vNetScalerObject -Container config -Object vxlan;
+
+if($VXLANCounter.__count -le 0) { WriteWordLine 0 0 "No VXLANs have been configured"} else {
+
+    foreach ($VXLAN in $VXLANS) {
+    [System.Collections.Hashtable[]] $NSVXLANH = @(
+
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Description"; Column2 = "Value"; }
+    @{ Column1 = "VXLAN ID"; Column2 = $VXLAN.id; }
+    @{ Column1 = "VXLAN Port"; Column2 = $VXLAN.port; }
+    @{ Column1 = "Dynamic Routing"; Column2 = $VXLAN.dynamicrouting; }
+    @{ Column1 = "IPv6 Dynamic Routing"; Column2 = $VLAN.ipv6dynamicrouting; }
+    @{ Column1 = "Inner VLAN Tagging"; Column2 = $VLAN.innervlantagging; }
+    @{ Column1 = "Encapsulation Type"; Column2 = $VLAN.type; }
+    );
+
+    ## IB - Create the parameters to pass to the AddWordTable function
+    $Params = $null
+    $Params = @{
+        Hashtable = $NSVXLANH;
+        Columns = "Column1","Column2";
+        AutoFit = $wdAutoFitContent;
+        Format = -235; ## IB - Word constant for Light List Accent 5
+    }
+
+    $Table = AddWordTable @Params -List;
+
+    FindWordDocumentEnd;
+
+    WriteWordLine 0 0 " "
+    $Table = $null
+    $NSVXLANH = $null
+        }
+	}
+
+#endregion NetScaler VXLAN
 
 #region routing table
 
@@ -3962,13 +4185,135 @@ foreach ($ROUTE in $nsroute) {
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
             }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
         FindWordDocumentEnd;
         WriteWordLine 0 0 " "
         $Table = $null
         }
 
 #endregion routing table
+
+#region NetScaler PBRs
+
+WriteWordLine 2 0 "NetScaler Policy Based Routes"
+WriteWordLine 0 0 " "
+$NSPBRCounter = Get-vNetScalerObjectCount -Container config -Object nspbr; 
+$NSPBRCount = $NSPBRCounter.__count
+$NSPBRS = Get-vNetScalerObject -Container config -Object nspbr;
+
+if($NSPBRCounter.__count -le 0) { WriteWordLine 0 0 "No IPv4 Policy Based Routes have been configured"} else {
+
+
+    foreach ($NSPBR in $NSPBRS) {
+    [System.Collections.Hashtable[]] $NSPBRH = @(
+
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Description"; Column2 = "Value"; }
+    @{ Column1 = "Name"; Column2 = $NSPBR.name; }
+    @{ Column1 = "Action"; Column2 = $NSPBR.action; }
+    @{ Column1 = "State"; Column2 = $NSPBR.state; }
+    @{ Column1 = "Traffic Domain"; Column2 = $NSPBR.td; }
+    @{ Column1 = "Source MAC Address"; Column2 = $NSPBR.srcmac; }
+    @{ Column1 = "Source MAC Address Mask"; Column2 = $NSPBR.srcmacmask; }
+    @{ Column1 = "Protocol"; Column2 = $NSPBR.protocol; }
+    @{ Column1 = "Protocol Number"; Column2 = $NSPBR.protocolnumber; }
+    @{ Column1 = "Source Port"; Column2 = $NSPBR.srcportval; }
+    @{ Column1 = "Source Port Operator"; Column2 = $NSPBR.srcportop; }
+    @{ Column1 = "Destination Port"; Column2 = $NSPBR.destportval; }
+    @{ Column1 = "Destination Port Operator"; Column2 = $NSPBR.destportop; }
+    @{ Column1 = "Source IP"; Column2 = $NSPBR.srcipval; }
+    @{ Column1 = "Source IP Operator"; Column2 = $NSPBR.srcipop; }
+    @{ Column1 = "Destination IP"; Column2 = $NSPBR.destipval; }
+    @{ Column1 = "Destination IP Operator"; Column2 = $NSPBR.destipop; }
+    @{ Column1 = "VLAN"; Column2 = $NSPBR.vlan; }
+    @{ Column1 = "VXLAN"; Column2 = $NSPBR.vxlan; }
+    @{ Column1 = "Interface"; Column2 = $NSPBR.interface; }
+    @{ Column1 = "Priority"; Column2 = $NSPBR.priority; }
+    @{ Column1 = "Next Hop"; Column2 = $NSPBR.nexthopval; }
+    @{ Column1 = "IP Tunnel Name"; Column2 = $NSPBR.iptunnelname; }
+    @{ Column1 = "VXLAN"; Column2 = $NSPBR.vxlanvlanmap; }
+    @{ Column1 = "Monitor"; Column2 = $NSPBR.monitor; }
+    );
+
+    ## IB - Create the parameters to pass to the AddWordTable function
+    $Params = $null
+    $Params = @{
+        Hashtable = $NSPBRH;
+        Columns = "Column1","Column2";
+        AutoFit = $wdAutoFitContent;
+        Format = -235; ## IB - Word constant for Light List Accent 5
+    }
+
+    $Table = AddWordTable @Params -List;
+
+    FindWordDocumentEnd;
+
+    WriteWordLine 0 0 " "
+    $Table = $null
+    $NSPBRH = $null
+  }
+        
+}
+
+$NSPBR6Counter = Get-vNetScalerObjectCount -Container config -Object nspbr6; 
+$NSPBR6Count = $NSPBR6Counter.__count
+$NSPBRS6 = Get-vNetScalerObject -Container config -Object nspbr6;
+
+if($NSPBR6Counter.__count -le 0) { WriteWordLine 0 0 "No IPv6 Policy Based Routes have been configured"} else {
+
+
+    foreach ($NSPBR6 in $NSPBRS6) {
+    [System.Collections.Hashtable[]] $NSPBR6H = @(
+
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Description"; Column2 = "Value"; }
+    @{ Column1 = "Name"; Column2 = $NSPBR6.name; }
+    @{ Column1 = "Action"; Column2 = $NSPBR6.action; }
+    @{ Column1 = "State"; Column2 = $NSPBR6.state; }
+    @{ Column1 = "Traffic Domain"; Column2 = $NSPBR6.td; }
+    @{ Column1 = "Source MAC Address"; Column2 = $NSPBR6.srcmac; }
+    @{ Column1 = "Source MAC Address Mask"; Column2 = $NSPBR6.srcmacmask; }
+    @{ Column1 = "Protocol"; Column2 = $NSPBR6.protocol; }
+    @{ Column1 = "Protocol Number"; Column2 = $NSPBR6.protocolnumber; }
+    @{ Column1 = "Source Port"; Column2 = $NSPBR6.srcportval; }
+    @{ Column1 = "Source Port Operator"; Column2 = $NSPBR6.srcportop; }
+    @{ Column1 = "Destination Port"; Column2 = $NSPBR6.destportval; }
+    @{ Column1 = "Destination Port Operator"; Column2 = $NSPBR6.destportop; }
+    @{ Column1 = "Source IP"; Column2 = $NSPBR6.srcipv6val; }
+    @{ Column1 = "Source IP Operator"; Column2 = $NSPBR6.srcipop; }
+    @{ Column1 = "Destination IP"; Column2 = $NSPBR6.destipv6val; }
+    @{ Column1 = "Destination IP Operator"; Column2 = $NSPBR6.destipop; }
+    @{ Column1 = "VLAN"; Column2 = $NSPBR6.vlan; }
+    @{ Column1 = "VXLAN"; Column2 = $NSPBR6.vxlan; }
+    @{ Column1 = "Interface"; Column2 = $NSPBR6.interface; }
+    @{ Column1 = "Priority"; Column2 = $NSPBR6.priority; }
+    @{ Column1 = "Next Hop"; Column2 = $NSPBR6.nexthopval; }
+    @{ Column1 = "IP Tunnel Name"; Column2 = $NSPBR6.iptunnelname; }
+    @{ Column1 = "VXLAN"; Column2 = $NSPBR6.vxlanvlanmap; }
+    @{ Column1 = "Monitor"; Column2 = $NSPBR6.monitor; }
+    );
+
+    ## IB - Create the parameters to pass to the AddWordTable function
+    $Params = $null
+    $Params = @{
+        Hashtable = $NSPBR6H;
+        Columns = "Column1","Column2";
+        AutoFit = $wdAutoFitContent;
+        Format = -235; ## IB - Word constant for Light List Accent 5
+    }
+
+    $Table = AddWordTable @Params -List;
+
+    FindWordDocumentEnd;
+
+    WriteWordLine 0 0 " "
+    $Table = $null
+    $NSPBR6H = $null
+  }
+        
+}
+
+#endregion NetScaler PBRs
 
 #region NetScaler Traffic Domains
 $Chapter++
@@ -4005,7 +4350,7 @@ if($TDcounter.__count -le 0) { WriteWordLine 0 0 "No Traffic Domains have been c
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
             }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
         FindWordDocumentEnd;
         WriteWordLine 0 0 " "
         $Table = $null
@@ -4050,7 +4395,7 @@ if($dnsnameservercounter.__count -le 0) { WriteWordLine 0 0 "No DNS Name Server 
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -4089,7 +4434,7 @@ if($dnsaddreccounter.__count -le 0) { WriteWordLine 0 0 "No DNS Name Server has 
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -4128,7 +4473,7 @@ if($dnsaaaareccounter.__count -le 0) { WriteWordLine 0 0 "No DNS AAA records hav
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -4167,7 +4512,7 @@ if($dnscnamereccounter.__count -le 0) { WriteWordLine 0 0 "No DNS CNAME records 
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -4206,7 +4551,7 @@ if($dnsmxreccounter.__count -le 0) { WriteWordLine 0 0 "No DNS MX records have b
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -4245,7 +4590,7 @@ if($dnsnsreccounter.__count -le 0) { WriteWordLine 0 0 "No DNS NS records have b
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -4286,7 +4631,7 @@ if($dnssoareccounter.__count -le 0) { WriteWordLine 0 0 "No DNS SOA records have
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -4333,7 +4678,7 @@ if($nssimpleaclCounter.__count -le 0) { WriteWordLine 0 0 "No Simple ACL has bee
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             }
@@ -4372,7 +4717,7 @@ if($nsaclCounter.__count -le 0) { WriteWordLine 0 0 "No Extended ACL has been co
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             }
@@ -4426,7 +4771,7 @@ if ($AUTHLDAPPOLH.Length -gt 0) {
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
         }
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     FindWordDocumentEnd;
 
     }
@@ -4480,7 +4825,7 @@ foreach ($authactldap in $authactsldap) {
         Format = -235; ## IB - Word constant for Light List Accent 5
     }
     ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -NoGridLines -List;
+    $Table = AddWordTable @Params -List;
 
 	FindWordDocumentEnd;
 	$TableRange = $Null
@@ -4524,7 +4869,7 @@ if ($AUTHRADIUSPOLH.Length -gt 0) {
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
         }
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     FindWordDocumentEnd;
 }
 
@@ -4565,7 +4910,7 @@ foreach ($authactradius in $authactsradius) {
         Format = -235; ## IB - Word constant for Light List Accent 5
     }
     ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -NoGridLines -List;
+    $Table = AddWordTable @Params -List;
 
 	FindWordDocumentEnd;
 	$TableRange = $Null
@@ -4617,7 +4962,7 @@ foreach ($ContentSwitch in $csvservers) {
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
     }
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
 
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
@@ -4656,7 +5001,7 @@ foreach ($ContentSwitch in $csvservers) {
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
 
             FindWordDocumentEnd;
             $Table = $null
@@ -4687,7 +5032,7 @@ foreach ($ContentSwitch in $csvservers) {
         Format = -235; ## IB - Word constant for Light List Accent 5
     }
     ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -NoGridLines -List;
+    $Table = AddWordTable @Params -List;
 
 	FindWordDocumentEnd;
 	$TableRange = $Null
@@ -4720,80 +5065,87 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
         $CurrentRowIndex++;
         $lbvservername = $LoadBalancer.name
         Write-Verbose "$(Get-Date): `tLoad Balancer $CurrentRowIndex/$($lbcount) $lbvservername"   
-        WriteWordLine 2 0 "Load Balancer $lbvservername";
+        WriteWordLine 2 0 "Load Balancer: $lbvservername";
 
         $lbvserverbindings = Get-vNetScalerObject -ResourceType lbvserver_binding -Name $Loadbalancer.Name;
 
-        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
-        ## IB - command will be about 400 characters wide!
-        $Params = $null
-        $Params = @{
-            Hashtable = @{
-                ## IB - This table will only have 1 row so create the nested hashtable inline
-                State = $LoadBalancer.downstateflush;
-                Protocol = $LoadBalancer.servicetype;
-                Port = $LoadBalancer.port;
-                IP = $LoadBalancer.ipv46;
-                Persistency = $LoadBalancer.persistencetype;
-                TrafficDomain = $LoadBalancer.td;
-                Method = $LoadBalancer.lbmethod;
-                ClientTimeOut = $LoadBalancer.clttimeout;
-            }
-            Columns = "State","Protocol","Port","IP","Persistency","TrafficDomain","Method","ClientTimeOut";
-            Headers = "State","Protocol","Port","IP","Persistency","Traffic Domain","Method","Client Time-Out";
-            Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
-            AutoFit = $wdAutoFitContent;
-        }
-        $Table = AddWordTable @Params -NoGridLines;
-        #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
+            ## IB - Use an array of hashtable to store the rows
+        [System.Collections.Hashtable[]] $LBSRVH = @(
+        @{ Description = "Description"; Value = "Configuration"; }
+        @{ Description = "State"; Value = $LoadBalancer.downstateflush; }
+        @{ Description = "Protocol"; Value = $LoadBalancer.servicetype; }
+        @{ Description = "Port"; Value = $LoadBalancer.port; }
+        @{ Description = "IP"; Value = $LoadBalance.ipv46; }
+        @{ Description = "Persistency"; Value = $LoadBalancer.persistencetype; }
+        @{ Description = "Traffic Domain"; Value = $LoadBalancer.td; }
+        @{ Description = "Method"; Value = $LoadBalancer.lbmethod; }
+        @{ Description = "Client Time-out"; Value = $LoadBalancer.clttimeout; }
+    );
 
-        FindWordDocumentEnd;
-        WriteWordLine 0 0 " "
+    ## IB - Create the parameters to pass to the AddWordTable function
+    $Params = $null
+    $Params = @{
+        Hashtable = $LBSRVH;
+        Columns = "Description","Value";
+        AutoFit = $wdAutoFitContent
+        Format = -235; ## IB - Word constant for Light List Accent 5
+    }
+    ## IB - Add the table to the document, splatting the parameters
+    $Table = AddWordTable @Params -List;
+    ## IB - Set the header background and bold font
+    #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
+
+	FindWordDocumentEnd;
+	$TableRange = $Null
+	$Table = $Null
+    $LBSRVH = $Null
+    WriteWordLine 0 0 " "
  
         ##Services Table
         WriteWordLine 3 0 "Service and Service Group"
         WriteWordLine 0 0 " "
-
+        WriteWordLine 4 0 "Services"
+        WriteWordLine 0 0 " "
         #If No Services then record that there are none
+        $lbserverservices = ""
         $lbserverservices = $lbvserverbindings.lbvserver_service_binding
-        If (!$lbserverservices){
+        If (IsNull($lbserverservices)){
          WriteWordLine 0 0 "No Services are bound to the virtual server."
-         WriteWordLine 0 0 " "
-        }
-
-        #If No Service Groups then record that there are none
-        $lbserverservicegroups = $lbvserverbindings.lbvserver_servicegroup_binding
-        If (!$lbserverservicegroups){
-         WriteWordLine 0 0 "No Service Groups are bound to the virtual server."
-         WriteWordLine 0 0 " "
-        }
-
-        
-        If ($lbvserverbindings.lbvserver_service_binding.count -gt 0){
-
+ 
+        } Else {
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $LoadBalancerServices = @();
 
-            foreach ($lbvservicebind in $lbvserverbindings.lbvserver_service_binding) {
-                    $LoadBalancerServices += @{ Service = $lbvservicebind.servicename;}
+            foreach ($lbvservicebind in $lbserverservices) {
+                    $LoadBalancerServices += @{ ServiceName = $lbvservicebind.servicename;}
                 }
         
             ## IB - Create the parameters to pass to the AddWordTable function
             $Params = $null
             $Params = @{
                 Hashtable = $LoadBalancerServices;
+                Columns = "ServiceName";
+                Headers = "Service Name";
                 AutoFit = $wdAutoFitContent;
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
             FindWordDocumentEnd;
             $Table = $null
-            } else { WriteWordLine 0 0 "No Services are bound to the virtual server."}
-
-        If ($lbvserverbindings.lbvserver_servicegroup_binding.count -gt 0){
+            WriteWordLine 0 0 " "
+            }
+        WriteWordLine 4 0 "Service Groups"
+        WriteWordLine 0 0 " "
+        #If No Service Groups then record that there are none
+        $lbserverservicegroups = ""
+        $lbserverservicegroups = $lbvserverbindings.lbvserver_servicegroup_binding
+        If (IsNull($lbserverservicegroups)){
+         WriteWordLine 0 0 "No Service Groups are bound to the virtual server."
+         WriteWordLine 0 0 " "
+        } Else {
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $LoadBalancerServices = @();
@@ -4806,17 +5158,19 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
             $Params = $null
             $Params = @{
                 Hashtable = $LoadBalancerServices;
+                Columns = "Servicegroup";
+                Headers = "Service Group Name";
                 AutoFit = $wdAutoFitContent;
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
             FindWordDocumentEnd;
             $Table = $null
-            } else { WriteWordLine 0 0 "No Service Groups are bound to the virtual server."}
-
+            WriteWordLine 0 0 " "
+            }
     WriteWordLine 0 0 " "
     WriteWordLine 3 0 "Policies"
     WriteWordLine 0 0 " "
@@ -4832,11 +5186,13 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
             $Params = $null
             $Params = @{
                 Hashtable = $LoadBalancerrespolicies;
+                Columns = "Responderpolicy";
+                Headers = "Responder Policy Name";
                 AutoFit = $wdAutoFitContent;
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
             FindWordDocumentEnd;
@@ -4852,17 +5208,20 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
             [System.Collections.Hashtable[]] $LoadBalancerrwpolicies = @();
             foreach ($lbrwpolicy in $lbvserverbindings.lbvserver_rewritepolicy_binding) {
                     $LoadBalancerrwpolicies += @{ Rewritepolicy = $lbrwpolicy.policyname;}
+                    
                 }
         
             ## IB - Create the parameters to pass to the AddWordTable function
             $Params = $null
             $Params = @{
                 Hashtable = $LoadBalancerrwpolicies;
+                Columns = "Rewritepolicy";
+                Headers = "Rewrite Policy Name";
                 AutoFit = $wdAutoFitContent;
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
             FindWordDocumentEnd;
@@ -4893,7 +5252,7 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
             }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
         FindWordDocumentEnd;
         WriteWordLine 0 0 " "
         $Table = $null
@@ -4913,7 +5272,7 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
         @{ Description = "Authentication virtual server name"; Value = $LoadBalancer.authnvsname; }
         @{ Description = "Name of the Authentication profile"; Value = $LoadBalance.authnprofile; }
         @{ Description = "User authentication with HTTP 401"; Value = $LoadBalancer.authn401; }
-        @{ Description = "Time period a persistence session"; Value = $LoadBalancer.timeout; }
+        @{ Description = "Backup Persistence duration"; Value = $LoadBalancer.timeout; }
         @{ Description = "Backup persistence type"; Value = $LoadBalancer.persistencebackup; }
         @{ Description = "Time period a backup persistence session"; Value = $LoadBalancer.backuppersistencetimeout; }
         @{ Description = "Use priority queuing"; Value = $LoadBalancer.pq; }
@@ -4922,6 +5281,8 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
         @{ Description = "Use Layer 2 parameter"; Value = $LoadBalancer.l2conn; }
         @{ Description = "How the NetScaler appliance responds to ping requests"; Value = $LoadBalancer.icmpvsrresponse; }
         @{ Description = "Route cacheable requests to a cache redirection server"; Value = $LoadBalancer.cacheable; }
+        @{ Description = "Redirect Non-SSL Connections from port"; Value = $LoadBalancer.redirectfromport; }
+        @{ Description = "Redirect Non-SSL Connections to URL"; Value = $LoadBalancer.httpsredirecturl; }
     );
 
     ## IB - Create the parameters to pass to the AddWordTable function
@@ -4933,7 +5294,7 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
         Format = -235; ## IB - Word constant for Light List Accent 5
     }
     ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -NoGridLines -List;
+    $Table = AddWordTable @Params -List;
     ## IB - Set the header background and bold font
     #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -4979,11 +5340,11 @@ if($crservercounter.__count -le 0) { WriteWordLine 0 0 "No Cache Redirection has
                 CLTTIEMOUT = $crserver.clttimeout;
             }
             Columns = "PROT","IP","PORT","CACHETYPE","REDIRECT","CLTTIEMOUT";
-            Headers = "PROT","IP","Port","CACHETYPE","REDIRECT","CLTTIEMOUT";
+            Headers = "Protocol","IP","Port","Cache Type","Redirect","Client Time-out";
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
         }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
 
         FindWordDocumentEnd;
         WriteWordLine 0 0 " "
@@ -5014,7 +5375,7 @@ if($servicescounter.__count -le 0) { WriteWordLine 0 0 "No Services have been co
         $CurrentRowIndex++;
         $servicename = $Service.name
         Write-Verbose "$(Get-Date): `tService $CurrentRowIndex/$($servicescount) $servicename"     
-        WriteWordLine 2 0 "Service $servicename"
+        WriteWordLine 2 0 "Service: $servicename"
         WriteWordLine 0 0 " "
 
         ## IB - Create parameters for the hashtable so that we can splat them otherwise the
@@ -5035,7 +5396,7 @@ if($servicescounter.__count -le 0) { WriteWordLine 0 0 "No Services have been co
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
         }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
 
         FindWordDocumentEnd;
         WriteWordLine 0 0 " "
@@ -5050,7 +5411,7 @@ if($servicescounter.__count -le 0) { WriteWordLine 0 0 "No Services have been co
 
         ## IB - Iterate over all Service bindings (uses new function)
         foreach ($SVCBind in $svcmonitorbinds) {
-            $ServiceMonitors += @{ Monitor = $SVCBind.monitor_name; }
+            $ServiceMonitors += @{ Monitor = $SVCBind.monitor_name; Weight = $SVCBind.weight; }
         } # end foreach
 
         if ($ServiceMonitors.Length -gt 0) {
@@ -5062,7 +5423,7 @@ if($servicescounter.__count -le 0) { WriteWordLine 0 0 "No Services have been co
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
                 
@@ -5099,10 +5460,16 @@ if($servicescounter.__count -le 0) { WriteWordLine 0 0 "No Services have been co
 			@{ Description = "Enable TCP buffering"; Value = $service.tcpb ; }
             @{ Description = "Enable compression"; Value = $service.cmp }
 			@{ Description = "Maximum bandwidth, in Kbps"; Value = $service.maxbandwidth; }
-			@{ Description = "Sum of weights of the monitors"; Value = $service.monthreshold ; }
-			@{ Description = "Initial state of the service"; Value = $service.svrstate ; }
+			@{ Description = "Monitor Threshold"; Value = $service.monthreshold ; }
+			@{ Description = "Initial state of the service"; Value = $service.state ; }
 			@{ Description = "Perform delayed clean-up"; Value = $service.downstateflush ; }
 			@{ Description = "Logging of AppFlow information"; Value = $service.appflowlog; }
+            @{ Description = "HTTP Profile Name"; Value = $service.httpprofilename ; }
+            @{ Description = "TCP Profile Name"; Value = $service.tcpprofilename ; }
+            @{ Description = "Network Profile Name"; Value = $service.netprofile ; }
+            @{ Description = "Traffic Domain"; Value = $service.td ; }
+            
+
         );
 
         ## IB - Create the parameters to pass to the AddWordTable function
@@ -5114,7 +5481,7 @@ if($servicescounter.__count -le 0) { WriteWordLine 0 0 "No Services have been co
             Format = -235; ## IB - Word constant for Light List Accent 5
         }
         ## IB - Add the table to the document, splatting the parameters
-        $Table = AddWordTable @Params -NoGridLines -List;
+        $Table = AddWordTable @Params -List;
 
 		FindWordDocumentEnd;
 		$TableRange = $Null
@@ -5156,6 +5523,7 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
                 ## IB - This table will only have 1 row so create the nested hashtable inline
                 Protocol = $Servicegroup.servicetype;
                 Port = $Servicegroup.port;
+                TD = $Servicegroup.td;
                 MaximumClients = $Servicegroup.maxclient;
                 MaximumRequests = $Servicegroup.maxreq;
             }
@@ -5164,7 +5532,7 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
         }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
 
         FindWordDocumentEnd;
         WriteWordLine 0 0 " "
@@ -5191,7 +5559,7 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
                 
@@ -5224,7 +5592,7 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
                 
@@ -5260,10 +5628,13 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
 			@{ Description = "Enable TCP buffering"; Value = $service.tcpb ; }
             @{ Description = "Enable compression"; Value = $service.cmp }
 			@{ Description = "Maximum bandwidth, in Kbps"; Value = $service.maxbandwidth; }
-			@{ Description = "Sum of weights of the monitors"; Value = $service.monthreshold ; }
+			@{ Description = "Monitor Threshold"; Value = $service.monthreshold ; }
 			@{ Description = "Initial state of the service"; Value = $service.servicegroupeffectivestate ; }
 			@{ Description = "Perform delayed clean-up"; Value = $service.downstateflush ; }
 			@{ Description = "Logging of AppFlow information"; Value = $service.appflowlog; }
+            @{ Description = "HTTP Profile Name"; Value = $service.httpprofilename ; }
+            @{ Description = "TCP Profile Name"; Value = $service.tcpprofilename ; }
+            @{ Description = "Network Profile Name"; Value = $service.netprofilename ; }
         );
 
         ## IB - Create the parameters to pass to the AddWordTable function
@@ -5275,7 +5646,7 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
             Format = -235; ## IB - Word constant for Light List Accent 5
         }
         ## IB - Add the table to the document, splatting the parameters
-        $Table = AddWordTable @Params -NoGridLines -List;
+        $Table = AddWordTable @Params -List;
 
 		FindWordDocumentEnd;
 		$TableRange = $Null
@@ -5322,7 +5693,7 @@ if($servercounter.__count -le 0) { WriteWordLine 0 0 "No Server has been configu
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params -List;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -5352,7 +5723,7 @@ $gslbparameters = Get-vNetScalerObject -Container config -Object gslbparameter;
     @{ Column1 = "RTT Tolerance"; Column2 = $gslbparameters.rtttolerance; }
     @{ Column1 = "IPv4 LDNS Mask"; Column2 = $gslbparameters.ldnsmask; }
     @{ Column1 = "IPv6 LDNS Mask"; Column2 = $gslbparameters.v6ldnsmasklen; }
-    @{ Column1 = "LDNS Probe Order"; Column2 = $gslbparameters.ldnsprobeorder; }
+    @{ Column1 = "LDNS Probe Order"; Column2 = $gslbparameters.ldnsprobeorder -Join ", "; }
     @{ Column1 = "Drop LDNS Requests"; Column2 = $gslbparameters.dropldnsreq; }
  
 );
@@ -5389,7 +5760,7 @@ if($gslbvservercount -le 0) { WriteWordLine 0 0 "No GSLB Virtual Servers have be
 foreach ($gslbvserver in $gslbvservers) {
 
 $gslbvservername = $gslbvserver.name
-
+WriteWordLine 0 0 " "
 WriteWordLine 3 0 "GSLB Virtual Server: $gslbvservername"
 WriteWordLine 0 0 " "
 ## IB - Create an array of hashtables to store our columns.
@@ -5428,6 +5799,8 @@ WriteWordLine 0 0 " "
     @{ Column1 = "Comment"; Column2 = $gslbvserver.comment; }
     @{ Column1 = "vServer Bind Service IP"; Column2 = $gslbvserver.vsvrbindsvcip; }
     @{ Column1 = "vServer Bind Service Port"; Column2 = $gslbvserver.vsvrbindsvcport; }
+    @{ Column1 = "EDNS Client Subnet"; Column2 = $gslbvserver.ecs; }
+    @{ Column1 = "Validate ECS Addresses"; Column2 = $gslbvserver.ecsaddrvalidation; }
     
     #TODO: Spillover Policies
 
@@ -5451,7 +5824,7 @@ $Table = $null
 
 
 #region GSLB vServer Service Bindings
-
+WriteWordLine 0 0 " "
 WriteWordLine 4 0 "Services"
 WriteWordLine 0 0 " "
 
@@ -5479,7 +5852,7 @@ $GSLBServiceBinds = Get-vNetScalerObject -ResourceType gslbvserver_gslbservice_b
             }
             ## IB - Add the table to the document, splatting the parameters
             FindWordDocumentEnd;
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -5522,7 +5895,7 @@ WriteWordLine 0 0 " "
             }
             ## IB - Add the table to the document, splatting the parameters
             FindWordDocumentEnd;
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -5639,7 +6012,7 @@ $GSLBMonitorBinds = Get-vNetScalerObject -ResourceType gslbservice_lbmonitor_bin
             }
             ## IB - Add the table to the document, splatting the parameters
             FindWordDocumentEnd;
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -5685,7 +6058,7 @@ $GSLBDNSViewBinds = Get-vNetScalerObject -ResourceType gslbservice_dnsview_bindi
             }
             ## IB - Add the table to the document, splatting the parameters
             FindWordDocumentEnd;
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -5870,7 +6243,7 @@ $SSLCiphers = Get-vNetScalerObject -Container config -Object sslcipher;
             }
             ## IB - Add the table to the document, splatting the parameters
             FindWordDocumentEnd;
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -5943,7 +6316,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -6017,7 +6390,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -6095,7 +6468,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -6196,7 +6569,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -6238,7 +6611,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6285,7 +6658,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6332,7 +6705,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6379,7 +6752,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6426,7 +6799,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6473,7 +6846,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6520,7 +6893,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6567,7 +6940,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6614,7 +6987,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6677,7 +7050,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -6719,7 +7092,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -6781,7 +7154,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -6827,23 +7200,23 @@ WriteWordLine 0 0 " "
     ## IB - Each hashtable is a separate row in the table!
     @{ Column1 = "Description"; Column2 = "Value"; }
     @{ Column1 = "Profile Type"; Column2 = $fwprofile.type; }
-    @{ Column1 = "StartURL Action"; Column2 = $fwprofile.starturlaction -join ","; }
-    @{ Column1 = "Content Type Action"; Column2 = $fwprofile.contenttypeaction -join ","; }
-    @{ Column1 = "Inspect Content Types"; Column2 = $fwprofile.inspectcontenttypes -join ","; }
+    @{ Column1 = "StartURL Action"; Column2 = $fwprofile.starturlaction -join ", "; }
+    @{ Column1 = "Content Type Action"; Column2 = $fwprofile.contenttypeaction -join ", "; }
+    @{ Column1 = "Inspect Content Types"; Column2 = $fwprofile.inspectcontenttypes -join ", "; }
     @{ Column1 = "Start URL Closure"; Column2 = $fwprofile.starturlclosure; }
     @{ Column1 = "Deny URL Action"; Column2 = $fwprofile.denyurlaction -join ","; }
     @{ Column1 = "Referer Header Check"; Column2 = $fwprofile.refererheadercheck; }
-    @{ Column1 = "Cookie Consistency Action"; Column2 = $fwprofile.cookieconsistencyaction -join ","; }
+    @{ Column1 = "Cookie Consistency Action"; Column2 = $fwprofile.cookieconsistencyaction -join ", "; }
     @{ Column1 = "Cookie Transformation"; Column2 = $fwprofile.cookietransforms; }
     @{ Column1 = "Cookie Encryption"; Column2 = $fwprofile.cookieencryption; }
     @{ Column1 = "Proxy Cookies"; Column2 = $fwprofile.cookieproxying; }
     @{ Column1 = "Add Cookie Flags"; Column2 = $fwprofile.addcookieflags; }
     @{ Column1 = "Field Consistency Check"; Column2 = $fwprofile.fieldconsistencyaction; }
-    @{ Column1 = "Cross Site Request Forgery Tag Check"; Column2 = $fwprofile.csrftagaction -join ","; }
+    @{ Column1 = "Cross Site Request Forgery Tag Check"; Column2 = $fwprofile.csrftagaction -join ", "; }
     @{ Column1 = "XSS (Cross-Site Scripting) Check"; Column2 = $fwprofile.crosssitescriptingaction; }
     @{ Column1 = "Transform Cross-Site Scripts"; Column2 = $fwprofile.crosssitescriptingtransformunsafehtml; }
     @{ Column1 = "XSS - Check complete URLs"; Column2 = $fwprofile.crosssitescriptingcheckcompleteurls; }
-    @{ Column1 = "SQL Injection Action"; Column2 = $fwprofile.sqlinjectionaction -join ","; }
+    @{ Column1 = "SQL Injection Action"; Column2 = $fwprofile.sqlinjectionaction -join ", "; }
     @{ Column1 = "SQL Injection - Transform Special Characters"; Column2 = $fwprofile.sqlinjectiontransformspecialchars; }
     @{ Column1 = "SQL Injection - Only check fields with SQL Characters"; Column2 = $fwprofile.sqlinjectiononlycheckfieldswithsqlchars; }
     @{ Column1 = "SQL Injection Type"; Column2 = $fwprofile.sqlinjectiontype; }
@@ -6856,8 +7229,8 @@ WriteWordLine 0 0 " "
     @{ Column1 = "Buffer Overflow - Maximum URL Length"; Column2 = $fwprofile.bufferoverflowmaxurllength; }
     @{ Column1 = "Buffer Overflow - Maximum Header Length"; Column2 = $fwprofile.bufferoverflowmaxheaderlength; }
     @{ Column1 = "Buffer Overflow - Maximum Cookie Length"; Column2 = $fwprofile.bufferoverflowmaxcookielength; }
-    @{ Column1 = "Credit Card Action"; Column2 = $fwprofile.creditcardaction -join ","; }
-    @{ Column1 = "Credit Card Types to protect"; Column2 = $fwprofile.creditcard -join ","; }
+    @{ Column1 = "Credit Card Action"; Column2 = $fwprofile.creditcardaction -join ", "; }
+    @{ Column1 = "Credit Card Types to protect"; Column2 = $fwprofile.creditcard -join ", "; }
     @{ Column1 = "Maximum number of Credit Cards per page"; Column2 = $fwprofile.creditcardmaxallowed; }
     @{ Column1 = "X-Out Credit Card Numbers"; Column2 = $fwprofile.creditcardxout; }
     @{ Column1 = "Log Credit Card Numbers when matched"; Column2 = $fwprofile.dosecurecreditcardlogging; }
@@ -6865,21 +7238,21 @@ WriteWordLine 0 0 " "
     @{ Column1 = "Trace Status"; Column2 = $fwprofile.trace; }
     @{ Column1 = "Request Content Type"; Column2 = $fwprofile.requestcontenttype; }
     @{ Column1 = "Response Content Type"; Column2 = $fwprofile.responsecontenttype; }
-    @{ Column1 = "XML Denial of Service Action"; Column2 = $fwprofile.xmldosaction -join ","; }
-    @{ Column1 = "XML Format Action"; Column2 = $fwprofile.xmlformataction -join "," ; }
-    @{ Column1 = "XML SQL Injection Action"; Column2 = $fwprofile.xmlsqlinjectionaction -join ","; }
+    @{ Column1 = "XML Denial of Service Action"; Column2 = $fwprofile.xmldosaction -join ", "; }
+    @{ Column1 = "XML Format Action"; Column2 = $fwprofile.xmlformataction -join ", " ; }
+    @{ Column1 = "XML SQL Injection Action"; Column2 = $fwprofile.xmlsqlinjectionaction -join ", "; }
     @{ Column1 = "XML SQL Injection - Only check fields with SQL characters"; Column2 = $fwprofile.xmlsqlinjectiononlycheckfieldswithsqlchars; }
     @{ Column1 = "XML SQL Injection - Type"; Column2 = $fwprofile.xmlsqlinjectiontype; }
     @{ Column1 = "XML SQL Injection - Check fields with SQL Wild characters"; Column2 = $fwprofile.xmlsqlinjectionchecksqlwildchars; }
     @{ Column1 = "XML SQL Injection - Parse Comments"; Column2 = $fwprofile.xmlsqlinjectionparsecomments; }
-    @{ Column1 = "XML XSS (Cross-Site Scripting) Action"; Column2 = $fwprofile.xmlxssaction -join ","; }
-    @{ Column1 = "XML WSI (Web Services Interoperability) Action"; Column2 = $fwprofile.xmlwsiaction -join ","; }
-    @{ Column1 = "XML Attachments Action"; Column2 = $fwprofile.xmlattachmentaction -join ","; }
-    @{ Column1 = "XML validation Action"; Column2 = $fwprofile.xmlvalidationaction -join ","; }
+    @{ Column1 = "XML XSS (Cross-Site Scripting) Action"; Column2 = $fwprofile.xmlxssaction -join ", "; }
+    @{ Column1 = "XML WSI (Web Services Interoperability) Action"; Column2 = $fwprofile.xmlwsiaction -join ", "; }
+    @{ Column1 = "XML Attachments Action"; Column2 = $fwprofile.xmlattachmentaction -join ", "; }
+    @{ Column1 = "XML validation Action"; Column2 = $fwprofile.xmlvalidationaction -join ", "; }
     @{ Column1 = "XML Error Object Name"; Column2 = $fwprofile.xmlerrorobject; }
     @{ Column1 = "Custom Settings"; Column2 = $fwprofile.customsettings; }
     @{ Column1 = "Signatures"; Column2 = $fwprofile.signatures; }
-    @{ Column1 = "XML SOAP Fault Action"; Column2 = $fwprofile.xmlsoapfaultaction -join ","; }
+    @{ Column1 = "XML SOAP Fault Action"; Column2 = $fwprofile.xmlsoapfaultaction -join ", "; }
     @{ Column1 = "Use HTML Error Object"; Column2 = $fwprofile.usehtmlerrorobject; }
     @{ Column1 = "Error URL"; Column2 = $fwprofile.errorurl; }
     @{ Column1 = "HTML Error Object Name"; Column2 = $fwprofile.htmlerrorobject; }
@@ -6922,7 +7295,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -6979,7 +7352,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -7036,7 +7409,7 @@ ForEach ($LINE in $SetVpnParameter) {
     }
 
     ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     }
 
 FindWordDocumentEnd;
@@ -7098,7 +7471,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -7126,7 +7499,7 @@ $Params = @{
 }
 
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 FindWordDocumentEnd;
 
 
@@ -7158,7 +7531,7 @@ $Params = @{
 }
 
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 FindWordDocumentEnd;
 
 
@@ -7195,7 +7568,7 @@ if($vpnglobalstascounter -le 0) { WriteWordLine 0 0 "No Global Secure Ticket Aut
         AutoFit = $wdAutoFitContent;
     }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             }
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -7230,7 +7603,7 @@ if($vpnglobalappcontrollercounter -le 0) { WriteWordLine 0 0 "No Global App Cont
         Format = -235; ## IB - Word constant for Light List Accent 5
         }
     ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     }
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -7269,7 +7642,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -7323,7 +7696,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -7336,6 +7709,7 @@ $Table = $null
 #endregion NetScaler Gateway Intranet Applications
 
 #region NetScaler Gateway Bookmarks
+WriteWordLine 0 0 " "
 WriteWordLine 2 0 "NetScaler Gateway Bookmarks";
 WriteWordLine 0 0 " ";
 $vpnurlscount = Get-vNetScalerObjectCount -Container config -Object vpnurl;
@@ -7378,7 +7752,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -7389,6 +7763,1546 @@ $Table = $null
 }
 }
 #endregion NetScaler Gateway Bookmarks
+
+#region NetScaler Gateway Portal Themes
+WriteWordLine 0 0 " "
+WriteWordLine 2 0 "NetScaler Gateway Portal Themes";
+WriteWordLine 0 0 " ";
+
+$vpnportalthemes = Get-vNetScalerObject -Container config -Object vpnportaltheme;
+    
+    ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $THEMESH = @();
+
+    foreach ($vpnportaltheme in $vpnportalthemes) {
+        If ($vpnportaltheme.basetheme) {
+        $THEMESH += @{ 
+            NAME = $vpnportaltheme.name; 
+            BASETHEME = $vpnportaltheme.basetheme;
+            
+        }
+        } Else {
+        $THEMESH += @{ 
+            NAME = $vpnportaltheme.name; 
+            BASETHEME = "(BUILTIN)";
+        }
+
+        } #end else
+    } #end foreach
+    $Params = $null
+    $Params = @{
+        Hashtable = $THEMESH;
+        Columns = "NAME","BASETHEME";
+        Headers = "Theme Name","Base Theme";
+        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+        AutoFit = $wdAutoFitContent;
+    }
+    ## IB - Add the table to the document, splatting the parameters
+    $Table = AddWordTable @Params;
+            
+FindWordDocumentEnd;
+WriteWordLine 0 0 " "
+$Table = $null
+
+#Iterate through each portal theme to extract details
+
+foreach ($vpnportaltheme in $vpnportalthemes) {
+  $portalthemename = $vpnportaltheme.name
+if ($vpnportaltheme.basetheme) {
+  WriteWordLine 3 0 "Portal Theme: $portalthemename";
+  WriteWordLine 0 0 " ";
+
+  $customcssfile = Get-vNetScalerFile -FileName "custom.css" -FileLocation "/var/netscaler/logon/themes/$portalthemename/css"
+  $themecssfile = Get-vNetScalerFile -FileName "theme.css" -FileLocation "/var/netscaler/logon/themes/$portalthemename/css"
+  $enxmlfile = Get-vNetScalerFile -FileName "en.xml" -FileLocation "/var/netscaler/logon/themes/$portalthemename/resources"
+  $frxmlfile = Get-vNetScalerFile -FileName "fr.xml" -FileLocation "/var/netscaler/logon/themes/$portalthemename/resources"
+  $jaxmlfile = Get-vNetScalerFile -FileName "ja.xml" -FileLocation "/var/netscaler/logon/themes/$portalthemename/resources"
+  $dexmlfile = Get-vNetScalerFile -FileName "de.xml" -FileLocation "/var/netscaler/logon/themes/$portalthemename/resources"
+  $esxmlfile = Get-vNetScalerFile -FileName "es.xml" -FileLocation "/var/netscaler/logon/themes/$portalthemename/resources"
+
+
+  $customcsscontents = [System.Text.Encoding]::ASCII.Getstring([System.convert]::FromBase64String($customcssfile.filecontent))
+  $themecsscontents = [System.Text.Encoding]::ASCII.Getstring([System.convert]::FromBase64String($themecssfile.filecontent))
+  [xml]$enxmlcontents = [System.Text.Encoding]::UTF8.Getstring([System.convert]::FromBase64String($enxmlfile.filecontent))
+  [xml]$dexmlcontents = [System.Text.Encoding]::UTF8.Getstring([System.convert]::FromBase64String($dexmlfile.filecontent))
+  [xml]$esxmlcontents = [System.Text.Encoding]::UTF8.Getstring([System.convert]::FromBase64String($esxmlfile.filecontent))
+  [xml]$jaxmlcontents = [System.Text.Encoding]::UTF8.Getstring([System.convert]::FromBase64String($jaxmlfile.filecontent))
+  [xml]$frxmlcontents = [System.Text.Encoding]::UTF8.Getstring([System.convert]::FromBase64String($frxmlfile.filecontent))
+
+
+
+
+  #Look and Feel - Home Page
+  #Body Background Colour
+  $PTBackgroundColour = Get-AttributeFromCSS -SearchPattern "body {" -Attribute "background-color" -Lines 1 -Inputstring $customcsscontents
+  #Navigation Pane Background Colour
+  $PTNavPaneBackgroundColour = Get-AttributeFromCSS -SearchPattern ".website_section#homepage b:after {" -Attribute "background" -Lines 1 -Inputstring $customcsscontents
+  #Navigation Pane Font Colour
+  $PTNavPaneFontColour = Get-AttributeFromCSS -SearchPattern ".nav {" -Attribute "color" -Lines 1 -Inputstring $customcsscontents
+  #Navigation Selected Tab Background Color	
+  $PTNavSelectedTabBackgroundColour = Get-AttributeFromCSS -SearchPattern ".nav .primary li.selected {" -Attribute "background-color :" -Lines 1 -Inputstring $customcsscontents
+  #Navigation Selected Tab Font Color
+  $PTNavSelectedTabFontColour = Get-AttributeFromCSS -SearchPattern ".nav .primary li.selected {" -Attribute " color :" -Lines 1 -Inputstring $customcsscontents
+  #Content Pane Background Color
+  $PTContentPaneBackgroundColour = Get-AttributeFromCSS -SearchPattern "#commonBox {" -Attribute "background" -Lines 1 -Inputstring $customcsscontents
+  #Button Background Color
+  $PTButtonBackgroundColour = Get-AttributeFromCSS -SearchPattern "input.Apply_Cancel_OK {" -Attribute " background:" -Lines 1 -Inputstring $customcsscontents
+  #Content Pane Font Color
+  $PTContentPaneFontColour = Get-AttributeFromCSS -SearchPattern ".website_section .NUI_Icon table td.cell3 a.bookmark_icon_anchor {" -Attribute "color" -Lines 1 -Inputstring $customcsscontents
+  #Content Pane Title Font Color
+  $PTContentPaneTitleFontColour = Get-AttributeFromCSS -SearchPattern "#homepage b {" -Attribute "color" -Lines 1 -Inputstring $customcsscontents
+  #Bookmarks Description Font Color
+  $PTBookmarksDescriptionFontColour = Get-AttributeFromCSS -SearchPattern ".personal_fileshare_section .NUI_Icon table td span.descr {" -Attribute "color" -Lines 1 -Inputstring $customcsscontents
+  #Show Enterprise Websites Section
+  $PTShowEnterpriseWebsites = Get-AttributeFromCSS -SearchPattern ".enterprise_website_section {" -Attribute "display" -Lines 1 -Inputstring $customcsscontents
+  If ($PTShowEnterpriseWebsites -eq "none") { $PTShowEnterpriseWebsites = "Disabled" } Else { $PTShowEnterpriseWebsites = "Enabled" }
+  #Show Personal Websites Section
+  $PTShowPersonalWebsites = Get-AttributeFromCSS -SearchPattern ".personal_websites_section {" -Attribute "display" -Lines 1 -Inputstring $customcsscontents
+  If ($PTShowPersonalWebsites -eq "none" ) {$PTShowPersonalWebsites = "Disabled" } Else {$PTShowPersonalWebsites = "Enabled"}
+  #Show File Transfer Tab
+  $PTShowFileTransferTab = Get-AttributeFromCSS -SearchPattern ".files-icon {" -Attribute "display" -Lines 1 -Inputstring $customcsscontents
+  If ($PTShowFileTransferTab -eq "none") {$PTShowFileTransferTab = "Disabled" } Else {$PTShowFileTransferTab = "Enabled"}
+  #Show Enterprise File Shares Section
+  $PTShowEnterpriseFileShares = Get-AttributeFromCSS -SearchPattern ".enterprise_fileshare_section {" -Attribute "display" -Lines 1 -Inputstring $customcsscontents
+  If (($PTShowEnterpriseFileShares -eq "none") -or ($PTShowFileTransferTab -eq "Disabled")) {$PTShowEnterpriseFileShares = "Disabled"} Else {$PTShowEnterpriseFileShares = "Enabled"}
+  #Show Personal File Shares Section
+  $PTShowPersonalFileShares = Get-AttributeFromCSS -SearchPattern ".personal_fileshare_section {" -Attribute "display" -Lines 1 -Inputstring $customcsscontents
+  If (($PTShowPersonalFileShares -eq "none") -or ($PTShowFileTransferTab -eq "Disabled")) {$PTShowPersonalFileShares = "Disabled"} Else {$PTShowPersonalFileShares = "Enabled"}
+
+  #Look and Feel - Common
+  #Background Image
+  $PTBackgroundImage = Get-AttributeFromCSS -SearchPattern "body {" -Attribute "background-image" -Lines 1 -Inputstring $customcsscontents
+  #Header Background Colour
+  $PTHeaderBackgroundColour = Get-AttributeFromCSS -SearchPattern ".header {" -Attribute " background-color :" -Lines 1 -Inputstring $customcsscontents
+  #Header Font Colour
+  $PTHeaderFontColour = Get-AttributeFromCSS -SearchPattern ".header {" -Attribute " color :" -Lines 1 -Inputstring $customcsscontents
+  #Header Border-Bottom Colour
+  $PTHeaderBorderBottomColour = Get-AttributeFromCSS -SearchPattern ".header {" -Attribute "border-bottom" -Lines 1 -Inputstring $customcsscontents
+  #Header Logo
+  $PTHeaderLogo = Get-AttributeFromCSS -SearchPattern ".custom_logo{" -Attribute "background:" -Lines 1 -Inputstring $customcsscontents
+  #Center Logo
+  $PTCenterLogo = Get-AttributeFromCSS -SearchPattern "#logonbox-logoimage {" -Attribute "background-image" -Lines 1 -Inputstring $customcsscontents
+  #Watermark Image
+  $PTWatermarkImage = Get-AttributeFromCSS -SearchPattern "#logonbelt-bottomshadow {" -Attribute "background-image" -Lines 1 -Inputstring $customcsscontents
+  #Form Font Size
+  $PTFormFontSize = Get-AttributeFromCSS -SearchPattern ".form_text {" -Attribute " font-size :" -Lines 1 -Inputstring $customcsscontents
+  #Form Font Colour
+  $PTFormFontColour = Get-AttributeFromCSS -SearchPattern ".form_text  {" -Attribute " color:" -Lines 1 -Inputstring $customcsscontents
+  #Button Image
+  $PTButtonImage = Get-AttributeFromCSS -SearchPattern ".custombutton {" -Attribute "background-image" -Lines 1 -Inputstring $customcsscontents
+  #Button Hover Image
+  $PTButtonHoverImage = Get-AttributeFromCSS -SearchPattern ".custombutton:hover {" -Attribute "background-image" -Lines 1 -Inputstring $customcsscontents
+  #Form Title Font Size
+  $PTFormTitleFontSize = Get-AttributeFromCSS -SearchPattern ".CTX_ContentTitleHeader {" -Attribute "font-size" -Lines 1 -Inputstring $customcsscontents
+  #Form Title Font Colour
+  $PTFormTitleFontColour = Get-AttributeFromCSS -SearchPattern ".CTX_ContentTitleHeader { " -Attribute "color" -Lines 1 -Inputstring $customcsscontents
+  #Form Background Colour
+  $PTFormBackgroundColour = Get-AttributeFromCSS -SearchPattern "#logonbox-innerbox {" -Attribute "background" -Lines 1 -Inputstring $customcsscontents
+  #EULA Title Font Size
+  $PTEULATitleFontSize = Get-AttributeFromCSS -SearchPattern ".eula_title {" -Attribute "font-size" -Lines 1 -Inputstring $customcsscontents
+
+  $test = 2
+
+  #Language
+
+  #region English Strings
+  #Login Page
+  $enLogonPage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $ENPageTitle = $enLogonPage.Title
+  $ENFormTitle = $enLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $ENUserName = $enLogonPage.String | ? {$_.id -eq "User_name"} 
+  $ENPassword = $enLogonPage.String | ? {$_.id -eq "Password"} 
+  $ENPassword2 = $enLogonPage.String | ? {$_.id -eq "Password2"} 
+
+  # Home Page
+  $enPortalPage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
+  $enFTPage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
+  $enBookmark = $enxmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+
+  $ENWebApps = $enPortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
+  $ENEntWebApps = $enBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
+  $ENPersWebApps = $enBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
+  $ENApps = $enPortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
+  $ENFileTrans = $enPortalPage.String | ? {$_.id -eq "id_FileTransfer"}
+  $ENEntFile = $enFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
+  $ENPersFile = $enFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
+  $ENEmail = $enPortalPage.String | ? {$_.id -eq "id_Email"}
+
+  #VPN Connection
+  $enVPNpage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
+  $enVPNpagemac = $enxmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
+  $enVPNWaitmsg = $enVPNPage.String | ? {$_.id -eq "waitingmsg"}
+  $enVPNproxy = $enVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
+  $enVPNnoplugin = $enVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $enVPNnopluginmac = $enVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $enVPNnopluginlinux = $enVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+
+  #EPA Page
+  $enEPApage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
+  $enEPATitle = $enEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
+  $enEPAIntro = $enEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $enEPAPlugin = $enEPApage.String | ? {$_.id -eq "AppINFO"}
+  $enEPADownload = $enEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $enEPAPluginError = $enEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $enEPASoftDownload = $enEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  
+  #EPA Error Page
+  $enEPAErrorpage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
+  $enEPAErrorTitle = $enEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
+  $enEPADeviceReqs = $enEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $enEPAMacError = $enEPApage.String | ? {$_.id -eq "End point analysis failed"}
+  $enEPAErrorMessage = $enEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $enEPAErrorCert = $enEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+
+  #Post EPA Page
+  $enEPAPostpage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
+  $enEPAPostTitle = $enEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
+  $enEPAPostFail = $enEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $enEPAPostSkipped = $enEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  
+  #endregion English Strings
+
+  #region French Strings
+  #Login Page
+  $frLogonPage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $FRPageTitle = $frLogonPage.Title
+  $FRFormTitle = $frLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $frUserName = $frLogonPage.String | ? {$_.id -eq "User_name"} 
+  $frPassword = $frLogonPage.String | ? {$_.id -eq "Password"} 
+  $frPassword2 = $frLogonPage.String | ? {$_.id -eq "Password2"} 
+
+  # Home Page
+  $frPortalPage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
+  $frFTPage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
+  $frBookmark = $frxmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+
+  $frWebApps = $frPortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
+  $frEntWebApps = $frBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
+  $frPersWebApps = $frBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
+  $frApps = $frPortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
+  $frFileTrans = $frPortalPage.String | ? {$_.id -eq "id_FileTransfer"}
+  $frEntFile = $frFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
+  $frPersFile = $frFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
+  $frEmail = $frPortalPage.String | ? {$_.id -eq "id_Email"}
+
+  #VPN Connection
+  $frVPNpage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
+  $frVPNpagemac = $frxmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
+  $frVPNWaitmsg = $frVPNPage.String | ? {$_.id -eq "waitingmsg"}
+  $frVPNproxy = $frVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
+  $frVPNnoplugin = $frVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $frVPNnopluginmac = $frVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $frVPNnopluginlinux = $frVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+
+  #EPA Page
+  $frEPApage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
+  $frEPATitle = $frEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
+  $frEPAIntro = $frEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $frEPAPlugin = $frEPApage.String | ? {$_.id -eq "AppINFO"}
+  $frEPADownload = $frEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $frEPAPluginError = $frEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $frEPASoftDownload = $frEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  
+  #EPA Error Page
+  $frEPAErrorpage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
+  $frEPAErrorTitle = $frEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
+  $frEPADeviceReqs = $frEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $frEPAMacError = $frEPApage.String | ? {$_.id -eq "End point analysis failed"}
+  $frEPAErrorMessage = $frEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $frEPAErrorCert = $frEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+
+  #Post EPA Page
+  $frEPAPostpage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
+  $frEPAPostTitle = $frEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
+  $frEPAPostFail = $frEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $frEPAPostSkipped = $frEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  
+  #endregion French Strings
+
+  #region German Strings
+  #Login Page
+  $deLogonPage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $dePageTitle = $deLogonPage.Title
+  $deFormTitle = $deLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $deUserName = $deLogonPage.String | ? {$_.id -eq "User_name"} 
+  $dePassword = $deLogonPage.String | ? {$_.id -eq "Password"} 
+  $dePassword2 = $deLogonPage.String | ? {$_.id -eq "Password2"} 
+
+  # Home Page
+  $dePortalPage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
+  $deFTPage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
+  $deBookmark = $dexmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+
+  $deWebApps = $dePortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
+  $deEntWebApps = $deBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
+  $dePersWebApps = $deBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
+  $deApps = $dePortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
+  $deFileTrans = $dePortalPage.String | ? {$_.id -eq "id_FileTransfer"}
+  $deEntFile = $deFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
+  $dePersFile = $deFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
+  $deEmail = $dePortalPage.String | ? {$_.id -eq "id_Email"}
+
+  #VPN Connection
+  $deVPNpage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
+  $deVPNpagemac = $dexmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
+  $deVPNWaitmsg = $deVPNPage.String | ? {$_.id -eq "waitingmsg"}
+  $deVPNproxy = $deVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
+  $deVPNnoplugin = $deVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $deVPNnopluginmac = $deVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $deVPNnopluginlinux = $deVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+
+  #EPA Page
+  $deEPApage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
+  $deEPATitle = $deEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
+  $deEPAIntro = $deEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $deEPAPlugin = $deEPApage.String | ? {$_.id -eq "AppINFO"}
+  $deEPADownload = $deEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $deEPAPluginError = $deEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $deEPASoftDownload = $deEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  
+  #EPA Error Page
+  $deEPAErrorpage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
+  $deEPAErrorTitle = $deEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
+  $deEPADeviceReqs = $deEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $deEPAMacError = $deEPApage.String | ? {$_.id -eq "End point analysis failed"}
+  $deEPAErrorMessage = $deEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $deEPAErrorCert = $deEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+
+  #Post EPA Page
+  $deEPAPostpage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
+  $deEPAPostTitle = $deEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
+  $deEPAPostFail = $deEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $deEPAPostSkipped = $deEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  
+  #endregion German Strings
+
+  #region Spanish Strings
+  #Login Page
+  $esLogonPage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $esPageTitle = $esLogonPage.Title
+  $esFormTitle = $esLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $esUserName = $esLogonPage.String | ? {$_.id -eq "User_name"} 
+  $esPassword = $esLogonPage.String | ? {$_.id -eq "Password"} 
+  $esPassword2 = $esLogonPage.String | ? {$_.id -eq "Password2"} 
+
+  # Home Page
+  $esPortalPage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
+  $esFTPage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
+  $esBookmark = $esxmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+
+  $esWebApps = $esPortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
+  $esEntWebApps = $esBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
+  $esPersWebApps = $esBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
+  $esApps = $esPortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
+  $esFileTrans = $esPortalPage.String | ? {$_.id -eq "id_FileTransfer"}
+  $esEntFile = $esFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
+  $esPersFile = $esFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
+  $esEmail = $esPortalPage.String | ? {$_.id -eq "id_Email"}
+
+  #VPN Connection
+  $esVPNpage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
+  $esVPNpagemac = $esxmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
+  $esVPNWaitmsg = $esVPNPage.String | ? {$_.id -eq "waitingmsg"}
+  $esVPNproxy = $esVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
+  $esVPNnoplugin = $esVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $esVPNnopluginmac = $esVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $esVPNnopluginlinux = $esVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+
+  #EPA Page
+  $esEPApage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
+  $esEPATitle = $esEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
+  $esEPAIntro = $esEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $esEPAPlugin = $esEPApage.String | ? {$_.id -eq "AppINFO"}
+  $esEPADownload = $esEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $esEPAPluginError = $esEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $esEPASoftDownload = $esEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  
+  #EPA Error Page
+  $esEPAErrorpage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
+  $esEPAErrorTitle = $esEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
+  $esEPADeviceReqs = $esEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $esEPAMacError = $esEPApage.String | ? {$_.id -eq "End point analysis failed"}
+  $esEPAErrorMessage = $esEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $esEPAErrorCert = $esEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+
+  #Post EPA Page
+  $esEPAPostpage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
+  $esEPAPostTitle = $esEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
+  $esEPAPostFail = $esEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $esEPAPostSkipped = $esEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  
+  #endregion Spanish Strings
+
+  #region Japanese Strings
+  #Login Page
+  $jaLogonPage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $jaPageTitle = $jaLogonPage.Title
+  $jaFormTitle = $jaLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $jaUserName = $jaLogonPage.String | ? {$_.id -eq "User_name"} 
+  $jaPassword = $jaLogonPage.String | ? {$_.id -eq "Password"} 
+  $jaPassword2 = $jaLogonPage.String | ? {$_.id -eq "Password2"} 
+
+  # Home Page
+  $jaPortalPage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
+  $jaFTPage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
+  $jaBookmark = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+
+  $jaWebApps = $jaPortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
+  $jaEntWebApps = $jaBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
+  $jaPersWebApps = $jaBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
+  $jaApps = $jaPortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
+  $jaFileTrans = $jaPortalPage.String | ? {$_.id -eq "id_FileTransfer"}
+  $jaEntFile = $jaFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
+  $jaPersFile = $jaFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
+  $jaEmail = $jaPortalPage.String | ? {$_.id -eq "id_Email"}
+
+  #VPN Connection
+  $jaVPNpage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
+  $jaVPNpagemac = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
+  $jaVPNWaitmsg = $jaVPNPage.String | ? {$_.id -eq "waitingmsg"}
+  $jaVPNproxy = $jaVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
+  $jaVPNnoplugin = $jaVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $jaVPNnopluginmac = $jaVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $jaVPNnopluginlinux = $jaVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+
+  #EPA Page
+  $jaEPApage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
+  $jaEPATitle = $jaEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
+  $jaEPAIntro = $jaEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $jaEPAPlugin = $jaEPApage.String | ? {$_.id -eq "AppINFO"}
+  $jaEPADownload = $jaEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $jaEPAPluginError = $jaEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $jaEPASoftDownload = $jaEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  
+  #EPA Error Page
+  $jaEPAErrorpage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
+  $jaEPAErrorTitle = $jaEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
+  $jaEPADeviceReqs = $jaEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $jaEPAMacError = $jaEPApage.String | ? {$_.id -eq "End point analysis failed"}
+  $jaEPAErrorMessage = $jaEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $jaEPAErrorCert = $jaEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+
+  #Post EPA Page
+  $jaEPAPostpage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
+  $jaEPAPostTitle = $jaEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
+  $jaEPAPostFail = $jaEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $jaEPAPostSkipped = $jaEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  
+  #endregion Japanese Strings
+
+
+  #Look And Feel Table
+
+  WriteWordLine 4 0 "Look and Feel - Home Page";
+  WriteWordLine 0 0 " ";
+  $PTLANDFH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTLANDFH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Attribute"; Column2 = "Setting"; }
+    @{ Column1 = "Body Backgound Colour"; Column2 = $PTBackgroundColour; }
+    @{ Column1 = "Navigation Pane Background Colour"; Column2 = $PTNavPaneBackgroundColour; }
+    @{ Column1 = "Navigation Pane Font Colour"; Column2 = $PTNavPaneFontColour; }
+    @{ Column1 = "Navigation Selected Tab Background Color"; Column2 = $PTNavSelectedTabBackgroundColour; }
+    @{ Column1 = "Navigation Selected Tab Font Color"; Column2 = $PTNavSelectedTabFontColour; }
+    @{ Column1 = "Content Pane Background Color"; Column2 = $PTContentPaneBackgroundColour; }
+    @{ Column1 = "Button Background Color"; Column2 = $PTButtonBackgroundColour; }
+    @{ Column1 = "Content Pane Font Color"; Column2 = $PTContentPaneFontColour; }
+    @{ Column1 = "Content Pane Title Font Color"; Column2 = $PTContentPaneTitleFontColour; }
+    @{ Column1 = "Bookmarks Description Font Color"; Column2 = $PTBookmarksDescriptionFontColour; }
+    @{ Column1 = "Show Enterprise Websites Section"; Column2 = $PTShowEnterpriseWebsites; }
+    @{ Column1 = "Show Personal Websites Section"; Column2 = $PTShowPersonalWebsites; }
+    @{ Column1 = "Show File Transfer Tab"; Column2 = $PTShowFileTransferTab; }
+    @{ Column1 = "Show Enterprise File Shares Section"; Column2 = $PTShowEnterpriseFileShares; }
+    @{ Column1 = "Show Personal File Shares Section"; Column2 = $PTShowPersonalFileShares; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTLANDFH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+  WriteWordLine 4 0 "Look and Feel - Common";
+  WriteWordLine 0 0 " ";
+
+
+    $PTCOMMONH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTCOMMONH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Attribute"; Column2 = "Setting"; }
+    @{ Column1 = "Background Image"; Column2 = $PTBackgroundImage; }
+    @{ Column1 = "Header Background Colour"; Column2 = $PTHeaderBackgroundColour; }
+    @{ Column1 = "Header Font Colour"; Column2 = $PTHeaderFontColour; }
+    @{ Column1 = "Header Border-Bottom Colour"; Column2 = $PTHeaderBorderBottomColour; }
+    @{ Column1 = "Header Logo"; Column2 = $PTHeaderLogo; }
+    @{ Column1 = "Center Logo"; Column2 = $PTCenterLogo; }
+    @{ Column1 = "Watermark Image"; Column2 = $PTWatermarkImage; }
+    @{ Column1 = "Form Font Size"; Column2 = $PTFormFontSize; }
+    @{ Column1 = "Form Font Colour"; Column2 = $PTFormFontColour; }
+    @{ Column1 = "Button Image"; Column2 = $PTButtonImage; }
+    @{ Column1 = "Button Hover Image"; Column2 = $PTButtonHoverImage; }
+    @{ Column1 = "Form Title Font Size"; Column2 = $PTFormTitleFontSize; }
+    @{ Column1 = "Form Title Font Colour"; Column2 = $PTFormTitleFontColour; }
+    @{ Column1 = "Form Background Colour"; Column2 = $PTFormBackgroundColour; }
+    @{ Column1 = "EULA Title Font Size"; Column2 = $PTEULATitleFontSize; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTCOMMONH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+#region English Language
+WriteWordLine 4 0 "English Language"
+WriteWordLine 0 0 " "
+
+    $PTENLOGINH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTENLOGINH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Login Page"; Column2 = ""; }
+    @{ Column1 = "Page Title"; Column2 = $ENPageTitle.InnerText; }
+    @{ Column1 = "Form Title"; Column2 = $ENFormTitle.InnerText; }
+    @{ Column1 = "User Name Field Title"; Column2 = $ENUserName.InnerText; }
+    @{ Column1 = "Password Field Title"; Column2 = $ENPassword.InnerText; }
+    @{ Column1 = "Password Field2 Title"; Column2 = $ENPassword2.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTENLOGINH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTENHOMEH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTENHOMEH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Home Page"; Column2 = ""; }
+    @{ Column1 = "Web Apps Tab Label"; Column2 = $ENWebApps.InnerText; }
+    @{ Column1 = "Enterprise Web Sites Label"; Column2 = $ENEntWebapps.InnerText; }
+    @{ Column1 = "Personal Web Sites Label"; Column2 = $ENPersWebapps.InnerText; }
+    @{ Column1 = "Applications Tab Label"; Column2 = $ENApps.InnerText; }
+    @{ Column1 = "File Transfer Tab Label"; Column2 = $ENFileTrans.InnerText; }
+    @{ Column1 = "Enterprise File Shares Label"; Column2 = $ENEntFile.InnerText; }
+    @{ Column1 = "Personal File Shares Label"; Column2 = $ENPersFile.InnerText; }
+    @{ Column1 = "Email Tab Label"; Column2 = $ENEmail.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTENHOMEH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+
+    $PTENVPNH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTENVPNH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "VPN Connection"; Column2 = ""; }
+    @{ Column1 = "Waiting Message"; Column2 = $ENVPNWaitmsg.InnerText; }
+    @{ Column1 = "Proxy Configured message"; Column2 = $ENVPNproxy.InnerText; }
+    @{ Column1 = "Windows Plug-in Not Installed Message"; Column2 = $ENVPNnoplugin.InnerText; }
+    @{ Column1 = "MAC Plug-in Not Installed Message"; Column2 = $ENVPNnopluginmac.InnerText; }
+    @{ Column1 = "Linux Plug-in Not Installed Message"; Column2 = $ENVPNnopluginlinux.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTENVPNH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTENEPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTENEPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $ENEPATitle.InnerText; }
+    @{ Column1 = "Introductory Message"; Column2 = $ENEPAIntro.InnerText; }
+    @{ Column1 = "Plug-in Check Message"; Column2 = $ENEPAPlugin.InnerText; }
+    @{ Column1 = "Download Plug-In Message"; Column2 = $ENEPADownload.InnerText; }
+    @{ Column1 = "Plug-in Launch Error Message"; Column2 = $ENEPAPluginError.InnerText; }
+    @{ Column1 = "Download Software Message"; Column2 = $ENEPASoftDownload.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTENEPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+    $PTENEPAERRH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTENEPAERRH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Error Page"; Column2 = ""; }
+    @{ Column1 = "Error Title"; Column2 = $ENEPAErrorTitle.InnerText; }
+    @{ Column1 = "Device Requirements Not Matching Message"; Column2 = $ENEPADeviceReqs.InnerText; }
+    @{ Column1 = "Mac Failure Message"; Column2 = $ENEPAMacError.InnerText; }
+    @{ Column1 = "Error More Info Message"; Column2 = $ENEPAErrorMessage.InnerText; }
+    @{ Column1 = "Device Certificate Check Failure Message"; Column2 = $ENEPAErrorCert.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTENEPAERRH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTENPOSTEPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTENPOSTEPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Post EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $ENEPAPostTitle.InnerText; }
+    @{ Column1 = "Failure To Start Message"; Column2 = $ENEPAPostFail.InnerText; }
+    @{ Column1 = "User Skipped Scan Message"; Column2 = $ENEPAPostSkipped.InnerText; }
+   
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTENPOSTEPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+#endregion English Language
+#region French Language
+
+WriteWordLine 4 0 "French Language"
+WriteWordLine 0 0 " "
+
+    $PTFRLOGINH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTFRLOGINH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Login Page"; Column2 = ""; }
+    @{ Column1 = "Page Title"; Column2 = $FRPageTitle.InnerText; }
+    @{ Column1 = "Form Title"; Column2 = $FRFormTitle.InnerText; }
+    @{ Column1 = "User Name Field Title"; Column2 = $frUserName.InnerText; }
+    @{ Column1 = "Password Field Title"; Column2 = $frPassword.InnerText; }
+    @{ Column1 = "Password Field2 Title"; Column2 = $frPassword2.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTFRLOGINH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTFRHOMEH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTFRHOMEH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Home Page"; Column2 = ""; }
+    @{ Column1 = "Web Apps Tab Label"; Column2 = $FRWebApps.InnerText; }
+    @{ Column1 = "Enterprise Web Sites Label"; Column2 = $FREntWebapps.InnerText; }
+    @{ Column1 = "Personal Web Sites Label"; Column2 = $FRPersWebapps.InnerText; }
+    @{ Column1 = "Applications Tab Label"; Column2 = $FRApps.InnerText; }
+    @{ Column1 = "File Transfer Tab Label"; Column2 = $FRFileTrans.InnerText; }
+    @{ Column1 = "Enterprise File Shares Label"; Column2 = $FREntFile.InnerText; }
+    @{ Column1 = "Personal File Shares Label"; Column2 = $FRPersFile.InnerText; }
+    @{ Column1 = "Email Tab Label"; Column2 = $FREmail.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTFRHOMEH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+
+    $PTFRVPNH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTFRVPNH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "VPN Connection"; Column2 = ""; }
+    @{ Column1 = "Waiting Message"; Column2 = $FRVPNWaitmsg.InnerText; }
+    @{ Column1 = "Proxy Configured message"; Column2 = $FRVPNproxy.InnerText; }
+    @{ Column1 = "Windows Plug-in Not Installed Message"; Column2 = $FRVPNnoplugin.InnerText; }
+    @{ Column1 = "MAC Plug-in Not Installed Message"; Column2 = $FRVPNnopluginmac.InnerText; }
+    @{ Column1 = "Linux Plug-in Not Installed Message"; Column2 = $FRVPNnopluginlinux.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTFRVPNH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTFREPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTFREPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $FREPATitle.InnerText; }
+    @{ Column1 = "Introductory Message"; Column2 = $FREPAIntro.InnerText; }
+    @{ Column1 = "Plug-in Check Message"; Column2 = $FREPAPlugin.InnerText; }
+    @{ Column1 = "Download Plug-In Message"; Column2 = $FREPADownload.InnerText; }
+    @{ Column1 = "Plug-in Launch Error Message"; Column2 = $FREPAPluginError.InnerText; }
+    @{ Column1 = "Download Software Message"; Column2 = $FREPASoftDownload.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTFREPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+    $PTFREPAERRH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTFREPAERRH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Error Page"; Column2 = ""; }
+    @{ Column1 = "Error Title"; Column2 = $FREPAErrorTitle.InnerText; }
+    @{ Column1 = "Device Requirements Not Matching Message"; Column2 = $FREPADeviceReqs.InnerText; }
+    @{ Column1 = "Mac Failure Message"; Column2 = $FREPAMacError.InnerText; }
+    @{ Column1 = "Error More Info Message"; Column2 = $FREPAErrorMessage.InnerText; }
+    @{ Column1 = "Device Certificate Check Failure Message"; Column2 = $FREPAErrorCert.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTFREPAERRH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTFRPOSTEPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTFRPOSTEPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Post EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $FREPAPostTitle.InnerText; }
+    @{ Column1 = "Failure To Start Message"; Column2 = $FREPAPostFail.InnerText; }
+    @{ Column1 = "User Skipped Scan Message"; Column2 = $FREPAPostSkipped.InnerText; }
+   
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTFRPOSTEPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+#endregion French Language
+
+#region German Language
+
+
+WriteWordLine 4 0 "German Language"
+WriteWordLine 0 0 " "
+
+    $PTDELOGINH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTDELOGINH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Login Page"; Column2 = ""; }
+    @{ Column1 = "Page Title"; Column2 = $DEPageTitle.InnerText; }
+    @{ Column1 = "Form Title"; Column2 = $DEFormTitle.InnerText; }
+    @{ Column1 = "User Name Field Title"; Column2 = $DEUserName.InnerText; }
+    @{ Column1 = "Password Field Title"; Column2 = $DEPassword.InnerText; }
+    @{ Column1 = "Password Field2 Title"; Column2 = $DEPassword2.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTDELOGINH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTDEHOMEH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTDEHOMEH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Home Page"; Column2 = ""; }
+    @{ Column1 = "Web Apps Tab Label"; Column2 = $DEWebApps.InnerText; }
+    @{ Column1 = "Enterprise Web Sites Label"; Column2 = $DEEntWebapps.InnerText; }
+    @{ Column1 = "Personal Web Sites Label"; Column2 = $DEPersWebapps.InnerText; }
+    @{ Column1 = "Applications Tab Label"; Column2 = $DEApps.InnerText; }
+    @{ Column1 = "File Transfer Tab Label"; Column2 = $DEFileTrans.InnerText; }
+    @{ Column1 = "Enterprise File Shares Label"; Column2 = $DEEntFile.InnerText; }
+    @{ Column1 = "Personal File Shares Label"; Column2 = $DEPersFile.InnerText; }
+    @{ Column1 = "Email Tab Label"; Column2 = $DEEmail.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTDEHOMEH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+
+    $PTDEVPNH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTDEVPNH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "VPN Connection"; Column2 = ""; }
+    @{ Column1 = "Waiting Message"; Column2 = $DEVPNWaitmsg.InnerText; }
+    @{ Column1 = "Proxy Configured message"; Column2 = $DEVPNproxy.InnerText; }
+    @{ Column1 = "Windows Plug-in Not Installed Message"; Column2 = $DEVPNnoplugin.InnerText; }
+    @{ Column1 = "MAC Plug-in Not Installed Message"; Column2 = $DEVPNnopluginmac.InnerText; }
+    @{ Column1 = "Linux Plug-in Not Installed Message"; Column2 = $DEVPNnopluginlinux.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTDEVPNH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTDEEPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTDEEPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $DEEPATitle.InnerText; }
+    @{ Column1 = "Introductory Message"; Column2 = $DEEPAIntro.InnerText; }
+    @{ Column1 = "Plug-in Check Message"; Column2 = $DEEPAPlugin.InnerText; }
+    @{ Column1 = "Download Plug-In Message"; Column2 = $DEEPADownload.InnerText; }
+    @{ Column1 = "Plug-in Launch Error Message"; Column2 = $DEEPAPluginError.InnerText; }
+    @{ Column1 = "Download Software Message"; Column2 = $DEEPASoftDownload.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTDEEPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+    $PTDEEPAERRH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTDEEPAERRH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Error Page"; Column2 = ""; }
+    @{ Column1 = "Error Title"; Column2 = $DEEPAErrorTitle.InnerText; }
+    @{ Column1 = "Device Requirements Not Matching Message"; Column2 = $DEEPADeviceReqs.InnerText; }
+    @{ Column1 = "Mac Failure Message"; Column2 = $DEEPAMacError.InnerText; }
+    @{ Column1 = "Error More Info Message"; Column2 = $DEEPAErrorMessage.InnerText; }
+    @{ Column1 = "Device Certificate Check Failure Message"; Column2 = $DEEPAErrorCert.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTDEEPAERRH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTDEPOSTEPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTDEPOSTEPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Post EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $DEEPAPostTitle.InnerText; }
+    @{ Column1 = "Failure To Start Message"; Column2 = $DEEPAPostFail.InnerText; }
+    @{ Column1 = "User Skipped Scan Message"; Column2 = $DEEPAPostSkipped.InnerText; }
+   
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTDEPOSTEPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+#endregion German Language
+
+#region Spanish Language
+
+
+WriteWordLine 4 0 "Spanish Language"
+WriteWordLine 0 0 " "
+
+    $PTESLOGINH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTESLOGINH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Login Page"; Column2 = ""; }
+    @{ Column1 = "Page Title"; Column2 = $ESPageTitle.InnerText; }
+    @{ Column1 = "Form Title"; Column2 = $ESFormTitle.InnerText; }
+    @{ Column1 = "User Name Field Title"; Column2 = $ESUserName.InnerText; }
+    @{ Column1 = "Password Field Title"; Column2 = $ESPassword.InnerText; }
+    @{ Column1 = "Password Field2 Title"; Column2 = $ESPassword2.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTESLOGINH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTESHOMEH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTESHOMEH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Home Page"; Column2 = ""; }
+    @{ Column1 = "Web Apps Tab Label"; Column2 = $ESWebApps.InnerText; }
+    @{ Column1 = "Enterprise Web Sites Label"; Column2 = $ESEntWebapps.InnerText; }
+    @{ Column1 = "Personal Web Sites Label"; Column2 = $ESPersWebapps.InnerText; }
+    @{ Column1 = "Applications Tab Label"; Column2 = $ESApps.InnerText; }
+    @{ Column1 = "File Transfer Tab Label"; Column2 = $ESFileTrans.InnerText; }
+    @{ Column1 = "Enterprise File Shares Label"; Column2 = $ESEntFile.InnerText; }
+    @{ Column1 = "Personal File Shares Label"; Column2 = $ESPersFile.InnerText; }
+    @{ Column1 = "Email Tab Label"; Column2 = $ESEmail.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTESHOMEH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+
+    $PTESVPNH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTESVPNH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "VPN Connection"; Column2 = ""; }
+    @{ Column1 = "Waiting Message"; Column2 = $ESVPNWaitmsg.InnerText; }
+    @{ Column1 = "Proxy Configured message"; Column2 = $ESVPNproxy.InnerText; }
+    @{ Column1 = "Windows Plug-in Not Installed Message"; Column2 = $ESVPNnoplugin.InnerText; }
+    @{ Column1 = "MAC Plug-in Not Installed Message"; Column2 = $ESVPNnopluginmac.InnerText; }
+    @{ Column1 = "Linux Plug-in Not Installed Message"; Column2 = $ESVPNnopluginlinux.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTESVPNH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTESEPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTESEPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $ESEPATitle.InnerText; }
+    @{ Column1 = "Introductory Message"; Column2 = $ESEPAIntro.InnerText; }
+    @{ Column1 = "Plug-in Check Message"; Column2 = $ESEPAPlugin.InnerText; }
+    @{ Column1 = "Download Plug-In Message"; Column2 = $ESEPADownload.InnerText; }
+    @{ Column1 = "Plug-in Launch Error Message"; Column2 = $ESEPAPluginError.InnerText; }
+    @{ Column1 = "Download Software Message"; Column2 = $ESEPASoftDownload.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTESEPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+    $PTESEPAERRH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTESEPAERRH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Error Page"; Column2 = ""; }
+    @{ Column1 = "Error Title"; Column2 = $ESEPAErrorTitle.InnerText; }
+    @{ Column1 = "Device Requirements Not Matching Message"; Column2 = $ESEPADeviceReqs.InnerText; }
+    @{ Column1 = "Mac Failure Message"; Column2 = $ESEPAMacError.InnerText; }
+    @{ Column1 = "Error More Info Message"; Column2 = $ESEPAErrorMessage.InnerText; }
+    @{ Column1 = "Device Certificate Check Failure Message"; Column2 = $ESEPAErrorCert.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTESEPAERRH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTESPOSTEPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTESPOSTEPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Post EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $ESEPAPostTitle.InnerText; }
+    @{ Column1 = "Failure To Start Message"; Column2 = $ESEPAPostFail.InnerText; }
+    @{ Column1 = "User Skipped Scan Message"; Column2 = $ESEPAPostSkipped.InnerText; }
+   
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTESPOSTEPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+#endregion Spanish Language
+
+#region Japanese
+
+
+WriteWordLine 4 0 "Japanese Language"
+WriteWordLine 0 0 " "
+
+    $PTJALOGINH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTJALOGINH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Login Page"; Column2 = ""; }
+    @{ Column1 = "Page Title"; Column2 = $JAPageTitle.InnerText; }
+    @{ Column1 = "Form Title"; Column2 = $JAFormTitle.InnerText; }
+    @{ Column1 = "User Name Field Title"; Column2 = $JAUserName.InnerText; }
+    @{ Column1 = "Password Field Title"; Column2 = $JAPassword.InnerText; }
+    @{ Column1 = "Password Field2 Title"; Column2 = $JAPassword2.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTJALOGINH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTJAHOMEH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTJAHOMEH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Home Page"; Column2 = ""; }
+    @{ Column1 = "Web Apps Tab Label"; Column2 = $JAWebApps.InnerText; }
+    @{ Column1 = "Enterprise Web Sites Label"; Column2 = $JAEntWebapps.InnerText; }
+    @{ Column1 = "Personal Web Sites Label"; Column2 = $JAPersWebapps.InnerText; }
+    @{ Column1 = "Applications Tab Label"; Column2 = $JAApps.InnerText; }
+    @{ Column1 = "File Transfer Tab Label"; Column2 = $JAFileTrans.InnerText; }
+    @{ Column1 = "Enterprise File Shares Label"; Column2 = $JAEntFile.InnerText; }
+    @{ Column1 = "Personal File Shares Label"; Column2 = $JAPersFile.InnerText; }
+    @{ Column1 = "Email Tab Label"; Column2 = $JAEmail.InnerText; }
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTJAHOMEH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+
+    $PTJAVPNH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTJAVPNH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "VPN Connection"; Column2 = ""; }
+    @{ Column1 = "Waiting Message"; Column2 = $JAVPNWaitmsg.InnerText; }
+    @{ Column1 = "Proxy Configured message"; Column2 = $JAVPNproxy.InnerText; }
+    @{ Column1 = "Windows Plug-in Not Installed Message"; Column2 = $JAVPNnoplugin.InnerText; }
+    @{ Column1 = "MAC Plug-in Not Installed Message"; Column2 = $JAVPNnopluginmac.InnerText; }
+    @{ Column1 = "Linux Plug-in Not Installed Message"; Column2 = $JAVPNnopluginlinux.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTJAVPNH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTJAEPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTJAEPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $JAEPATitle.InnerText; }
+    @{ Column1 = "Introductory Message"; Column2 = $JAEPAIntro.InnerText; }
+    @{ Column1 = "Plug-in Check Message"; Column2 = $JAEPAPlugin.InnerText; }
+    @{ Column1 = "Download Plug-In Message"; Column2 = $JAEPADownload.InnerText; }
+    @{ Column1 = "Plug-in Launch Error Message"; Column2 = $JAEPAPluginError.InnerText; }
+    @{ Column1 = "Download Software Message"; Column2 = $JAEPASoftDownload.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTJAEPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+    $PTJAEPAERRH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTJAEPAERRH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "EPA Error Page"; Column2 = ""; }
+    @{ Column1 = "Error Title"; Column2 = $JAEPAErrorTitle.InnerText; }
+    @{ Column1 = "Device Requirements Not Matching Message"; Column2 = $JAEPADeviceReqs.InnerText; }
+    @{ Column1 = "Mac Failure Message"; Column2 = $JAEPAMacError.InnerText; }
+    @{ Column1 = "Error More Info Message"; Column2 = $JAEPAErrorMessage.InnerText; }
+    @{ Column1 = "Device Certificate Check Failure Message"; Column2 = $JAEPAErrorCert.InnerText; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTJAEPAERRH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $PTJAPOSTEPAH = $null
+  ## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $PTJAPOSTEPAH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Post EPA Page"; Column2 = ""; }
+    @{ Column1 = "Title"; Column2 = $JAEPAPostTitle.InnerText; }
+    @{ Column1 = "Failure To Start Message"; Column2 = $JAEPAPostFail.InnerText; }
+    @{ Column1 = "User Skipped Scan Message"; Column2 = $JAEPAPostSkipped.InnerText; }
+   
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $PTJAPOSTEPAH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+#endregion Japanese
+}
+
+} #End Foreach portal theme
+
+#endregion NetScaler Gateway Portal Themes
 
 $selection.InsertNewPage()
 
@@ -7448,7 +9362,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -7491,7 +9405,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -7535,7 +9449,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -7579,7 +9493,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -7623,7 +9537,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
 
             FindWordDocumentEnd;
         } else { WriteWordLine 0 0 "No Session Policies have been configured"} #endif SESSIONPOLHASH.Length
@@ -7665,7 +9579,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
 
             FindWordDocumentEnd;
         } else { WriteWordLine 0 0 "No STA Policies have been configured"} #
@@ -7706,7 +9620,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
 
             FindWordDocumentEnd;
         } else { WriteWordLine 0 0 "No Cache Policies have been configured"} #
@@ -7747,7 +9661,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
 
             FindWordDocumentEnd;
         } else { WriteWordLine 0 0 "No Responder Policies have been configured"}
@@ -7788,7 +9702,7 @@ $Table = $null
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
 
             FindWordDocumentEnd;
         } else { WriteWordLine 0 0 "No Rewrite Policies have been configured"}
@@ -7847,7 +9761,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -7888,7 +9802,7 @@ WriteWordLine 0 0 " "
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -7929,7 +9843,7 @@ WriteWordLine 0 0 " "
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -7971,7 +9885,7 @@ WriteWordLine 0 0 " "
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -8013,7 +9927,7 @@ WriteWordLine 0 0 " "
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
             ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params -NoGridLines;
+            $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
             #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
 
@@ -8067,7 +9981,7 @@ foreach ($vpnsessionpolicy in $vpnsessionpolicies) {
     }
 
     ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
 }
@@ -8107,7 +10021,7 @@ $policynameAO = $vpnalwaysonpolicy.name
         Format = -235; ## IB - Word constant for Light List Accent 5
     }
     ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -NoGridLines -List;
+    $Table = AddWordTable @Params -List;
 
 	FindWordDocumentEnd;
 	$TableRange = $Null
@@ -8145,7 +10059,7 @@ foreach ($vpnsessionaction in $vpnsessionactions) {
     WriteWordLine 0 0 " "
 
     ## IB - Add the table to the document, splatting the parameters
-    #$Table = AddWordTable @Params -NoGridLines;
+    #$Table = AddWordTable @Params;
     #FindWordDocumentEnd;
     #WriteWordLine 0 0 " "
 
@@ -8158,7 +10072,6 @@ foreach ($vpnsessionaction in $vpnsessionactions) {
     @{ Column1 = "Session Time-Out"; Column2 = $vpnsessionaction.sesstimeout; }
     @{ Column1 = "Client-Idle Time-Out"; Column2 = $vpnsessionaction.clientidletimeoutwarning; }
     @{ Column1 = "Single Sign-On to Web Applications"; Column2 = $vpnsessionaction.sso; }
-    @{ Column1 = "Credential Index"; Column2 = $vpnsessionaction.ssocredential; }
     @{ Column1 = "Single Sign-On with Windows"; Column2 = $vpnsessionaction.windowsautologon; }
     @{ Column1 = "Split Tunnel"; Column2 = $vpnsessionaction.splittunnel; }
     @{ Column1 = "Local LAN Access"; Column2 = $vpnsessionaction.locallanaccess; }
@@ -8170,10 +10083,8 @@ foreach ($vpnsessionaction in $vpnsessionactions) {
     @{ Column1 = "Clientless Access"; Column2 = $vpnsessionaction.clientlessvpnmode; }
     @{ Column1 = "Clientless URL Encoding"; Column2 = $vpnsessionaction.clientlessmodeurlencoding; }
     @{ Column1 = "Clientless Persistent Cookie"; Column2 = $vpnsessionaction.clientlesspersistentcookie; }
-    @{ Column1 = "Single Sign-on to Web Applications"; Column2 = $vpnsessionaction.sso; }
     @{ Column1 = "Credential Index"; Column2 = $vpnsessionaction.ssocredential; }
     @{ Column1 = "KCD Account"; Column2 = $vpnsessionaction.kcdaccount; }
-    @{ Column1 = "Single Sign-on with Windows"; Column2 = $vpnsessionaction.windowsautologon; }
     @{ Column1 = "Client Cleanup Prompt"; Column2 = $vpnsessionaction.clientcleanupprompt; }
     @{ Column1 = "UI Theme"; Column2 = $vpnsessionaction.uitheme; }
     @{ Column1 = "Login Script"; Column2 = $vpnsessionaction.loginscript; }
@@ -8192,13 +10103,13 @@ foreach ($vpnsessionaction in $vpnsessionactions) {
 ## IB - Create the parameters to pass to the AddWordTable function
 $Params = $null
 $Params = @{
-    Hashtable = $VPNVSERVERH;
+    Hashtable = $VPNACTCEXH;
     Columns = "Column1","Column2";
     AutoFit = $wdAutoFitContent;
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -8229,7 +10140,7 @@ $Table = $null
     #}
 
     ## IB - Add the table to the document, splatting the parameters
-    #$Table = AddWordTable @Params -NoGridLines;
+    #$Table = AddWordTable @Params;
     #FindWordDocumentEnd;
     #WriteWordLine 0 0 " "
 
@@ -8257,7 +10168,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -8288,7 +10199,7 @@ $Table = $null
     #}
 
     ## IB - Add the table to the document, splatting the parameters
-    #$Table = AddWordTable @Params -NoGridLines;
+    #$Table = AddWordTable @Params;
     #FindWordDocumentEnd;
     #WriteWordLine 0 0 " "
 
@@ -8315,7 +10226,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
 
-$Table = AddWordTable @Params -List -NoGridLines;
+$Table = AddWordTable @Params -List;
 
 FindWordDocumentEnd;
 
@@ -8371,7 +10282,7 @@ foreach ($MONITOR in $MONITORS) {
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
             }
-        $Table = AddWordTable @Params -NoGridLines;
+        $Table = AddWordTable @Params;
         FindWordDocumentEnd;
         WriteWordLine 0 0 " "
         }
@@ -8412,7 +10323,7 @@ $Params = @{
     AutoFit = $wdAutoFitContent;
     }
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -8445,7 +10356,7 @@ $Params = @{
     AutoFit = $wdAutoFitContent;
     }
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -8478,7 +10389,7 @@ $Params = @{
     AutoFit = $wdAutoFitContent;
     }
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -8523,7 +10434,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
     }
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -8559,7 +10470,7 @@ $Params = @{
     Format = -235; ## IB - Word constant for Light List Accent 5
     }
 ## IB - Add the table to the document, splatting the parameters
-$Table = AddWordTable @Params -NoGridLines;
+$Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
@@ -8609,7 +10520,7 @@ if ($TCPPROFILESH.Length -gt 0) {
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
         }
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
 }
@@ -8651,7 +10562,51 @@ if ($HTTPPROFILESH.Length -gt 0) {
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
         }
-    $Table = AddWordTable @Params -NoGridLines;
+    $Table = AddWordTable @Params;
+    FindWordDocumentEnd;
+    WriteWordLine 0 0 " "
+}
+  
+$selection.InsertNewPage()
+
+
+#endregion NetScaler HTTP Profiles
+
+#region NetScaler HTTP Profiles
+
+WriteWordLine 2 0 "NetScaler Network Profiles"
+WriteWordLine 0 0 " "
+
+Write-Verbose "$(Get-Date): `t`tTable: Write NetScaler Network Profiles Table"
+
+$httprofiles = Get-vNetScalerObject -Container config -Object nshttpprofile;
+
+## IB - Use an array of hashtable to store the rows
+[System.Collections.Hashtable[]] $NETPROFILESH = @();
+
+foreach ($netprofile in $netprofiles) {
+    ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+    ## IB - command will be about 400 characters wide!
+
+    $NETPROFILESH += @{
+            NAME = $netprofile.name;
+            TD = $netprofile.td;
+            SRCIP = $netprofile.srcip;
+            PERSIST = $netprofile.srcippersistency;
+            LSN = $netprofile.overridelsn
+        }
+}
+
+if ($NETPROFILESH.Length -gt 0) {
+    $Params = $null
+    $Params = @{
+        Hashtable = $NETPROFILESH;
+        Columns = "NAME","TD","SRCIP","PERSIST","LSN";
+        Headers = "Net Profile","Traffic Domain","Source IP","IP Persistency","Override LSN";
+        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+        AutoFit = $wdAutoFitContent;
+        }
+    $Table = AddWordTable @Params;
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
 }
@@ -8681,3 +10636,178 @@ ProcessScriptEnd
 #recommended by webster
 #$error
 #endregion script template 2
+
+
+# SIG # Begin signature block
+# MIIgCgYJKoZIhvcNAQcCoIIf+zCCH/cCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUO2Y0IXfMetlug2oz/kKwIp9b
+# q9igghtxMIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
+# AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
+# VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
+# IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMzExMTEwMDAwMDAwWjBlMQsw
+# CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cu
+# ZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVkIElEIFJvb3Qg
+# Q0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCtDhXO5EOAXLGH87dg
+# +XESpa7cJpSIqvTO9SA5KFhgDPiA2qkVlTJhPLWxKISKityfCgyDF3qPkKyK53lT
+# XDGEKvYPmDI2dsze3Tyoou9q+yHyUmHfnyDXH+Kx2f4YZNISW1/5WBg1vEfNoTb5
+# a3/UsDg+wRvDjDPZ2C8Y/igPs6eD1sNuRMBhNZYW/lmci3Zt1/GiSw0r/wty2p5g
+# 0I6QNcZ4VYcgoc/lbQrISXwxmDNsIumH0DJaoroTghHtORedmTpyoeb6pNnVFzF1
+# roV9Iq4/AUaG9ih5yLHa5FcXxH4cDrC0kqZWs72yl+2qp/C3xag/lRbQ/6GW6whf
+# GHdPAgMBAAGjYzBhMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0G
+# A1UdDgQWBBRF66Kv9JLLgjEtUYunpyGd823IDzAfBgNVHSMEGDAWgBRF66Kv9JLL
+# gjEtUYunpyGd823IDzANBgkqhkiG9w0BAQUFAAOCAQEAog683+Lt8ONyc3pklL/3
+# cmbYMuRCdWKuh+vy1dneVrOfzM4UKLkNl2BcEkxY5NM9g0lFWJc1aRqoR+pWxnmr
+# EthngYTffwk8lOa4JiwgvT2zKIn3X/8i4peEH+ll74fg38FnSbNd67IJKusm7Xi+
+# fT8r87cmNW1fiQG2SVufAQWbqz0lwcy2f8Lxb4bG+mRo64EtlOtCt/qMHt1i8b5Q
+# Z7dsvfPxH2sMNgcWfzd8qVttevESRmCD1ycEvkvOl77DZypoEd+A5wwzZr8TDRRu
+# 838fYxAe+o0bJW1sj6W3YQGx0qMmoRBxna3iw/nDmVG3KwcIzi7mULKn+gpFL6Lw
+# 8jCCBTAwggQYoAMCAQICEAQJGBtf1btmdVNDtW+VUAgwDQYJKoZIhvcNAQELBQAw
+# ZTELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQ
+# d3d3LmRpZ2ljZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgQXNzdXJlZCBJRCBS
+# b290IENBMB4XDTEzMTAyMjEyMDAwMFoXDTI4MTAyMjEyMDAwMFowcjELMAkGA1UE
+# BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2lj
+# ZXJ0LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUg
+# U2lnbmluZyBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPjTsxx/
+# DhGvZ3cH0wsxSRnP0PtFmbE620T1f+Wondsy13Hqdp0FLreP+pJDwKX5idQ3Gde2
+# qvCchqXYJawOeSg6funRZ9PG+yknx9N7I5TkkSOWkHeC+aGEI2YSVDNQdLEoJrsk
+# acLCUvIUZ4qJRdQtoaPpiCwgla4cSocI3wz14k1gGL6qxLKucDFmM3E+rHCiq85/
+# 6XzLkqHlOzEcz+ryCuRXu0q16XTmK/5sy350OTYNkO/ktU6kqepqCquE86xnTrXE
+# 94zRICUj6whkPlKWwfIPEvTFjg/BougsUfdzvL2FsWKDc0GCB+Q4i2pzINAPZHM8
+# np+mM6n9Gd8lk9ECAwEAAaOCAc0wggHJMBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYD
+# VR0PAQH/BAQDAgGGMBMGA1UdJQQMMAoGCCsGAQUFBwMDMHkGCCsGAQUFBwEBBG0w
+# azAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMGCCsGAQUF
+# BzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVk
+# SURSb290Q0EuY3J0MIGBBgNVHR8EejB4MDqgOKA2hjRodHRwOi8vY3JsNC5kaWdp
+# Y2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3JsMDqgOKA2hjRodHRw
+# Oi8vY3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3Js
+# ME8GA1UdIARIMEYwOAYKYIZIAYb9bAACBDAqMCgGCCsGAQUFBwIBFhxodHRwczov
+# L3d3dy5kaWdpY2VydC5jb20vQ1BTMAoGCGCGSAGG/WwDMB0GA1UdDgQWBBRaxLl7
+# KgqjpepxA8Bg+S32ZXUOWDAfBgNVHSMEGDAWgBRF66Kv9JLLgjEtUYunpyGd823I
+# DzANBgkqhkiG9w0BAQsFAAOCAQEAPuwNWiSz8yLRFcgsfCUpdqgdXRwtOhrE7zBh
+# 134LYP3DPQ/Er4v97yrfIFU3sOH20ZJ1D1G0bqWOWuJeJIFOEKTuP3GOYw4TS63X
+# X0R58zYUBor3nEZOXP+QsRsHDpEV+7qvtVHCjSSuJMbHJyqhKSgaOnEoAjwukaPA
+# JRHinBRHoXpoaK+bp1wgXNlxsQyPu6j4xRJon89Ay0BEpRPw5mQMJQhCMrI2iiQC
+# /i9yfhzXSUWW6Fkd6fp0ZGuy62ZD2rOwjNXpDd32ASDOmTFjPQgaGLOBm0/GkxAG
+# /AeB+ova+YJJ92JuoVP6EpQYhS6SkepobEQysmah5xikmmRR7zCCBT8wggQnoAMC
+# AQICEAU1dkJYhLmnBcR7Ly9I4oUwDQYJKoZIhvcNAQELBQAwcjELMAkGA1UEBhMC
+# VVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0
+# LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2ln
+# bmluZyBDQTAeFw0xNjEwMTgwMDAwMDBaFw0xNzEwMjMxMjAwMDBaMHwxCzAJBgNV
+# BAYTAlVTMQswCQYDVQQIEwJUTjESMBAGA1UEBxMJVHVsbGFob21hMSUwIwYDVQQK
+# ExxDYXJsIFdlYnN0ZXIgQ29uc3VsdGluZywgTExDMSUwIwYDVQQDExxDYXJsIFdl
+# YnN0ZXIgQ29uc3VsdGluZywgTExDMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+# CgKCAQEAsEaSbYa/BsjQPvGR3Zbaiq/LathAtAbbO4mTyf+zws81cGyKtI4NkNCT
+# qPsKORH9hxw8qqf11JVT5smI5GZ+QkuWTfbpbzgCHac6NhOI652N/qUJDyUAEfOu
+# Vi+2SoDl4t5Vl9zkB7dQe1YxZmxk0SGNpm7f+B8nkV2aonoKtNsBEMPFzrIIx11T
+# YX22BiqO7rJXidcWz6PCNfDtmnMxBJ0yt0HwL/IqfsPlWTpFAKvsy12z22cO5FzG
+# cV73to3U3A66QlwUG2lOj98wriSRlZhhMLCoA3QGmGq//oDEmsuamIOVLV/XQtwq
+# kKgNQur/01GUubOPH7zcXF943JQgIwIDAQABo4IBxTCCAcEwHwYDVR0jBBgwFoAU
+# WsS5eyoKo6XqcQPAYPkt9mV1DlgwHQYDVR0OBBYEFAMO2suSu//T5kHb495F8PQB
+# JKCVMA4GA1UdDwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDAzB3BgNVHR8E
+# cDBuMDWgM6Axhi9odHRwOi8vY3JsMy5kaWdpY2VydC5jb20vc2hhMi1hc3N1cmVk
+# LWNzLWcxLmNybDA1oDOgMYYvaHR0cDovL2NybDQuZGlnaWNlcnQuY29tL3NoYTIt
+# YXNzdXJlZC1jcy1nMS5jcmwwTAYDVR0gBEUwQzA3BglghkgBhv1sAwEwKjAoBggr
+# BgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzAIBgZngQwBBAEw
+# gYQGCCsGAQUFBwEBBHgwdjAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNl
+# cnQuY29tME4GCCsGAQUFBzAChkJodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20v
+# RGlnaUNlcnRTSEEyQXNzdXJlZElEQ29kZVNpZ25pbmdDQS5jcnQwDAYDVR0TAQH/
+# BAIwADANBgkqhkiG9w0BAQsFAAOCAQEAJNk9CcZhUymD42L1jniEuMbgwYRzVgVZ
+# 1kxuoENiLyE49tEziZ6W+k42/itW3UV2dgtNCKyy0RpjY1kw5mfbgcAMmgZ5M/d8
+# kIHucV0ZGO0PqAlT+JIw3BbCDlvO9aFccCgU99V3XbCUv9IGsFcTgWcI27DO/3/r
+# Pau6vGQbkL83cBDt7Gs1Fsz+pTZGg1md26LiN3dKfneyKDY+BtVNDqJulZ9KP6gz
+# Z/QgeK8Vrt/TIvkCocmjzx+AHw3n9mwAifKEuF5zzeyTZE21xywV4seJmtWYtP74
+# e5dZz0Uc+1on6zqipe50QBiiu5FWlYpOYCsTqHkX4pz4Igt5+qUDFzCCBmowggVS
+# oAMCAQICEAMBmgI6/1ixa9bV6uYX8GYwDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
+# BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2lj
+# ZXJ0LmNvbTEhMB8GA1UEAxMYRGlnaUNlcnQgQXNzdXJlZCBJRCBDQS0xMB4XDTE0
+# MTAyMjAwMDAwMFoXDTI0MTAyMjAwMDAwMFowRzELMAkGA1UEBhMCVVMxETAPBgNV
+# BAoTCERpZ2lDZXJ0MSUwIwYDVQQDExxEaWdpQ2VydCBUaW1lc3RhbXAgUmVzcG9u
+# ZGVyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo2Rd/Hyz4II14OD2
+# xirmSXU7zG7gU6mfH2RZ5nxrf2uMnVX4kuOe1VpjWwJJUNmDzm9m7t3LhelfpfnU
+# h3SIRDsZyeX1kZ/GFDmsJOqoSyyRicxeKPRktlC39RKzc5YKZ6O+YZ+u8/0SeHUO
+# plsU/UUjjoZEVX0YhgWMVYd5SEb3yg6Np95OX+Koti1ZAmGIYXIYaLm4fO7m5zQv
+# MXeBMB+7NgGN7yfj95rwTDFkjePr+hmHqH7P7IwMNlt6wXq4eMfJBi5GEMiN6ARg
+# 27xzdPpO2P6qQPGyznBGg+naQKFZOtkVCVeZVjCT88lhzNAIzGvsYkKRrALA76Tw
+# iRGPdwIDAQABo4IDNTCCAzEwDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAw
+# FgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwggG/BgNVHSAEggG2MIIBsjCCAaEGCWCG
+# SAGG/WwHATCCAZIwKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNv
+# bS9DUFMwggFkBggrBgEFBQcCAjCCAVYeggFSAEEAbgB5ACAAdQBzAGUAIABvAGYA
+# IAB0AGgAaQBzACAAQwBlAHIAdABpAGYAaQBjAGEAdABlACAAYwBvAG4AcwB0AGkA
+# dAB1AHQAZQBzACAAYQBjAGMAZQBwAHQAYQBuAGMAZQAgAG8AZgAgAHQAaABlACAA
+# RABpAGcAaQBDAGUAcgB0ACAAQwBQAC8AQwBQAFMAIABhAG4AZAAgAHQAaABlACAA
+# UgBlAGwAeQBpAG4AZwAgAFAAYQByAHQAeQAgAEEAZwByAGUAZQBtAGUAbgB0ACAA
+# dwBoAGkAYwBoACAAbABpAG0AaQB0ACAAbABpAGEAYgBpAGwAaQB0AHkAIABhAG4A
+# ZAAgAGEAcgBlACAAaQBuAGMAbwByAHAAbwByAGEAdABlAGQAIABoAGUAcgBlAGkA
+# bgAgAGIAeQAgAHIAZQBmAGUAcgBlAG4AYwBlAC4wCwYJYIZIAYb9bAMVMB8GA1Ud
+# IwQYMBaAFBUAEisTmLKZB+0e36K+Vw0rZwLNMB0GA1UdDgQWBBRhWk0ktkkynUoq
+# eRqDS/QeicHKfTB9BgNVHR8EdjB0MDigNqA0hjJodHRwOi8vY3JsMy5kaWdpY2Vy
+# dC5jb20vRGlnaUNlcnRBc3N1cmVkSURDQS0xLmNybDA4oDagNIYyaHR0cDovL2Ny
+# bDQuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEQ0EtMS5jcmwwdwYIKwYB
+# BQUHAQEEazBpMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20w
+# QQYIKwYBBQUHMAKGNWh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2Vy
+# dEFzc3VyZWRJRENBLTEuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQCdJX4bM02yJoFc
+# m4bOIyAPgIfliP//sdRqLDHtOhcZcRfNqRu8WhY5AJ3jbITkWkD73gYBjDf6m7Gd
+# JH7+IKRXrVu3mrBgJuppVyFdNC8fcbCDlBkFazWQEKB7l8f2P+fiEUGmvWLZ8Cc9
+# OB0obzpSCfDscGLTYkuw4HOmksDTjjHYL+NtFxMG7uQDthSr849Dp3GdId0UyhVd
+# kkHa+Q+B0Zl0DSbEDn8btfWg8cZ3BigV6diT5VUW8LsKqxzbXEgnZsijiwoc5ZXa
+# rsQuWaBh3drzbaJh6YoLbewSGL33VVRAA5Ira8JRwgpIr7DUbuD0FAo6G+OPPcqv
+# ao173NhEMIIGzTCCBbWgAwIBAgIQBv35A5YDreoACus/J7u6GzANBgkqhkiG9w0B
+# AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
+# VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
+# IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMjExMTEwMDAwMDAwWjBiMQsw
+# CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cu
+# ZGlnaWNlcnQuY29tMSEwHwYDVQQDExhEaWdpQ2VydCBBc3N1cmVkIElEIENBLTEw
+# ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDogi2Z+crCQpWlgHNAcNKe
+# VlRcqcTSQQaPyTP8TUWRXIGf7Syc+BZZ3561JBXCmLm0d0ncicQK2q/LXmvtrbBx
+# MevPOkAMRk2T7It6NggDqww0/hhJgv7HxzFIgHweog+SDlDJxofrNj/YMMP/pvf7
+# os1vcyP+rFYFkPAyIRaJxnCI+QWXfaPHQ90C6Ds97bFBo+0/vtuVSMTuHrPyvAwr
+# mdDGXRJCgeGDboJzPyZLFJCuWWYKxI2+0s4Grq2Eb0iEm09AufFM8q+Y+/bOQF1c
+# 9qjxL6/siSLyaxhlscFzrdfx2M8eCnRcQrhofrfVdwonVnwPYqQ/MhRglf0HBKIJ
+# AgMBAAGjggN6MIIDdjAOBgNVHQ8BAf8EBAMCAYYwOwYDVR0lBDQwMgYIKwYBBQUH
+# AwEGCCsGAQUFBwMCBggrBgEFBQcDAwYIKwYBBQUHAwQGCCsGAQUFBwMIMIIB0gYD
+# VR0gBIIByTCCAcUwggG0BgpghkgBhv1sAAEEMIIBpDA6BggrBgEFBQcCARYuaHR0
+# cDovL3d3dy5kaWdpY2VydC5jb20vc3NsLWNwcy1yZXBvc2l0b3J5Lmh0bTCCAWQG
+# CCsGAQUFBwICMIIBVh6CAVIAQQBuAHkAIAB1AHMAZQAgAG8AZgAgAHQAaABpAHMA
+# IABDAGUAcgB0AGkAZgBpAGMAYQB0AGUAIABjAG8AbgBzAHQAaQB0AHUAdABlAHMA
+# IABhAGMAYwBlAHAAdABhAG4AYwBlACAAbwBmACAAdABoAGUAIABEAGkAZwBpAEMA
+# ZQByAHQAIABDAFAALwBDAFAAUwAgAGEAbgBkACAAdABoAGUAIABSAGUAbAB5AGkA
+# bgBnACAAUABhAHIAdAB5ACAAQQBnAHIAZQBlAG0AZQBuAHQAIAB3AGgAaQBjAGgA
+# IABsAGkAbQBpAHQAIABsAGkAYQBiAGkAbABpAHQAeQAgAGEAbgBkACAAYQByAGUA
+# IABpAG4AYwBvAHIAcABvAHIAYQB0AGUAZAAgAGgAZQByAGUAaQBuACAAYgB5ACAA
+# cgBlAGYAZQByAGUAbgBjAGUALjALBglghkgBhv1sAxUwEgYDVR0TAQH/BAgwBgEB
+# /wIBADB5BggrBgEFBQcBAQRtMGswJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRp
+# Z2ljZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2NhY2VydHMuZGlnaWNlcnQu
+# Y29tL0RpZ2lDZXJ0QXNzdXJlZElEUm9vdENBLmNydDCBgQYDVR0fBHoweDA6oDig
+# NoY0aHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEUm9v
+# dENBLmNybDA6oDigNoY0aHR0cDovL2NybDQuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0
+# QXNzdXJlZElEUm9vdENBLmNybDAdBgNVHQ4EFgQUFQASKxOYspkH7R7for5XDStn
+# As0wHwYDVR0jBBgwFoAUReuir/SSy4IxLVGLp6chnfNtyA8wDQYJKoZIhvcNAQEF
+# BQADggEBAEZQPsm3KCSnOB22WymvUs9S6TFHq1Zce9UNC0Gz7+x1H3Q48rJcYaKc
+# lcNQ5IK5I9G6OoZyrTh4rHVdFxc0ckeFlFbR67s2hHfMJKXzBBlVqefj56tizfuL
+# LZDCwNK1lL1eT7EF0g49GqkUW6aGMWKoqDPkmzmnxPXOHXh2lCVz5Cqrz5x2S+1f
+# wksW5EtwTACJHvzFebxMElf+X+EevAJdqP77BzhPDcZdkbkPZ0XN1oPt55INjbFp
+# jE/7WeAjD9KqrgB87pxCDs+R1ye3Fu4Pw718CqDuLAhVhSK46xgaTfwqIa1JMYNH
+# lXdx3LEbS0scEJx3FMGdTy9alQgpECYxggQDMIID/wIBATCBhjByMQswCQYDVQQG
+# EwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNl
+# cnQuY29tMTEwLwYDVQQDEyhEaWdpQ2VydCBTSEEyIEFzc3VyZWQgSUQgQ29kZSBT
+# aWduaW5nIENBAhAFNXZCWIS5pwXEey8vSOKFMAkGBSsOAwIaBQCgQDAZBgkqhkiG
+# 9w0BCQMxDAYKKwYBBAGCNwIBBDAjBgkqhkiG9w0BCQQxFgQUYv+j9dFEoYj13HxJ
+# lWooPo4MOxQwDQYJKoZIhvcNAQEBBQAEggEACSEuPQWI17Un6n5b6F1l8KA6gojF
+# nfIF0e2WvKMIZZp9rfw8i9ZOP39+PcyXVhn4roqHk5LKbUONotdy9wCtnOuDaOJJ
+# 3cyhAsOh+DTG5Q1+Aeu1Y9ldn5zKQygw64deNabmmR/fcTBZUlm47T16h/R92quV
+# +x8LhSAm6YaSqHzfvNC6sHfpRi0gkU0GggqLiiOGAl/CZPudhPK7P3Ke/wNJmFzN
+# F+ucGTsEmpqhwpu67KMBy5ux+Kj3AQ+yjfq4P60acOOFClTidi8c2xTpTIN3Dx9W
+# CPQr4fND+xuauWFO+8sPwb90xhdLDQeWgKgt0afLUbSlk/ZSOyu5ZwQJzaGCAg8w
+# ggILBgkqhkiG9w0BCQYxggH8MIIB+AIBATB2MGIxCzAJBgNVBAYTAlVTMRUwEwYD
+# VQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xITAf
+# BgNVBAMTGERpZ2lDZXJ0IEFzc3VyZWQgSUQgQ0EtMQIQAwGaAjr/WLFr1tXq5hfw
+# ZjAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG
+# 9w0BCQUxDxcNMTYxMjIxMTkzMzI0WjAjBgkqhkiG9w0BCQQxFgQUC5KnFh/tV9Of
+# fCB47Dfcz/YXiQowDQYJKoZIhvcNAQEBBQAEggEARTQG1GNM50J54r9mDphzFQHB
+# mxd6M4G3OqeqyRE9h/5BYv2D5Oxcniyu4Mk0r3Vqwextf/GBy+S3PxM1Zd6vvfiF
+# osUiNMOyFgSWG66AjuKx7oddh2BILH4+rQTqc4md81LRpNiEIC3eVW2fMcTovMD7
+# 9gjmde0fgCtWSmS9vujIJ9tPDYwRPv8LzocwFg8RQn4gU6gjTdoDjYFLW/SP4swR
+# iixAJpDnAzNcCz1bgI7Z32x3rGUSwLtIK31mVevsOXyWxcMn/LF6b6Pr3Fzro+kW
+# sacaOZQ1qQFepJwL7MInpw4e+FxRLa99vHtCktrpRUEFfyYVXQWiQ6E8wNds4w==
+# SIG # End signature block
