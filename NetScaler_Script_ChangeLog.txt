@@ -2,6 +2,10 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #To contact, please use e-mail address info@barryschiffer.com
 
+#Version 2.51 16-December-2014
+•	Help text was broken after adding regions.
+•	Wrong variable name was used for saving as a PDF. Changed $wdSaveFormatPDF to $wdFormatPDF.
+
 #Version 2.5 22-November-2014
 New NetScaler functionality
 •	Citrix NetScaler Admin Partitions (almost 0 day support)

@@ -2,77 +2,10 @@
 #This File is in Unicode format.  Do not edit in an ASCII editor.
 
 #region Support
+
 <#
-.COMMENT
-    If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .SYNOPSIS
     Creates a complete inventory of a Citrix NetScaler configuration using Microsoft Word.
-.NetScaler Documentation Script
-    NAME: NetScaler_Script_v2_0.ps1
-	VERSION NetScaler Script: 2.0
-	VERSION Script Template: 17072014
-	AUTHOR NetScaler script: Barry Schiffer
-    AUTHOR NetScaler script functions: Iain Brighton
-    AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: July 21, 2014  
-.Release Notes version 2
-    Overall
-        Test group has grown from 5 to 20 people. A lot more testing on a lot more configs has been done.
-        The result is that I've received a lot of nitty gritty bugs that are now solved. To many to list them all but this release is very very stable.
-    New Script functionality
-        New table function that now utilizes native word tables. Looks a lot better and is way faster
-        Performance improvements; over 500% faster
-        Better support for multi language Word versions. Will now always utilize cover page and TOC
-    New NetScaler functionality:
-        NetScaler Gateway
-            Global Settings
-            Virtual Servers settings and policies
-            Policies Session/Traffic
-	    NetScaler administration users and groups
-        NetScaler Authentication
-	        Policies LDAP / Radius
-            Actions Local / RADIUS
-            Action LDAP more configuration reported and changed table layout
-        NetScaler Networking
-            Channels
-            ACL
-        NetScaler Cache redirection
-    Bugfixes
-        Naming of items with spaces and quotes fixed
-        Expressions with spaces, quotes, dashes and slashed fixed
-        Grammatical corrections
-        Rechecked all settings like enabled/disabled or on/off and corrected when necessary
-        Time zone not show correctly when in GMT+....
-        A lot more small items
-
-.Release Notes version 1
-    Version 1.0 supports the following NetScaler functionality:
-	NetScaler System Information
-	Version / NSIP / vLAN
-	NetScaler Global Settings
-	NetScaler Feature and mode state
-	NetScaler Networking
-	IP Address / vLAN / Routing Table / DNS
-	NetScaler Authentication
-	Local / LDAP
-	NetScaler Traffic Domain
-	Assigned Content Switch / Load Balancer / Service  / Server
-	NetScaler Monitoring
-	NetScaler Certificate
-	NetScaler Content Switches
-	Assigned Load Balancer / Service  / Server
-	NetScaler Load Balancer
-	Assigned Service  / Server
-	NetScaler Service
-	Assigned Server / monitor
-	NetScaler Service Group
-	Assigned Server / monitor
-	NetScaler Server
-	NetScaler Custom Monitor
-	NetScaler Policy
-	NetScaler Action
-	NetScaler Profile
-
 .DESCRIPTION
 	Creates a complete inventory of a Citrix NetScaler configuration using Microsoft Word and PowerShell.
 	Creates a Word document named after the Citrix NetScaler Configuration.
@@ -89,6 +22,7 @@
 		Portuguese
 		Spanish
 		Swedish
+		
 .PARAMETER CompanyName
 	Company Name to use for the Cover Page.  
 	Default value is contained in HKCU:\Software\Microsoft\Office\Common\UserInfo\CompanyName or
@@ -147,12 +81,14 @@
 .PARAMETER Text
 	Creates a formatted text file with a .txt extension.
 	This parameter is disabled by default.
+	This parameter is reserved for a future update and no output is created at this time.
 .PARAMETER MSWord
 	SaveAs DOCX file
 	This parameter is set True if no other output format is selected.
 .PARAMETER HTML
 	Creates an HTML file with an .html extension.
 	This parameter is disabled by default.
+	This parameter is reserved for a future update and no output is created at this time.
 .PARAMETER AddDateTime
 	Adds a date time stamp to the end of the file name.
 	Time stamp is in the format of yyyy-MM-dd_HHmm.
@@ -172,72 +108,72 @@
 	If entered as an IP address, an attempt is made to determine and use the actual computer name.
 	Default is localhost.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1
+	PS C:\PSScript > .\NetScaler_Script_v2_5.ps1
 	
 	Will use all default values.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Barry Schiffer" or
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Barry Schiffer"
 	$env:username = Administrator
 
-	Carl Webster for the Company Name.
+	Barry Schiffer for the Company Name.
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -PDF
+	PS C:\PSScript > .\NetScaler_Script_v2_5.ps1 -PDF
 	
 	Will use all default values and save the document as a PDF file.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Barry Schiffer" or
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Barry Schiffer"
 	$env:username = Administrator
 
-	Carl Webster for the Company Name.
+	Barry Schiffer for the Company Name.
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -TEXT
+	PS C:\PSScript > .\NetScaler_Script_v2_5.ps1 -TEXT
 	
 	Will use all default values and save the document as a formatted text file.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Barry Schiffer" or
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Barry Schiffer"
 	$env:username = Administrator
 
-	Carl Webster for the Company Name.
+	Barry Schiffer for the Company Name.
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -HTML
+	PS C:\PSScript > .\NetScaler_Script_v2_5.ps1 -HTML
 	
 	Will use all default values and save the document as an HTML file.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Barry Schiffer" or
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Barry Schiffer"
 	$env:username = Administrator
 
-	Carl Webster for the Company Name.
+	Barry Schiffer for the Company Name.
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\NetScaler_Script_v2_0.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
+	PS C:\PSScript .\NetScaler_Script_v2_5.ps1 -CompanyName "Barry Schiffer Consulting" -CoverPage "Mod" -UserName "Barry Schiffer"
 
 	Will use:
-		Carl Webster Consulting for the Company Name.
+		Barry Schiffer Consulting for the Company Name.
 		Mod for the Cover Page format.
-		Carl Webster for the User Name.
+		Barry Schiffer for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\NetScaler_Script_v2_0.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
+	PS C:\PSScript .\NetScaler_Script_v2_5.ps1 -CN "Barry Schiffer Consulting" -CP "Mod" -UN "Barry Schiffer"
 
 	Will use:
-		Carl Webster Consulting for the Company Name (alias CN).
+		Barry Schiffer Consulting for the Company Name (alias CN).
 		Mod for the Cover Page format (alias CP).
-		Carl Webster for the User Name (alias UN).
+		Barry Schiffer for the User Name (alias UN).
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -AddDateTime
+	PS C:\PSScript > .\NetScaler_Script_v2_5.ps1 -AddDateTime
 	
 	Will use all default values.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Barry Schiffer" or
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Barry Schiffer"
 	$env:username = Administrator
 
-	Carl Webster for the Company Name.
+	Barry Schiffer for the Company Name.
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 
@@ -246,14 +182,14 @@
 	June 1, 2014 at 6PM is 2014-06-01_1800.
 	Output filename will be Script_Template_2014-06-01_1800.docx
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -PDF -AddDateTime
+	PS C:\PSScript > .\NetScaler_Script_v2_5.ps1 -PDF -AddDateTime
 	
 	Will use all default values and save the document as a PDF file.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Barry Schiffer" or
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Barry Schiffer"
 	$env:username = Administrator
 
-	Carl Webster for the Company Name.
+	Barry Schiffer for the Company Name.
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 
@@ -262,27 +198,27 @@
 	June 1, 2014 at 6PM is 2014-06-01_1800.
 	Output filename will be Script_Template_2014-06-01_1800.PDF
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -Hardware
+	PS C:\PSScript > .\NetScaler_Script_v2_5.ps1 -Hardware
 	
 	Will use all default values.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Barry Schiffer" or
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Barry Schiffer"
 	$env:username = Administrator
 
-	Carl Webster for the Company Name.
+	Barry Schiffer for the Company Name.
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 	localhost for running hardware inventory.
 	localhost will be replaced by the actual computer name.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -Hardware -ComputerName 192.168.1.51
+	PS C:\PSScript > .\NetScaler_Script_v2_5.ps1 -Hardware -ComputerName 192.168.1.51
 	
 	Will use all default values.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Barry Schiffer" or
+	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Barry Schiffer"
 	$env:username = Administrator
 
-	Carl Webster for the Company Name.
+	Barry Schiffer for the Company Name.
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 	192.168.1.51 for running hardware inventory.
@@ -293,11 +229,12 @@
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-	NAME: Based on Script Template date 17072014
-	VERSION: 17072014
+	NAME: NetScaler_Script_v2_5_unsigned.ps1
+	VERSION: 16122014
 	AUTHOR: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters, Barry Schiffer
-	LASTEDIT: July 17, 2014
+	LASTEDIT: December 16, 2014
 #>
+
 #endregion Support
 
 #region script template
@@ -377,6 +314,75 @@ Param(
 #@carlwebster on Twitter
 #http://www.CarlWebster.com
 #Created on June 1, 2014
+
+<#
+.NetScaler Documentation Script
+    NAME: NetScaler_Script_v2_5.ps1
+	VERSION NetScaler Script: 2.5
+	VERSION Script Template: 16122014
+	AUTHOR NetScaler script: Barry Schiffer
+    AUTHOR NetScaler script functions: Iain Brighton
+    AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
+	LASTEDIT: December 16, 2014  
+.Release Notes version 2
+    Overall
+        Test group has grown from 5 to 20 people. A lot more testing on a lot more configs has been done.
+        The result is that I've received a lot of nitty gritty bugs that are now solved. To many to list them all but this release is very very stable.
+    New Script functionality
+        New table function that now utilizes native word tables. Looks a lot better and is way faster
+        Performance improvements; over 500% faster
+        Better support for multi language Word versions. Will now always utilize cover page and TOC
+    New NetScaler functionality:
+        NetScaler Gateway
+            Global Settings
+            Virtual Servers settings and policies
+            Policies Session/Traffic
+	    NetScaler administration users and groups
+        NetScaler Authentication
+	        Policies LDAP / Radius
+            Actions Local / RADIUS
+            Action LDAP more configuration reported and changed table layout
+        NetScaler Networking
+            Channels
+            ACL
+        NetScaler Cache redirection
+    Bugfixes
+        Naming of items with spaces and quotes fixed
+        Expressions with spaces, quotes, dashes and slashed fixed
+        Grammatical corrections
+        Rechecked all settings like enabled/disabled or on/off and corrected when necessary
+        Time zone not show correctly when in GMT+....
+        A lot more small items
+
+.Release Notes version 1
+    Version 1.0 supports the following NetScaler functionality:
+	NetScaler System Information
+	Version / NSIP / vLAN
+	NetScaler Global Settings
+	NetScaler Feature and mode state
+	NetScaler Networking
+	IP Address / vLAN / Routing Table / DNS
+	NetScaler Authentication
+	Local / LDAP
+	NetScaler Traffic Domain
+	Assigned Content Switch / Load Balancer / Service  / Server
+	NetScaler Monitoring
+	NetScaler Certificate
+	NetScaler Content Switches
+	Assigned Load Balancer / Service  / Server
+	NetScaler Load Balancer
+	Assigned Service  / Server
+	NetScaler Service
+	Assigned Server / monitor
+	NetScaler Service Group
+	Assigned Server / monitor
+	NetScaler Server
+	NetScaler Custom Monitor
+	NetScaler Policy
+	NetScaler Action
+	NetScaler Profile
+
+#>
 
 Set-StrictMode -Version 2
 
@@ -531,7 +537,7 @@ If($MSWord -or $PDF)
 	[int]$wdWord2010 = 14
 	[int]$wdWord2013 = 15
 	[int]$wdFormatDocumentDefault = 16
-	[int]$wdSaveFormatPDF = 17
+	[int]$wdFormatPDF = 17
 	#http://blogs.technet.com/b/heyscriptingguy/archive/2006/03/01/how-can-i-right-align-a-single-column-in-a-word-table.aspx
 	#http://msdn.microsoft.com/en-us/library/office/ff835817%28v=office.15%29.aspx
 	[int]$wdAlignParagraphLeft = 0
@@ -2232,6 +2238,7 @@ Function FindWordDocumentEnd
 	display names for each specified column header has been overridden to display a
 	custom header. Note: the order of the header names must match the specified columns.
 #>
+
 Function AddWordTable
 {
 	[CmdletBinding()]
@@ -2476,6 +2483,7 @@ Function AddWordTable
 	in the table's 17th row and 3rd column.
 	Note: the $Table.Cell(17,3) returns a single Word COM cells object.
 #>
+
 Function SetWordCellFormat 
 {
 	[CmdletBinding(DefaultParameterSetName='Collection')]
@@ -2578,6 +2586,7 @@ Function SetWordCellFormat
 	This example sets every other table (starting with the second) row and sets the
 	background color to light orange (weColorLightOrange).
 #>
+
 Function SetWordTableAlternateRowColor 
 {
 	[CmdletBinding()]
@@ -3100,7 +3109,7 @@ Function SaveandCloseDocumentandShutdownWord
 			If($PDF)
 			{
 				Write-Verbose "$(Get-Date): Now saving as PDF"
-				$SaveFormat = $wdSaveFormatPDF
+				$SaveFormat = $wdFormatPDF
 				$Script:Doc.SaveAs($Script:FileName2, $SaveFormat)
 			}
 		}
@@ -3331,6 +3340,7 @@ If($TEXT)
 }
 
 $ComputerName = TestComputerName $ComputerName
+
 <#
 ###The function SetFileName1andFileName2 needs your script output filename
 SetFileName1andFileName2 "Script_Template"
@@ -3338,6 +3348,7 @@ SetFileName1andFileName2 "Script_Template"
 ###change title for your report
 [string]$Script:Title = "This is the Report Title"
 #>
+
 #endregion script template
 
 #region file name and title name
@@ -3497,6 +3508,7 @@ function Get-StringProperty {
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Get-StringPropertySplit {
     [CmdletBinding(HelpUri = 'http://virtualengine.co.uk/2014/searching-for-string-properties-with-powershell/')]
     [OutputType([String[]])]
@@ -3566,6 +3578,7 @@ EXAMPLE
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Get-NetScalerExpression {
     [CmdletBinding()]
     Param (
@@ -3609,6 +3622,7 @@ function Get-NetScalerExpression {
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Test-StringProperty {
     [CmdletBinding(HelpUri = 'http://virtualengine.co.uk/2014/searching-for-string-properties-with-powershell/')]
     [OutputType([bool])]
@@ -3640,6 +3654,7 @@ function Test-StringProperty {
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Test-StringPropertyYesNo([string]$SearchString, [string]$SearchProperty)
 {
     if (Test-StringProperty $SearchString $SearchProperty) { return "Yes"; }
@@ -3653,6 +3668,7 @@ function Test-StringPropertyYesNo([string]$SearchString, [string]$SearchProperty
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Test-NotStringPropertyYesNo([string]$SearchString, [string]$SearchProperty)
 {
     if (-not (Test-StringProperty $SearchString $SearchProperty)) { return "Yes"; }
@@ -3666,6 +3682,7 @@ function Test-NotStringPropertyYesNo([string]$SearchString, [string]$SearchPrope
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Test-StringPropertyEnabledDisabled([string]$SearchString, [string]$SearchProperty)
 {
     if (Test-StringProperty $SearchString $SearchProperty) { return "Enabled"; }
@@ -3679,6 +3696,7 @@ function Test-StringPropertyEnabledDisabled([string]$SearchString, [string]$Sear
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Test-NotStringPropertyEnabledDisabled([string]$SearchString, [string]$SearchProperty)
 {
     if (-not (Test-StringProperty $SearchString $SearchProperty)) { return "Enabled"; }
@@ -3692,6 +3710,7 @@ function Test-NotStringPropertyEnabledDisabled([string]$SearchString, [string]$S
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Test-StringPropertyOnOff([string]$SearchString, [string]$SearchProperty)
 {
     if (Test-StringProperty $SearchString $SearchProperty) { return "On"; }
@@ -3705,6 +3724,7 @@ function Test-StringPropertyOnOff([string]$SearchString, [string]$SearchProperty
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Test-NotStringPropertyOnOff([string]$SearchString, [string]$SearchProperty)
 {
     if (-not (Test-StringProperty $SearchString $SearchProperty)) { return "On"; }
@@ -3718,6 +3738,7 @@ function Test-NotStringPropertyOnOff([string]$SearchString, [string]$SearchPrope
 .NOTES
    Author - Iain Brighton - @iainbrighton, iain.brighton@virtualengine.co.uk
 #>
+
 function Get-StringWithProperty {
     [CmdletBinding(DefaultParameterSetName='PropertyName')]
     [OutputType([string[]])]
