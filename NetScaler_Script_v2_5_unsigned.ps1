@@ -4258,6 +4258,59 @@ WriteWordLine 0 0 " "
 
 #endregion NetScaler Administration
 
+#region NetScaler Admin Partitions
+$Chapter++
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Admin Partitions"
+
+WriteWordLine 2 0 "NetScaler Admin Partitions"
+
+if($AdminPartitions.Length -le 0) { WriteWordLine 0 0 "No Admin Partitions have been configured"} else {
+       
+        ## IB - Use an array of hashtable to store the rows
+        [System.Collections.Hashtable[]] $APH = @();
+        
+        foreach ($AdminPartition in $AdminPartitions) {
+            ## IB - We can now utilise the Get-StringPropertySplit function to return all escaped properties, including quoted expressions
+            $AdminPartitionPropertyArray = Get-StringPropertySplit -SearchString ($AdminPartition -Replace 'add ns partition' ,'') -RemoveQuotes;
+            $AdminPartitionDisplayNameWithQoutes = Get-StringProperty $AdminPartition "partition";
+            
+            ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+            ## IB - command will be able 400 characters wide!
+
+            $APBindMatches = Get-StringWithProperty -SearchString $AdminPartitionsBind -Like "bind ns partition $AdminPartitionDisplayNameWithQoutes *";
+
+            $APBindMatches | foreach {
+                $vlanap = Get-StringProperty $_ "-vlan";
+                }
+
+            $APH += @{
+                ID = Get-StringProperty $AdminPartition "-partitionid";
+                APNAME = $AdminPartitionPropertyArray[0];
+                vLAN = $vlanap;
+                MinBand = Get-StringProperty $AdminPartition "-minBandwidth" "10240";
+                MaxBand = Get-StringProperty $AdminPartition "-maxBandwidth" "10240";
+                Maxconn = Get-StringProperty $AdminPartition "-maxConn" "1024";
+                Maxmem = Get-StringProperty $AdminPartition "-maxMemLimit" "10";
+                }
+            }
+
+            if ($APH.Length -gt 0) {
+                $Params = $null
+                $Params = @{
+                    Hashtable = $APH;
+                    Columns = "ID","APNAME","vLAN","MinBand","MaxBand","Maxconn","Maxmem";
+                    Headers = "ID","Name","vLAN","Minimum Bandwidth","Maximum Bandwidth","Maximum Connections","Maximum Memory";
+                    Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                    AutoFit = $wdAutoFitContent;
+                    }
+                $Table = AddWordTable @Params -NoGridLines;
+                FindWordDocumentEnd;
+                WriteWordLine 0 0 " "
+                }
+            }
+    
+#endregion NetScaler Admin Partitions
+
 #region NetScaler Features
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Features"
@@ -5995,8 +6048,8 @@ if($Services.Length -le 0) { WriteWordLine 0 0 "No Service has been configured"}
 			@{ Description = "Monitor health of this service"; Value = Test-NotStringPropertyYesNo $Service "-healthMonitor" ; }
 			@{ Description = "Maximum Requests"; Value = Get-StringProperty $Service "-maxreq" "65535 (Maximum Value)" ; }
 			@{ Description = "Use Transparent Cache"; Value = Test-StringPropertyYesNo $Service "-cacheable" ; }
-			@{ Description = "Insert the Client IP header"; Value = Get-StringProperty $Service "-cip" "NA"  ; }
-			@{ Description = "Name for the HTTP header"; Value = Get-StringProperty $Service "-cipHeader" "NA" ; }
+			@{ Description = "Insert the Client IP header"; Value = Get-StringProperty $Service "-cip" "DISABLED"  ; }
+			##@{ Description = "Name for the HTTP header"; Value = Get-StringProperty $Service "-cipHeader" "NA" ; }
 			@{ Description = "Use Source IP"; Value = Test-NotStringPropertyYesNo $Service "-usip" ; }
             @{ Description = "Path Monitoring"; Value = Test-StringPropertyYesNo $Service "-pathMonitor" ; }
 			@{ Description = "Individual Path monitoring"; Value = Test-StringPropertyYesNo $Service "-pathMonitorIndv" ; }
@@ -7001,6 +7054,7 @@ if($MONITORS.Length -le 0) { WriteWordLine 0 0 "No Custom Monitor has been confi
                 Interval = Get-StringProperty $MONITOR "-interval" "NA";
                 ResponseCode = Get-StringProperty $MONITOR "-respCode" "NA";
                 TimeOut = Get-StringProperty $MONITOR "-resptimeout" "NA";
+                SitePath = Get-StringProperty $MONITOR "-sitePath" "NA";
                 }
             }
 
@@ -7008,8 +7062,8 @@ if($MONITORS.Length -le 0) { WriteWordLine 0 0 "No Custom Monitor has been confi
             $Params = $null
             $Params = @{
                 Hashtable = $MONITORSH;
-                Columns = "NAME","Protocol","HTTPRequest","DestinationIP","DestinationPort","Interval","ResponseCode","TimeOut";
-                Headers = "Monitor Name","Protocol","HTTP Request","Destination IP","Destination Port","Interval","Response Code","Time-Out";
+                Columns = "NAME","Protocol","HTTPRequest","DestinationIP","DestinationPort","Interval","ResponseCode","TimeOut","SitePath";
+                Headers = "Monitor Name","Protocol","HTTP Request","Destination IP","Destination Port","Interval","Response Code","Time-Out","SitePath";
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
@@ -7397,164 +7451,3 @@ $runtime = $Null
 $Str = $Null
 $ErrorActionPreference = $SaveEAPreference
 #endregion script template 2
-# SIG # Begin signature block
-# MIIdzAYJKoZIhvcNAQcCoIIdvTCCHbkCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
-# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU9bWH0aOdaih+mPi4Kcm3hAhA
-# Heegghj+MIIFFDCCA/ygAwIBAgIQBx/kcDiyvT6fwtlzRxz7nDANBgkqhkiG9w0B
-# AQUFADBvMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
-# VQQLExB3d3cuZGlnaWNlcnQuY29tMS4wLAYDVQQDEyVEaWdpQ2VydCBBc3N1cmVk
-# IElEIENvZGUgU2lnbmluZyBDQS0xMB4XDTE0MDYxNzAwMDAwMFoXDTE1MDYxODEy
-# MDAwMFowajELMAkGA1UEBhMCTkwxFTATBgNVBAgTDFp1aWQtSG9sbGFuZDESMBAG
-# A1UEBxMJUm90dGVyZGFtMRcwFQYDVQQKEw5CYXJyeSBTY2hpZmZlcjEXMBUGA1UE
-# AxMOQmFycnkgU2NoaWZmZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
-# AQCatPqk8FUL5qVj7vBV/oiYWmjTTyYxeutXbyfFpX+oo9F2++Ex6lDTAsk4myre
-# kWE//hmWWDE4b0j1R0fPwkg5qDzmgWIiXXoyirIpsHR9Az0U+LgEcwQxDc2WM7Tr
-# ojq3hAzKHCS8HI6VXikkkBaqCw5fyeE2jArmC4kJ1aDUP87vOSWYQCA2AGr4VOsp
-# ERc/2/UGDZQ+G0/0qFIwOds6Vwj3lozhobWDDYaIFDX34jeaTOQuf7hEv4QhCYMH
-# fqT2lVCA9FWTzQhWcDuhZiK45kAWsB9cZmSetcnsuR4KXIMjZssdMbQ5fp6denT4
-# dPGSiI2F7YbOG1YPYW+PVKqXAgMBAAGjggGvMIIBqzAfBgNVHSMEGDAWgBR7aM4p
-# qsAXvkl64eU/1qf3RY81MjAdBgNVHQ4EFgQU668uBkl4hV9VfPeUVzmYDlHwTKow
-# DgYDVR0PAQH/BAQDAgeAMBMGA1UdJQQMMAoGCCsGAQUFBwMDMG0GA1UdHwRmMGQw
-# MKAuoCyGKmh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9hc3N1cmVkLWNzLWcxLmNy
-# bDAwoC6gLIYqaHR0cDovL2NybDQuZGlnaWNlcnQuY29tL2Fzc3VyZWQtY3MtZzEu
-# Y3JsMEIGA1UdIAQ7MDkwNwYJYIZIAYb9bAMBMCowKAYIKwYBBQUHAgEWHGh0dHBz
-# Oi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwgYIGCCsGAQUFBwEBBHYwdDAkBggrBgEF
-# BQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEwGCCsGAQUFBzAChkBodHRw
-# Oi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURDb2RlU2ln
-# bmluZ0NBLTEuY3J0MAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEFBQADggEBAIO/
-# vPibLfX5AnSO7cA0mYpThSUjW6oACHF2zwx0c0SSfwyEvMrJXT6wLI7MA1qJp0g0
-# 5002Y6sqz7/9DlpoXt3dvf/zwo9f45v8fQZwIfLXvdEs40W+1XdHIz/3foVYA58W
-# w2796YZPAqAT5Y5UWd6daEV2t2AhiYlcfJq9noQiYsZe2W5HTQ98zofqg5fVG96y
-# v/pTY+em53dAY6i0dI0zoksU5tiXmU/oAELbbzlX6pa4MFetd88cyN3gc7h5Z69I
-# 3rWp3UlATOIqMQ8llOTVgUGSPVy5j4NQtBQC2sRPXoH+jGV6gqbkQDxY1eZonKG0
-# 0FFFPUdCVC0+cS2dZZkwggZqMIIFUqADAgECAhAGZAFG6YDgDmChTY9ESllYMA0G
-# CSqGSIb3DQEBBQUAMGIxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJ
-# bmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xITAfBgNVBAMTGERpZ2lDZXJ0
-# IEFzc3VyZWQgSUQgQ0EtMTAeFw0xNDA1MjAwMDAwMDBaFw0xNTA2MDMwMDAwMDBa
-# MEcxCzAJBgNVBAYTAlVTMREwDwYDVQQKEwhEaWdpQ2VydDElMCMGA1UEAxMcRGln
-# aUNlcnQgVGltZXN0YW1wIFJlc3BvbmRlcjCCASIwDQYJKoZIhvcNAQEBBQADggEP
-# ADCCAQoCggEBAKmJGPY89HE4f+xGti34yQMlJQk9NtwaTYzYCz+eByZcFZDkbxqa
-# KxsRnoN201QHK+SDQqY7bezz851sj1aaganZwK8ROKKagOKQFPwRl0KmUJ0uqbPg
-# SFcvBEka9dddI5ugdxDsc8VvGu3N1hMUW1XQ8EEwRkjALnoCquAOjhH94yTKMDv5
-# mKe74CepaRPI2s5+NfzhRfd88mQUSEGYAx/OiMpoHhCP8ZSh2Gwr8L1rkYWV2TuF
-# TJaQL/Et51gDI4DUzNHoWqZSGhGuY0daqrM/ImBR9v7SuY0ELT+1qzV16mTTTPrQ
-# QHWSBCalwi8s4dvrwWvvmPTQJDWPHsAUFkECAwEAAaOCAzUwggMxMA4GA1UdDwEB
-# /wQEAwIHgDAMBgNVHRMBAf8EAjAAMBYGA1UdJQEB/wQMMAoGCCsGAQUFBwMIMIIB
-# vwYDVR0gBIIBtjCCAbIwggGhBglghkgBhv1sBwEwggGSMCgGCCsGAQUFBwIBFhxo
-# dHRwczovL3d3dy5kaWdpY2VydC5jb20vQ1BTMIIBZAYIKwYBBQUHAgIwggFWHoIB
-# UgBBAG4AeQAgAHUAcwBlACAAbwBmACAAdABoAGkAcwAgAEMAZQByAHQAaQBmAGkA
-# YwBhAHQAZQAgAGMAbwBuAHMAdABpAHQAdQB0AGUAcwAgAGEAYwBjAGUAcAB0AGEA
-# bgBjAGUAIABvAGYAIAB0AGgAZQAgAEQAaQBnAGkAQwBlAHIAdAAgAEMAUAAvAEMA
-# UABTACAAYQBuAGQAIAB0AGgAZQAgAFIAZQBsAHkAaQBuAGcAIABQAGEAcgB0AHkA
-# IABBAGcAcgBlAGUAbQBlAG4AdAAgAHcAaABpAGMAaAAgAGwAaQBtAGkAdAAgAGwA
-# aQBhAGIAaQBsAGkAdAB5ACAAYQBuAGQAIABhAHIAZQAgAGkAbgBjAG8AcgBwAG8A
-# cgBhAHQAZQBkACAAaABlAHIAZQBpAG4AIABiAHkAIAByAGUAZgBlAHIAZQBuAGMA
-# ZQAuMAsGCWCGSAGG/WwDFTAfBgNVHSMEGDAWgBQVABIrE5iymQftHt+ivlcNK2cC
-# zTAdBgNVHQ4EFgQUNPwPRn6rt9lrXfhTckXmBJHTwvswfQYDVR0fBHYwdDA4oDag
-# NIYyaHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEQ0Et
-# MS5jcmwwOKA2oDSGMmh0dHA6Ly9jcmw0LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFz
-# c3VyZWRJRENBLTEuY3JsMHcGCCsGAQUFBwEBBGswaTAkBggrBgEFBQcwAYYYaHR0
-# cDovL29jc3AuZGlnaWNlcnQuY29tMEEGCCsGAQUFBzAChjVodHRwOi8vY2FjZXJ0
-# cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURDQS0xLmNydDANBgkqhkiG
-# 9w0BAQUFAAOCAQEAEECQs3Gf8B47Atw/vEwV5w45EsCGQBYaoGXIk1vDB7CkiEQP
-# kJRHXjXDBbL+2J0e1PS3fsYHIV5mD+U1sqQfBCpCMOYnTydiNMBmlMICL0d5Jkqd
-# SlwEtQRI8yt5SRpHFLwW5ce4Z1AgvazEtP2rIYAsYKYbq3zvBzxA7mkYTdYn4jRZ
-# 4SlCI7M9Q51uHpfE3YL48qEU+I38Zn1k7EA3AQTeTFVOP9Mi+EbPLljAy7ClvuDl
-# G4tIXLIRkQLMuVzs/R51Jf5+JRa6LBKEH9vxDvkEU7L4TZwGRjNxdYaG41QP1+uz
-# 1VivK1qHxKAwDTPGpvEwvtX7fzW+xuKP2RnvlDCCBqMwggWLoAMCAQICEA+oSQYV
-# 1wCgviF2/cXsbb0wDQYJKoZIhvcNAQEFBQAwZTELMAkGA1UEBhMCVVMxFTATBgNV
-# BAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEkMCIG
-# A1UEAxMbRGlnaUNlcnQgQXNzdXJlZCBJRCBSb290IENBMB4XDTExMDIxMTEyMDAw
-# MFoXDTI2MDIxMDEyMDAwMFowbzELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lD
-# ZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEuMCwGA1UEAxMlRGln
-# aUNlcnQgQXNzdXJlZCBJRCBDb2RlIFNpZ25pbmcgQ0EtMTCCASIwDQYJKoZIhvcN
-# AQEBBQADggEPADCCAQoCggEBAJx8+aCPCsqJS1OaPOwZIn8My/dIRNA/Im6aT/rO
-# 38bTJJH/qFKT53L48UaGlMWrF/R4f8t6vpAmHHxTL+WD57tqBSjMoBcRSxgg87e9
-# 8tzLuIZARR9P+TmY0zvrb2mkXAEusWbpprjcBt6ujWL+RCeCqQPD/uYmC5NJceU4
-# bU7+gFxnd7XVb2ZklGu7iElo2NH0fiHB5sUeyeCWuAmV+UuerswxvWpaQqfEBUd9
-# YCvZoV29+1aT7xv8cvnfPjL93SosMkbaXmO80LjLTBA1/FBfrENEfP6ERFC0jCo9
-# dAz0eotyS+BWtRO2Y+k/Tkkj5wYW8CWrAfgoQebH1GQ7XasCAwEAAaOCA0MwggM/
-# MA4GA1UdDwEB/wQEAwIBhjATBgNVHSUEDDAKBggrBgEFBQcDAzCCAcMGA1UdIASC
-# AbowggG2MIIBsgYIYIZIAYb9bAMwggGkMDoGCCsGAQUFBwIBFi5odHRwOi8vd3d3
-# LmRpZ2ljZXJ0LmNvbS9zc2wtY3BzLXJlcG9zaXRvcnkuaHRtMIIBZAYIKwYBBQUH
-# AgIwggFWHoIBUgBBAG4AeQAgAHUAcwBlACAAbwBmACAAdABoAGkAcwAgAEMAZQBy
-# AHQAaQBmAGkAYwBhAHQAZQAgAGMAbwBuAHMAdABpAHQAdQB0AGUAcwAgAGEAYwBj
-# AGUAcAB0AGEAbgBjAGUAIABvAGYAIAB0AGgAZQAgAEQAaQBnAGkAQwBlAHIAdAAg
-# AEMAUAAvAEMAUABTACAAYQBuAGQAIAB0AGgAZQAgAFIAZQBsAHkAaQBuAGcAIABQ
-# AGEAcgB0AHkAIABBAGcAcgBlAGUAbQBlAG4AdAAgAHcAaABpAGMAaAAgAGwAaQBt
-# AGkAdAAgAGwAaQBhAGIAaQBsAGkAdAB5ACAAYQBuAGQAIABhAHIAZQAgAGkAbgBj
-# AG8AcgBwAG8AcgBhAHQAZQBkACAAaABlAHIAZQBpAG4AIABiAHkAIAByAGUAZgBl
-# AHIAZQBuAGMAZQAuMBIGA1UdEwEB/wQIMAYBAf8CAQAweQYIKwYBBQUHAQEEbTBr
-# MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQwYIKwYBBQUH
-# MAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJ
-# RFJvb3RDQS5jcnQwgYEGA1UdHwR6MHgwOqA4oDaGNGh0dHA6Ly9jcmwzLmRpZ2lj
-# ZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmwwOqA4oDaGNGh0dHA6
-# Ly9jcmw0LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmww
-# HQYDVR0OBBYEFHtozimqwBe+SXrh5T/Wp/dFjzUyMB8GA1UdIwQYMBaAFEXroq/0
-# ksuCMS1Ri6enIZ3zbcgPMA0GCSqGSIb3DQEBBQUAA4IBAQB7ch1k/4jIOsG36eep
-# xIe725SS15BZM/orh96oW4AlPxOPm4MbfEPE5ozfOT7DFeyw2jshJXskwXJduEeR
-# gRNG+pw/alE43rQly/Cr38UoAVR5EEYk0TgPJqFhkE26vSjmP/HEqpv22jVTT8ny
-# PdNs3CPtqqBNZwnzOoA9PPs2TJDndqTd8jq/VjUvokxl6ODU2tHHyJFqLSNPNzsZ
-# lBjU1ZwQPNWxHBn/j8hrm574rpyZlnjRzZxRFVtCJnJajQpKI5JA6IbeIsKTOtSb
-# aKbfKX8GuTwOvZ/EhpyCR0JxMoYJmXIJeUudcWn1Qf9/OXdk8YSNvosesn1oo6WQ
-# sQz/MIIGzTCCBbWgAwIBAgIQBv35A5YDreoACus/J7u6GzANBgkqhkiG9w0BAQUF
-# ADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQL
-# ExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVkIElE
-# IFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMjExMTEwMDAwMDAwWjBiMQswCQYD
-# VQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGln
-# aWNlcnQuY29tMSEwHwYDVQQDExhEaWdpQ2VydCBBc3N1cmVkIElEIENBLTEwggEi
-# MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDogi2Z+crCQpWlgHNAcNKeVlRc
-# qcTSQQaPyTP8TUWRXIGf7Syc+BZZ3561JBXCmLm0d0ncicQK2q/LXmvtrbBxMevP
-# OkAMRk2T7It6NggDqww0/hhJgv7HxzFIgHweog+SDlDJxofrNj/YMMP/pvf7os1v
-# cyP+rFYFkPAyIRaJxnCI+QWXfaPHQ90C6Ds97bFBo+0/vtuVSMTuHrPyvAwrmdDG
-# XRJCgeGDboJzPyZLFJCuWWYKxI2+0s4Grq2Eb0iEm09AufFM8q+Y+/bOQF1c9qjx
-# L6/siSLyaxhlscFzrdfx2M8eCnRcQrhofrfVdwonVnwPYqQ/MhRglf0HBKIJAgMB
-# AAGjggN6MIIDdjAOBgNVHQ8BAf8EBAMCAYYwOwYDVR0lBDQwMgYIKwYBBQUHAwEG
-# CCsGAQUFBwMCBggrBgEFBQcDAwYIKwYBBQUHAwQGCCsGAQUFBwMIMIIB0gYDVR0g
-# BIIByTCCAcUwggG0BgpghkgBhv1sAAEEMIIBpDA6BggrBgEFBQcCARYuaHR0cDov
-# L3d3dy5kaWdpY2VydC5jb20vc3NsLWNwcy1yZXBvc2l0b3J5Lmh0bTCCAWQGCCsG
-# AQUFBwICMIIBVh6CAVIAQQBuAHkAIAB1AHMAZQAgAG8AZgAgAHQAaABpAHMAIABD
-# AGUAcgB0AGkAZgBpAGMAYQB0AGUAIABjAG8AbgBzAHQAaQB0AHUAdABlAHMAIABh
-# AGMAYwBlAHAAdABhAG4AYwBlACAAbwBmACAAdABoAGUAIABEAGkAZwBpAEMAZQBy
-# AHQAIABDAFAALwBDAFAAUwAgAGEAbgBkACAAdABoAGUAIABSAGUAbAB5AGkAbgBn
-# ACAAUABhAHIAdAB5ACAAQQBnAHIAZQBlAG0AZQBuAHQAIAB3AGgAaQBjAGgAIABs
-# AGkAbQBpAHQAIABsAGkAYQBiAGkAbABpAHQAeQAgAGEAbgBkACAAYQByAGUAIABp
-# AG4AYwBvAHIAcABvAHIAYQB0AGUAZAAgAGgAZQByAGUAaQBuACAAYgB5ACAAcgBl
-# AGYAZQByAGUAbgBjAGUALjALBglghkgBhv1sAxUwEgYDVR0TAQH/BAgwBgEB/wIB
-# ADB5BggrBgEFBQcBAQRtMGswJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2lj
-# ZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2NhY2VydHMuZGlnaWNlcnQuY29t
-# L0RpZ2lDZXJ0QXNzdXJlZElEUm9vdENBLmNydDCBgQYDVR0fBHoweDA6oDigNoY0
-# aHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEUm9vdENB
-# LmNybDA6oDigNoY0aHR0cDovL2NybDQuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNz
-# dXJlZElEUm9vdENBLmNybDAdBgNVHQ4EFgQUFQASKxOYspkH7R7for5XDStnAs0w
-# HwYDVR0jBBgwFoAUReuir/SSy4IxLVGLp6chnfNtyA8wDQYJKoZIhvcNAQEFBQAD
-# ggEBAEZQPsm3KCSnOB22WymvUs9S6TFHq1Zce9UNC0Gz7+x1H3Q48rJcYaKclcNQ
-# 5IK5I9G6OoZyrTh4rHVdFxc0ckeFlFbR67s2hHfMJKXzBBlVqefj56tizfuLLZDC
-# wNK1lL1eT7EF0g49GqkUW6aGMWKoqDPkmzmnxPXOHXh2lCVz5Cqrz5x2S+1fwksW
-# 5EtwTACJHvzFebxMElf+X+EevAJdqP77BzhPDcZdkbkPZ0XN1oPt55INjbFpjE/7
-# WeAjD9KqrgB87pxCDs+R1ye3Fu4Pw718CqDuLAhVhSK46xgaTfwqIa1JMYNHlXdx
-# 3LEbS0scEJx3FMGdTy9alQgpECYxggQ4MIIENAIBATCBgzBvMQswCQYDVQQGEwJV
-# UzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQu
-# Y29tMS4wLAYDVQQDEyVEaWdpQ2VydCBBc3N1cmVkIElEIENvZGUgU2lnbmluZyBD
-# QS0xAhAHH+RwOLK9Pp/C2XNHHPucMAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEM
-# MQowCKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQB
-# gjcCAQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRzqAGqb59PYZQl
-# EKzBWtAtZf/pZDANBgkqhkiG9w0BAQEFAASCAQAW3DvzvqcNKE5mxq/b6aEIp7gl
-# qH44HsNP2nWsu3IQ5PhyvkgV7QiCObMPHCITOTHtSwZ0ULfkEckoIJq6A/uJ86Iq
-# IJvgHhjaKdOuGAFlNfE3Ts705z4cXZMXgt7Ob50pI9opaYHIIN1qr4jReqIL6Pv5
-# 7gFY8LMbOHSfKJP4pypVeCRtthq8+6riLlnXc4cOlr+PhyTkRS0RfouOMiccUtyM
-# TjFN4L6ab8bB+ehWcvc7FXyjCZ5XwtDfzybtWfCtP2aBqLlSnslwt7Cliw1BO0FT
-# 4X0krI2y8RlEJPy51JfTg9REAzvEbCIhK4K2efX/rggZ8CMM2/Sq955QWpjwoYIC
-# DzCCAgsGCSqGSIb3DQEJBjGCAfwwggH4AgEBMHYwYjELMAkGA1UEBhMCVVMxFTAT
-# BgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEh
-# MB8GA1UEAxMYRGlnaUNlcnQgQXNzdXJlZCBJRCBDQS0xAhAGZAFG6YDgDmChTY9E
-# SllYMAkGBSsOAwIaBQCgXTAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqG
-# SIb3DQEJBTEPFw0xNDA3MjExMjE5MjhaMCMGCSqGSIb3DQEJBDEWBBTDI3ptbqCg
-# +lqC5I9hZK1uOZIvVDANBgkqhkiG9w0BAQEFAASCAQAUaJdU3/PK3ZnrcKMcJhuO
-# 2VjnA70FMwQHNRrfKzYM77Qzi2kqbzoogcx7n/Q/p+KWZVLxRTUUEK88m9z0P860
-# WMC1X+6SkcPFlcav75X/qfda0oq9RFUwLddh0v7z7pBpiCHPoOogxJDRG3oB3K/9
-# JI+coOl4Wc633gPxkMEO1DNqly9BUMTGu5/kYHOyiC02L+tf0Prx6voXOZVqRKnb
-# UEC33CHa4ZjDPUDo5vN3BKuufQTMfa6MgR6zLnjmrIAVnHEXPMomB1eSbXk2GqYl
-# 57OvhgtLxEFeTtYeu1/WX+JH/W4ujFk4QmMsUugZi7eUzkQugbz+wexUS47AD1M9
-# SIG # End signature block
