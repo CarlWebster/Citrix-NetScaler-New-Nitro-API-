@@ -1,6 +1,14 @@
-#Original Script created by Barry Schiffer and optimized by Iain Brighton. 
+﻿#Original Script created by Barry Schiffer and optimized by Iain Brighton. 
 #All Word related PowerShell functionality has been provided by Carl Webster
 #To contact, please use e-mail address info@barryschiffer.com
+
+#Version 2.5 22-November-2014
+New NetScaler functionality
+•	Citrix NetScaler Admin Partitions (almost 0 day support)
+•	Monitors: Added SitePath Thanks Roland!
+Bugfixes
+•	Removed Client-IP header name within services because of an error Thanks Carl!
+
 
 #Version 2.0 23-July-2014
 New Script Features
