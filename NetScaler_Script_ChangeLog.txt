@@ -2,6 +2,9 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #To contact, please use e-mail address info@barryschiffer.com
 
+#Version 3.61 13-Feb-2017
+#	Fixed French wording for Table of Contents 2 (Thanks to David Rouquier)
+
 #Version 3.6 21-dec-2016
 
 The script is now fully compatible with NetScaler 11.1 released in July 2016.

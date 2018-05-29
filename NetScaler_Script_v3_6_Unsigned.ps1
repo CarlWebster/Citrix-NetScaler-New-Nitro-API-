@@ -257,9 +257,9 @@
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
 	NAME: NetScaler_Script_V3_6_Signed.ps1
-	VERSION: 3.5
+	VERSION: 3.61
 	AUTHOR: Barry Schiffer, Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: October 24, 2016
+	LASTEDIT: February 13, 2017
 #>
 
 #region changelog
@@ -268,12 +268,12 @@
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .NetScaler Documentation Script
     NAME: NetScaler_Script_v3_6.ps1
-	VERSION NetScaler Script: 3.6
+	VERSION NetScaler Script: 3.61
 	VERSION Script Template: 2016
 	AUTHOR NetScaler script: Barry Schiffer & Andy McCullough
     AUTHOR NetScaler script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: December 21th 2016 
+	LASTEDIT: February 13, 2017 
 
 .Release Notes version 3.6
     
@@ -850,7 +850,7 @@ Function SetWordHashTable
 			'en-'	{ 'Automatic Table 2'; Break }
 			'es-'	{ 'Tabla automática 2'; Break }
 			'fi-'	{ 'Automaattinen taulukko 2'; Break }
-			'fr-'	{ 'Sommaire Automatique 2'; Break }
+			'fr-'	{ 'Table automatique 2'; Break } #changed 13-feb-2017 david roquier and samuel legrand
 			'nb-'	{ 'Automatisk tabell 2'; Break }
 			'nl-'	{ 'Automatische inhoudsopgave 2'; Break }
 			'pt-'	{ 'Sumário Automático 2'; Break }
