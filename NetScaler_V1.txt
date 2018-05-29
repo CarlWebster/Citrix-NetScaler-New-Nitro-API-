@@ -97,7 +97,16 @@
 	This parameter has an alias of UN.
 .PARAMETER PDF
 	SaveAs PDF file instead of DOCX file.
+	This parameter is disabled by default.
+	For Word 2007, the Microsoft add-in for saving as a PDF muct be installed.
+	For Word 2007, please see http://www.microsoft.com/en-us/download/details.aspx?id=9943
 	The PDF file is roughly 5X to 10X larger than the DOCX file.
+.PARAMETER AddDateTime
+	Adds a date time stamp to the end of the file name.
+	Time stamp is in the format of yyyy-MM-dd_HHmm.
+	June 1, 2014 at 6PM is 2014-06-01_1800.
+	Output filename will be ReportName_2014-06-01_1800.docx(or .pdf).
+	This parameter is disabled by default.
 .EXAMPLE
 	PS C:\PSScript > .\NetScaler_v1.ps1
 	
@@ -144,9 +153,9 @@
 	No objects are output from this script.  This script creates a Word document.
 .NOTES
 	NAME: NetScaler_V1.ps1
-	VERSION: 1.0.3
+	VERSION: 1.0.4
 	AUTHOR: Barry Schiffer with help from Carl Webster
-	LASTEDIT: May 26, 2014
+	LASTEDIT: June 2, 2014
 #>
 #endregion Support
 
@@ -184,7 +193,15 @@ Param(
 	Position = 3, 
 	Mandatory=$false )
 	] 
-	[Switch]$PDF=$False)
+	[Switch]$PDF=$False,
+	
+	[parameter(ParameterSetName="Standard",
+	Position = 4, 
+	Mandatory=$False )
+	] 
+	[Switch]$AddDateTime=$False
+	
+	)
 	
 #Version 1.0 script
 #originally released to the Citrix community on May 6, 2014
@@ -209,6 +226,8 @@ Param(
 #	Error check added if ns.conf is not found
 #	Error check added to verify ns.conf file is read successfully
 #	Converted all Advanced Configuration sections to tables
+#Version 1.0.4
+#	Added an AddDateTime parameter
 
 #force -verbose on
 $PSDefaultParameterValues = @{"*:Verbose"=$True}
@@ -218,6 +237,10 @@ $ErrorActionPreference = 'SilentlyContinue'
 If($PDF -eq $Null)
 {
 	$PDF = $False
+}
+If($AddDateTime -eq $Null)
+{
+	$AddDateTime = $False
 }
 
 #info@barryschiffer.com
@@ -961,10 +984,22 @@ Else
 {
 	[string]$Title = "NetScaler Configuration - $Companyname"
 }
-[string]$filename1 = "NetScaler.docx"
-If($PDF)
+#added by Carl Webster 2-June-2014
+If($AddDateTime)
 {
-	[string]$filename2 = "NetScaler.pdf"
+	[string]$filename1  = "$($pwd.path)\NetScaler"
+	If($PDF)
+	{
+		[string]$filename2 = "$($pwd.path)\NetScaler"
+	}
+}
+Else
+{
+	[string]$filename1  = "$($pwd.path)\NetScaler.docx"
+	If($PDF)
+	{
+		[string]$filename2 = "$($pwd.path)\NetScaler.pdf"
+	}
 }
 
 CheckWordPreReq
@@ -1004,16 +1039,16 @@ If(!$?)
 Write-Verbose "$(Get-Date): NetScaler file : $SourceFile"
 
 ## Iain Brighton - Set the output locations to the current working directory
-$filename1 = Join-Path ((Get-Location).ProviderPath) $filename1;
-if($PDF) 
-{ 
-	$filename2 = Join-Path ((Get-Location).ProviderPath) $filename2;
-	Write-Verbose "$(Get-Date): Target Word file : $filename1, PDF file : $filename2";
-}
-else 
-{ 
-	Write-Verbose "$(Get-Date): Target Word file : $filename1"; 
-}
+#$filename1 = Join-Path ((Get-Location).ProviderPath) $filename1;
+#if($PDF) 
+#{ 
+#	$filename2 = Join-Path ((Get-Location).ProviderPath) $filename2;
+#	Write-Verbose "$(Get-Date): Target Word file : $filename1, PDF file : $filename2";
+#}
+#else 
+#{ 
+#	Write-Verbose "$(Get-Date): Target Word file : $filename1"; 
+#}
 
 ## We read the file in once as each Get-Content call goes to disk and also creates a new string[]
 $File = Get-Content $SourceFile
@@ -1206,6 +1241,7 @@ If($PDF)
 {
 	Write-Verbose "$(Get-Date): Filename2    : $filename2"
 }
+Write-Verbose "$(Get-Date): Add DateTime : $AddDateTime"
 Write-Verbose "$(Get-Date): OS Detected  : $RunningOS"
 Write-Verbose "$(Get-Date): PSUICulture  : $PSUICulture"
 Write-Verbose "$(Get-Date): PSCulture    : $PSCulture "
@@ -5519,6 +5555,17 @@ If($WordVersion -eq $wdWord2007)
 	{
 		Write-Verbose "$(Get-Date): Saving DOCX file"
 	}
+
+	#added by Carl Webster 2-June-2014
+	If($AddDateTime)
+	{
+		$FileName1 += "_$(Get-Date -f yyyy-MM-dd_HHmm).docx"
+		If($PDF)
+		{
+			$FileName2 += "_$(Get-Date -f yyyy-MM-dd_HHmm).pdf"
+		}
+	}
+
 	Write-Verbose "$(Get-Date): Running Word 2007 and detected operating system $($RunningOS)"
 	If($RunningOS.Contains("Server 2008 R2") -or $RunningOS.Contains("Server 2012"))
 	{
@@ -5558,6 +5605,17 @@ Else
 	{
 		Write-Verbose "$(Get-Date): Saving DOCX file"
 	}
+
+	#added by Carl Webster 2-June-2014
+	If($AddDateTime)
+	{
+		$FileName1 += "_$(Get-Date -f yyyy-MM-dd_HHmm).docx"
+		If($PDF)
+		{
+			$FileName2 += "_$(Get-Date -f yyyy-MM-dd_HHmm).pdf"
+		}
+	}
+
 	$saveFormat = [Enum]::Parse([Microsoft.Office.Interop.Word.WdSaveFormat], "wdFormatDocumentDefault")
 	$doc.SaveAs([REF]$filename1, [ref]$SaveFormat)
 	If($PDF)
