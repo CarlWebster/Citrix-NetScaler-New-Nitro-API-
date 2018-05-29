@@ -1,0 +1,43 @@
+#Original Script created by Barry Schiffer and optimized by Iain Brighton. 
+#All Word related PowerShell functionality has been provided by Carl Webster
+#To contact, please use e-mail address info@barryschiffer.com
+
+#Version 1.0.1 script May 12, 2014
+#Minor bug fix release
+*	Load Balancer: Changed the chapter name "Services" to "Services and Service Groups". Thanks to Carl Behrent for the heads up!
+*	Authentication Local Groups: Changed logic for the Group Name. Thanks to Erik Spicer for the heads up!
+*	Script will no longer terminate if the CompanyName registry key is empty and the CompanyName parameter is not used
+*	Warning and Error messages are now offset so they are more easily seen and read
+
+Known Issue
+*	Authentication Local Groups: It will sometimes report an extra -option in the name field. This will be fixed soon.
+
+#Version 1.0 script
+#originally released to the Citrix community on May 6, 2014
+
+This release supports the following NetScaler functionality
+	NetScaler System Information
+	Version / NSIP / vLAN
+	NetScaler Global Settings
+	NetScaler Feature and mode state
+	NetScaler Networking
+	IP Address / vLAN / Routing Table / DNS
+	NetScaler Authentication
+	Local / LDAP
+	NetScaler Traffic Domain
+	Assigned Content Switch / Load Balancer / Service  / Server
+	NetScaler Monitoring
+	NetScaler Certificate
+	NetScaler Content Switches
+	Assigned Load Balancer / Service  / Server
+	NetScaler Load Balancer
+	Assigned Service  / Server
+	NetScaler Service
+	Assigned Server / monitor
+	NetScaler Service Group
+	Assigned Server / monitor
+	NetScaler Server
+	NetScaler Custom Monitor
+	NetScaler Policy
+	NetScaler Action
+	NetScaler Profile
