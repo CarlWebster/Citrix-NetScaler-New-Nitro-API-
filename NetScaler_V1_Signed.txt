@@ -21,6 +21,33 @@
 		Portuguese
 		Spanish
 		Swedish
+		
+	Version 1.0 supports the following NetScaler functionality:
+		NetScaler System Information
+		Version / NSIP / vLAN
+		NetScaler Global Settings
+		NetScaler Feature and mode state
+		NetScaler Networking
+		IP Address / vLAN / Routing Table / DNS
+		NetScaler Authentication
+		Local / LDAP
+		NetScaler Traffic Domain
+		Assigned Content Switch / Load Balancer / Service  / Server
+		NetScaler Monitoring
+		NetScaler Certificate
+		NetScaler Content Switches
+		Assigned Load Balancer / Service  / Server
+		NetScaler Load Balancer
+		Assigned Service  / Server
+		NetScaler Service
+		Assigned Server / monitor
+		NetScaler Service Group
+		Assigned Server / monitor
+		NetScaler Server
+		NetScaler Custom Monitor
+		NetScaler Policy
+		NetScaler Action
+		NetScaler Profile
 .PARAMETER CompanyName
 	Company Name to use for the Cover Page.  
 	Default value is contained in HKCU:\Software\Microsoft\Office\Common\UserInfo\CompanyName or
@@ -117,9 +144,9 @@
 	No objects are output from this script.  This script creates a Word document.
 .NOTES
 	NAME: NetScaler_V1.ps1
-	VERSION: 1.0
+	VERSION: 1.0.1
 	AUTHOR: Barry Schiffer
-	LASTEDIT: May 1, 2014
+	LASTEDIT: May 12, 2014
 #>
 #endregion Support
 
@@ -159,6 +186,18 @@ Param(
 	] 
 	[Switch]$PDF=$False)
 	
+#Version 1.0.1 script May 12, 2014
+#Minor bug fix release
+#	Load Balancer: Changed the chapter name "Services" to "Services and Service Groups". Thanks to Carl Behrent for the heads up!
+#	Authentication Local Groups: Changed logic for the Group Name. Thanks to Erik Spicer for the heads up!
+#	Script will no longer terminate if the CompanyName registry key is empty and the CompanyName parameter is not used
+#	Warning and Error messages are now offset so they are more easily seen and read
+#Known Issue
+#	Authentication Local Groups: It will sometimes report an extra -option in the name field. This will be fixed soon.
+
+#Version 1.0 script
+#originally released to the Citrix community on May 6, 2014
+
 
 #force -verbose on
 $PSDefaultParameterValues = @{"*:Verbose"=$True}
@@ -352,277 +391,224 @@ Function ValidateCoverPage
 		'ca-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("Austin", "En bandes", "Faceta", "Filigrana",
-					"Integral", "IÛ (clar)", "IÛ (fosc)", "LÌnia lateral",
-					"Moviment", "QuadrÌcula", "Retrospectiu", "Sector (clar)",
-					"Sector (fosc)", "Sem‡for", "VisualitzaciÛ", "Whisp")
+					$xArray = ("Austin", "En bandes", "Faceta", "Filigrana", "Integral", "I√≥ (clar)", "I√≥ (fosc)", "L√≠nia lateral",
+					"Moviment", "Quadr√≠cula", "Retrospectiu", "Sector (clar)", "Sector (fosc)", "Sem√†for", "Visualitzaci√≥", "Whisp")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("Alfabet", "Anual", "Austin", "Conservador",
-					"Contrast", "Cubicles", "Diplom‡tic", "ExposiciÛ",
-					"LÌnia lateral", "Mod", "Mosiac", "Moviment", "Paper de diari",
-					"Perspectiva", "Piles", "QuadrÌcula", "Sobri",
+					$xArray = ("Alfabet", "Anual", "Austin", "Conservador", "Contrast", "Cubicles", "Diplom√†tic", "Exposici√≥",
+					"L√≠nia lateral", "Mod", "Mosiac", "Moviment", "Paper de diari", "Perspectiva", "Piles", "Quadr√≠cula", "Sobri",
 					"Transcendir", "Trencaclosques")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Alfabet", "Anual", "Conservador", "Contrast",
-					"Cubicles", "Diplom‡tic", "En mosaic", "ExposiciÛ", "LÌnia lateral",
-					"Mod", "Moviment", "Piles", "Sobri", "Transcendir", "Trencaclosques")
+					$xArray = ("Alfabet", "Anual", "Conservador", "Contrast", "Cubicles", "Diplom√†tic", "En mosaic",
+					"Exposici√≥", "L√≠nia lateral", "Mod", "Moviment", "Piles", "Sobri", "Transcendir", "Trencaclosques")
 				}
 			}
 
 		'da-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("BevÊgElse", "Brusen", "Ion (lys)", "Filigran",
-					"Retro", "Semafor", "Visningsmaster", "Integral",
-					"Facet", "Gitter", "Stribet", "Sidelinje", "Udsnit (lys)",
-					"Udsnit (m¯rk)", "Ion (m¯rk)", "Austin")
+					$xArray = ("Bev√¶gElse", "Brusen", "Ion (lys)", "Filigran", "Retro", "Semafor", "Visningsmaster", "Integral",
+					"Facet", "Gitter", "Stribet", "Sidelinje", "Udsnit (lys)", "Udsnit (m√∏rk)", "Ion (m√∏rk)", "Austin")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("BevÊgElse", "Moderat", "Perspektiv", "Firkanter",
-					"Overskrid", "Alfabet", "Kontrast", "Stakke", "Fliser", "GÂde",
-					"Gitter", "Austin", "Eksponering", "Sidelinje", "Enkel",
-					"NÂlestribet", "≈rlig", "Avispapir", "Tradionel")
+					$xArray = ("Bev√¶gElse", "Moderat", "Perspektiv", "Firkanter", "Overskrid", "Alfabet", "Kontrast", "Stakke",
+					"Fliser", "G√•de", "Gitter", "Austin", "Eksponering", "Sidelinje", "Enkel", "N√•lestribet", "√Örlig", "Avispapir", "Tradionel")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Alfabet", "≈rlig", "BevÊgElse", "Eksponering",
-					"Enkel", "Firkanter", "Fliser", "GÂde", "Kontrast",
-					"Mod", "NÂlestribet", "Overskrid", "Sidelinje", "Stakke",
-					"Tradionel")
+					$xArray = ("Alfabet", "√Örlig", "Bev√¶gElse", "Eksponering", "Enkel", "Firkanter", "Fliser", "G√•de", "Kontrast",
+					"Mod", "N√•lestribet", "Overskrid", "Sidelinje", "Stakke", "Tradionel")
 				}
 			}
 
 		'de-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("Semaphor", "Segment (hell)", "Ion (hell)",
-					"Raster", "Ion (dunkel)", "Filigran", "R¸ckblick", "Pfiff",
-					"ViewMaster", "Segment (dunkel)", "Verbunden", "Bewegung",
-					"Randlinie", "Austin", "Integral", "Facette")
+					$xArray = ("Semaphor", "Segment (hell)", "Ion (hell)", "Raster", "Ion (dunkel)", "Filigran", "R√ºckblick", "Pfiff",
+					"ViewMaster", "Segment (dunkel)", "Verbunden", "Bewegung", "Randlinie", "Austin", "Integral", "Facette")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("Alphabet", "Austin", "Bewegung", "Durchscheinend",
-					"Herausgestellt", "J‰hrlich", "Kacheln", "Kontrast", "Kubistisch",
-					"Modern", "Nadelstreifen", "Perspektive", "Puzzle", "Randlinie",
-					"Raster", "Schlicht", "Stapel", "Traditionell", "Zeitungspapier")
+					$xArray = ("Alphabet", "Austin", "Bewegung", "Durchscheinend", "Herausgestellt", "J√§hrlich", "Kacheln", "Kontrast", "Kubistisch",
+					"Modern", "Nadelstreifen", "Perspektive", "Puzzle", "Randlinie", "Raster", "Schlicht", "Stapel", "Traditionell", "Zeitungspapier")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Alphabet", "Bewegung", "Durchscheinend", "Herausgestellt",
-					"J‰hrlich", "Kacheln", "Kontrast", "Kubistisch", "Modern",
-					"Nadelstreifen", "Puzzle", "Randlinie", "Raster", "Schlicht", "Stapel",
-					"Traditionell")
+					$xArray = ("Alphabet", "Bewegung", "Durchscheinend", "Herausgestellt", "J√§hrlich", "Kacheln", "Kontrast",
+					"Kubistisch", "Modern", "Nadelstreifen", "Puzzle", "Randlinie", "Raster", "Schlicht", "Stapel", "Traditionell")
 				}
 			}
 
 		'en-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("Austin", "Banded", "Facet", "Filigree", "Grid",
-					"Integral", "Ion (Dark)", "Ion (Light)", "Motion", "Retrospect",
-					"Semaphore", "Sideline", "Slice (Dark)", "Slice (Light)", "ViewMaster",
-					"Whisp")
+					$xArray = ("Austin", "Banded", "Facet", "Filigree", "Grid", "Integral", "Ion (Dark)", "Ion (Light)", "Motion",
+					"Retrospect", "Semaphore", "Sideline", "Slice (Dark)", "Slice (Light)", "ViewMaster", "Whisp")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("Alphabet", "Annual", "Austere", "Austin", "Conservative",
-					"Contrast", "Cubicles", "Exposure", "Grid", "Mod", "Motion", "Newsprint",
-					"Perspective", "Pinstripes", "Puzzle", "Sideline", "Stacks", "Tiles", "Transcend")
+					$xArray = ("Alphabet", "Annual", "Austere", "Austin", "Conservative", "Contrast", "Cubicles", "Exposure", "Grid",
+					"Mod", "Motion", "Newsprint", "Perspective", "Pinstripes", "Puzzle", "Sideline", "Stacks", "Tiles", "Transcend")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Alphabet", "Annual", "Austere", "Conservative", "Contrast",
-					"Cubicles", "Exposure", "Mod", "Motion", "Pinstripes", "Puzzle",
-					"Sideline", "Stacks", "Tiles", "Transcend")
+					$xArray = ("Alphabet", "Annual", "Austere", "Conservative", "Contrast", "Cubicles", "Exposure", "Mod", "Motion",
+					"Pinstripes", "Puzzle", "Sideline", "Stacks", "Tiles", "Transcend")
 				}
 			}
 
 		'es-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("Whisp", "Vista principal", "Filigrana", "Austin",
-					"Slice (luz)", "Faceta", "Sem·foro", "Retrospectiva", "CuadrÌcula",
-					"Movimiento", "Cortar (oscuro)", "LÌnea lateral", "Ion (oscuro)",
+					$xArray = ("Whisp", "Vista principal", "Filigrana", "Austin", "Slice (luz)", "Faceta", "Sem√°foro",
+					"Retrospectiva", "Cuadr√≠cula", "Movimiento", "Cortar (oscuro)", "L√≠nea lateral", "Ion (oscuro)",
 					"Ion (claro)", "Integral", "Con bandas")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("Alfabeto", "Anual", "Austero", "Austin", "Conservador",
-					"Contraste", "CuadrÌcula", "CubÌculos", "ExposiciÛn", "LÌnea lateral",
-					"Moderno", "Mosaicos", "Movimiento", "Papel periÛdico",
+					$xArray = ("Alfabeto", "Anual", "Austero", "Austin", "Conservador", "Contraste", "Cuadr√≠cula",
+					"Cub√≠culos", "Exposici√≥n", "L√≠nea lateral", "Moderno", "Mosaicos", "Movimiento", "Papel peri√≥dico",
 					"Perspectiva", "Pilas", "Puzzle", "Rayas", "Sobrepasar")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Alfabeto", "Anual", "Austero", "Conservador",
-					"Contraste", "CubÌculos", "ExposiciÛn", "LÌnea lateral",
-					"Moderno", "Mosaicos", "Movimiento", "Pilas", "Puzzle",
-					"Rayas", "Sobrepasar")
+					$xArray = ("Alfabeto", "Anual", "Austero", "Conservador", "Contraste", "Cub√≠culos", "Exposici√≥n",
+					"L√≠nea lateral", "Moderno", "Mosaicos", "Movimiento", "Pilas", "Puzzle", "Rayas", "Sobrepasar")
 				}
 			}
 
 		'fi-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("Filigraani", "Integraali", "Ioni (tumma)",
-					"Ioni (vaalea)", "Opastin", "Pinta", "Retro", "Sektori (tumma)",
-					"Sektori (vaalea)", "Vaihtuvav‰rinen", "ViewMaster", "Austin",
-					"Kiehkura", "Liike", "Ruudukko", "Sivussa")
+					$xArray = ("Filigraani", "Integraali", "Ioni (tumma)", "Ioni (vaalea)", "Opastin", "Pinta", "Retro", "Sektori (tumma)",
+					"Sektori (vaalea)", "Vaihtuvav√§rinen", "ViewMaster", "Austin", "Kiehkura", "Liike", "Ruudukko", "Sivussa")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("Aakkoset", "Askeettinen", "Austin", "Kontrasti",
-					"Laatikot", "Liike", "Liituraita", "Mod", "Osittain peitossa",
-					"Palapeli", "Perinteinen", "Perspektiivi", "Pinot", "Ruudukko",
-					"Ruudut", "Sanomalehtipaperi", "Sivussa", "Vuotuinen", "Ylitys")
+					$xArray = ("Aakkoset", "Askeettinen", "Austin", "Kontrasti", "Laatikot", "Liike", "Liituraita", "Mod",
+					"Osittain peitossa", "Palapeli", "Perinteinen", "Perspektiivi", "Pinot", "Ruudukko", "Ruudut", "Sanomalehtipaperi",
+					"Sivussa", "Vuotuinen", "Ylitys")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Aakkoset", "Alttius", "Kontrasti", "Kuvakkeet ja tiedot",
-					"Liike" , "Liituraita" , "Mod" , "Palapeli", "Perinteinen", "Pinot",
-					"Sivussa", "Tyˆpisteet", "Vuosittainen", "Yksinkertainen", "Ylitys")
+					$xArray = ("Aakkoset", "Alttius", "Kontrasti" ,"Kuvakkeet ja tiedot" ,"Liike" ,"Liituraita" ,"Mod" ,"Palapeli",
+					"Perinteinen", "Pinot", "Sivussa", "Ty√∂pisteet", "Vuosittainen", "Yksinkertainen", "Ylitys")
 				}
 			}
 
 		'fr-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("ViewMaster", "Secteur (foncÈ)", "SÈmaphore",
-					"RÈtrospective", "Ion (foncÈ)", "Ion (clair)", "IntÈgrale",
-					"Filigrane", "Facette", "Secteur (clair)", "¿ bandes", "Austin",
-					"Guide", "Whisp", "Lignes latÈrales", "Quadrillage")
+					$xArray = ("ViewMaster","Secteur (fonc√©)","S√©maphore","R√©trospective","Ion (fonc√©)","Ion (clair)","Int√©grale",
+					"Filigrane","Facette","Secteur (clair)","√Ä bandes", "Austin", "Guide", "Whisp", "Lignes lat√©rales", "Quadrillage")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("MosaÔques", "Ligne latÈrale", "Annuel", "Perspective",
-					"Contraste", "Emplacements de bureau", "Moderne", "Blocs empilÈs",
-					"Rayures fines", "AustËre", "Transcendant", "Classique", "Quadrillage",
-					"Exposition", "Alphabet", "Mots croisÈs", "Papier journal", "Austin", "Guide")
+					$xArray = ("Mosa√Øques", "Ligne lat√©rale", "Annuel", "Perspective", "Contraste", "Emplacements de bureau",
+					"Moderne","Blocs empil√©s", "Rayures fines", "Aust√®re", "Transcendant", "Classique", "Quadrillage", "Exposition",
+					"Alphabet", "Mots crois√©s", "Papier journal", "Austin","Guide")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Alphabet", "Annuel", "AustËre", "Blocs empilÈs", "Blocs superposÈs",
-					"Classique", "Contraste", "Exposition", "Guide", "Ligne latÈrale", "Moderne",
-					"MosaÔques", "Mots croisÈs", "Rayures fines", "Transcendant")
+					$xArray = ("Alphabet", "Annuel", "Aust√®re", "Blocs empil√©s", "Blocs superpos√©s", "Classique", "Contraste",
+					"Exposition","Guide", "Ligne lat√©rale", "Moderne", "Mosa√Øques", "Mots crois√©s", "Rayures fines", "Transcendant")
 				}
 			}
 
 		'nb-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("Austin", "BevegElse", "Dempet", "Fasett", "Filigran",
-					"Integral", "Ion (lys)", "Ion (m¯rk)", "Retrospekt", "Rutenett",
-					"Sektor (lys)", "Sektor (m¯rk)", "Semafor", "Sidelinje", "Stripet",
-					"ViewMaster")
+					$xArray = ("Austin", "BevegElse", "Dempet", "Fasett", "Filigran", "Integral", "Ion (lys)", "Ion (m√∏rk)",
+					"Retrospekt", "Rutenett", "Sektor (lys)", "Sektor (m√∏rk)", "Semafor", "Sidelinje", "Stripet", "ViewMaster")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("Alfabet", "≈rlig", "Avistrykk", "Austin", "Avlukker",
-					"BevegElse", "Engasjement", "Enkel", "Fliser", "Konservativ",
-					"Kontrast", "Mod", "Perspektiv", "Puslespill", "Rutenett", "Sidelinje",
-					"Smale striper", "Stabler", "Transcenderende")
+					$xArray = ("Alfabet", "√Örlig", "Avistrykk", "Austin", "Avlukker", "BevegElse", "Engasjement", "Enkel", "Fliser",
+					"Konservativ", "Kontrast", "Mod", "Perspektiv", "Puslespill", "Rutenett", "Sidelinje", "Smale striper", "Stabler",
+					"Transcenderende")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Alfabet", "≈rlig", "Avlukker", "BevegElse", "Engasjement",
-					"Enkel", "Fliser", "Konservativ", "Kontrast", "Mod", "Puslespill",
-					"Sidelinje", "Smale striper", "Stabler", "Transcenderende")
+					$xArray = ("Alfabet", "√Örlig", "Avlukker", "BevegElse", "Engasjement", "Enkel", "Fliser", "Konservativ",
+					"Kontrast", "Mod", "Puslespill", "Sidelinje", "Smale striper", "Stabler", "Transcenderende")
 				}
 			}
 
 		'nl-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("Austin", "Beweging", "Facet", "Filigraan", "Gestreept",
-					"Integraal", "Ion (donker)", "Ion (licht)", "Raster",
-					"Segment (Light)", "Semafoor", "Slice (donker)", "Spriet",
-					"Terugblik", "Terzijde", "ViewMaster")
+					$xArray = ("Austin", "Beweging", "Facet", "Filigraan", "Gestreept", "Integraal", "Ion (donker)", "Ion (licht)",
+					"Raster", "Segment (Light)", "Semafoor", "Slice (donker)", "Spriet", "Terugblik", "Terzijde", "ViewMaster")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("Aantrekkelijk", "Alfabet", "Austin", "Bescheiden",
-					"Beweging", "Blikvanger", "Contrast", "Eenvoudig", "Jaarlijks",
-					"Krantenpapier", "Krijtstreep", "Kubussen", "Mod", "Perspectief",
-					"Puzzel", "Raster", "Stapels",
+					$xArray = ("Aantrekkelijk", "Alfabet", "Austin", "Bescheiden", "Beweging", "Blikvanger", "Contrast", "Eenvoudig",
+					"Jaarlijks", "Krantenpapier", "Krijtstreep", "Kubussen", "Mod", "Perspectief", "Puzzel", "Raster", "Stapels",
 					"Tegels", "Terzijde")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Aantrekkelijk", "Alfabet", "Bescheiden", "Beweging",
-					"Blikvanger", "Contrast", "Eenvoudig", "Jaarlijks", "Krijtstreep",
-					"Mod", "Puzzel", "Stapels", "Tegels", "Terzijde", "Werkplekken")
+					$xArray = ("Aantrekkelijk", "Alfabet", "Bescheiden", "Beweging", "Blikvanger", "Contrast", "Eenvoudig",
+					"Jaarlijks", "Krijtstreep", "Mod", "Puzzel", "Stapels", "Tegels", "Terzijde", "Werkplekken")
 				}
 			}
 
 		'pt-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("AnimaÁ„o", "Austin", "Em Tiras", "ExibiÁ„o Mestra",
-					"Faceta", "Fatia (Clara)", "Fatia (Escura)", "Filete", "Filigrana",
-					"Grade", "Integral", "Õon (Claro)", "Õon (Escuro)", "Linha Lateral",
-					"Retrospectiva", "Sem·foro")
+					$xArray = ("Anima√ß√£o", "Austin", "Em Tiras", "Exibi√ß√£o Mestra", "Faceta", "Fatia (Clara)", "Fatia (Escura)", "Filete",
+					"Filigrana", "Grade", "Integral", "√çon (Claro)", "√çon (Escuro)", "Linha Lateral", "Retrospectiva", "Sem√°foro")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("Alfabeto", "AnimaÁ„o", "Anual", "Austero", "Austin", "Baias",
-					"Conservador", "Contraste", "ExposiÁ„o", "Grade", "Ladrilhos",
-					"Linha Lateral", "Listras", "Mod", "Papel Jornal", "Perspectiva", "Pilhas",
-					"Quebra-cabeÁa", "Transcend")
+					$xArray = ("Alfabeto", "Anima√ß√£o", "Anual", "Austero", "Austin", "Baias", "Conservador", "Contraste", "Exposi√ß√£o",
+					"Grade", "Ladrilhos", "Linha Lateral", "Listras", "Mod", "Papel Jornal", "Perspectiva", "Pilhas", "Quebra-cabe√ßa", "Transcend")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Alfabeto", "AnimaÁ„o", "Anual", "Austero", "Baias", "Conservador",
-					"Contraste", "ExposiÁ„o", "Ladrilhos", "Linha Lateral", "Listras", "Mod",
-					"Pilhas", "Quebra-cabeÁa", "Transcendente")
+					$xArray = ("Alfabeto", "Anima√ß√£o", "Anual", "Austero", "Baias", "Conservador", "Contraste", "Exposi√ß√£o",
+					"Ladrilhos", "Linha Lateral", "Listras", "Mod", "Pilhas", "Quebra-cabe√ßa", "Transcendente")
 				}
 			}
 
 		'sv-'	{
 				If($xWordVersion -eq $wdWord2013)
 				{
-					$xArray = ("Austin", "Band", "Fasett", "Filigran", "Integrerad", "Jon (ljust)",
-					"Jon (mˆrkt)", "Knippe", "Rutn‰t", "RˆrElse", "Sektor (ljus)", "Sektor (mˆrk)",
-					"Semafor", "Sidlinje", "VisaHuvudsida", "≈terblick")
+					$xArray = ("Austin", "Band", "Fasett", "Filigran", "Integrerad", "Jon (ljust)", "Jon (m√∂rkt)", "Knippe", "Rutn√§t",
+					"R√∂rElse", "Sektor (ljus)", "Sektor (m√∂rk)", "Semafor", "Sidlinje", "VisaHuvudsida", "√Öterblick")
 				}
 				ElseIf($xWordVersion -eq $wdWord2010)
 				{
-					$xArray = ("Alfabetmˆnster", "Austin", "Enkelt", "Exponering", "Konservativt",
-					"Kontrast", "Kritstreck", "Kuber", "Perspektiv", "Plattor", "Pussel", "Rutn‰t",
-					"RˆrElse", "Sidlinje", "Sobert", "Staplat", "Tidningspapper", "≈rligt",
-					"÷vergÂende")
+					$xArray = ("Alfabetm√∂nster", "Austin", "Enkelt", "Exponering", "Konservativt", "Kontrast", "Kritstreck", "Kuber",
+					"Perspektiv", "Plattor", "Pussel", "Rutn√§t", "R√∂rElse", "Sidlinje", "Sobert", "Staplat", "Tidningspapper", "√Örligt",
+					"√ñverg√•ende")
 				}
 				ElseIf($xWordVersion -eq $wdWord2007)
 				{
-					$xArray = ("Alfabetmˆnster", "≈rligt", "Enkelt", "Exponering", "Konservativt",
-					"Kontrast", "Kritstreck", "Kuber", "÷vergÂende", "Plattor", "Pussel", "RˆrElse",
-					"Sidlinje", "Sobert", "Staplat")
+					$xArray = ("Alfabetm√∂nster", "√Örligt", "Enkelt", "Exponering", "Konservativt", "Kontrast", "Kritstreck",
+					"Kuber", "√ñverg√•ende", "Plattor", "Pussel", "R√∂rElse", "Sidlinje", "Sobert", "Staplat")
 				}
 			}
 
 		Default	{
 					If($xWordVersion -eq $wdWord2013)
 					{
-						$xArray = ("Austin", "Banded", "Facet", "Filigree", "Grid", "Integral",
-						"Ion (Dark)", "Ion (Light)", "Motion", "Retrospect", "Semaphore",
-						"Sideline", "Slice (Dark)", "Slice (Light)", "ViewMaster", "Whisp")
+						$xArray = ("Austin", "Banded", "Facet", "Filigree", "Grid", "Integral", "Ion (Dark)", "Ion (Light)", "Motion",
+						"Retrospect", "Semaphore", "Sideline", "Slice (Dark)", "Slice (Light)", "ViewMaster", "Whisp")
 					}
 					ElseIf($xWordVersion -eq $wdWord2010)
 					{
-						$xArray = ("Alphabet", "Annual", "Austere", "Austin", "Conservative",
-						"Contrast", "Cubicles", "Exposure", "Grid", "Mod", "Motion", "Newsprint",
-						"Perspective", "Pinstripes", "Puzzle", "Sideline", "Stacks", "Tiles", "Transcend")
+						$xArray = ("Alphabet", "Annual", "Austere", "Austin", "Conservative", "Contrast", "Cubicles", "Exposure", "Grid",
+						"Mod", "Motion", "Newsprint", "Perspective", "Pinstripes", "Puzzle", "Sideline", "Stacks", "Tiles", "Transcend")
 					}
 					ElseIf($xWordVersion -eq $wdWord2007)
 					{
-						$xArray = ("Alphabet", "Annual", "Austere", "Conservative", "Contrast",
-						"Cubicles", "Exposure", "Mod", "Motion", "Pinstripes", "Puzzle",
-						"Sideline", "Stacks", "Tiles", "Transcend")
+						$xArray = ("Alphabet", "Annual", "Austere", "Conservative", "Contrast", "Cubicles", "Exposure", "Mod", "Motion",
+						"Pinstripes", "Puzzle", "Sideline", "Stacks", "Tiles", "Transcend")
 					}
 				}
 	}
@@ -637,13 +623,12 @@ Function ValidateCoverPage
 	}
 }
 
-
 Function CheckWordPrereq
 {
 	If((Test-Path  REGISTRY::HKEY_CLASSES_ROOT\Word.Application) -eq $False)
 	{
-		Write-Host "This script directly outputs to Microsoft Word, please install Microsoft Word"
-		exit
+		Write-Host "`n`n`t`tThis script directly outputs to Microsoft Word, please install Microsoft Word`n`n"
+		Exit
 	}
 
 	#find out our session (usually "1" except on TS/RDC or Citrix)
@@ -653,8 +638,8 @@ Function CheckWordPrereq
 	[bool]$wordrunning = ((Get-Process 'WinWord' -ea 0)|?{$_.SessionId -eq $SessionID}) -ne $Null
 	If($wordrunning)
 	{
-		Write-Host "Please close all instances of Microsoft Word before running this report."
-		exit
+		Write-Host "`n`n`t`tPlease close all instances of Microsoft Word before running this report.`n`n"
+		Exit
 	}
 }
 
@@ -662,9 +647,9 @@ Function CheckWord2007SaveAsPDFInstalled
 {
 	If((Test-Path  REGISTRY::HKEY_CLASSES_ROOT\Installer\Products\000021090B0090400000000000F01FEC) -eq $False)
 	{
-		Write-Host "Word 2007 is detected and the option to SaveAs PDF was selected but the Word 2007 SaveAs PDF add-in is not installed."
-		Write-Host "The add-in can be downloaded from http://www.microsoft.com/en-us/download/details.aspx?id=9943"
-		Write-Host "Install the SaveAs PDF add-in and rerun the script."
+		Write-Host "`n`n`t`tWord 2007 is detected and the option to SaveAs PDF was selected but the Word 2007 SaveAs PDF add-in is not installed."
+		Write-Host "`n`n`t`tThe add-in can be downloaded from http://www.microsoft.com/en-us/download/details.aspx?id=9943"
+		Write-Host "`n`n`t`tInstall the SaveAs PDF add-in and rerun the script."
 		Return $False
 	}
 	Return $True
@@ -804,15 +789,18 @@ Function AbortScript
 	$Word.quit()
 	Write-Verbose "$(Get-Date): System Cleanup"
 	[System.Runtime.Interopservices.Marshal]::ReleaseComObject($Word) | out-null
-	Remove-Variable -Name word -Scope Global
+	If(Test-Path variable:global:word)
+	{
+		Remove-Variable -Name word -Scope Global
+	}
 	[gc]::collect() 
 	[gc]::WaitForPendingFinalizers()
 	Write-Verbose "$(Get-Date): Script has been aborted"
 	Exit
 }
 
-[string]$Title      = "NetScaler Configuration - $Companyname"
-[string]$filename1   = "NetScaler.docx"
+[string]$Title = "NetScaler Configuration - $Companyname"
+[string]$filename1 = "NetScaler.docx"
 If($PDF)
 {
 	[string]$filename2 = "NetScaler.pdf"
@@ -830,7 +818,7 @@ $Word = New-Object -comobject "Word.Application" -EA 0
 If(!$? -or $Word -eq $Null)
 {
 	Write-Warning "The Word object could not be created.  You may need to repair your Word installation."
-	Write-Error "The Word object could not be created.  You may need to repair your Word installation.  Script cannot continue."
+	Write-Error "`n`n`t`tThe Word object could not be created.`n`n`t`tYou may need to repair your Word installation.`n`n`t`tScript cannot continue.`n`n"
 	Exit
 }
 
@@ -849,7 +837,7 @@ ElseIf($WordVersion -eq $wdWord2007)
 }
 Else
 {
-	Write-Error "You are running an untested or unsupported version of Microsoft Word.  Script will end.  Please send info on your version of Word to webster@carlwebster.com"
+	Write-Error "`n`n`t`tYou are running an untested or unsupported version of Microsoft Word.`n`n`t`tScript will end.`n`n`t`tPlease send info on your version of Word to webster@carlwebster.com`n`n"
 	AbortScript
 }
 
@@ -875,10 +863,9 @@ If([String]::IsNullOrEmpty($CompanyName))
 	$CompanyName = ValidateCompanyName
 	If([String]::IsNullOrEmpty($CompanyName))
 	{
-		Write-Warning "Company Name cannot be blank."
-		Write-Warning "Check HKCU:\Software\Microsoft\Office\Common\UserInfo for Company or CompanyName value."
-		Write-Error "Script cannot continue.  See messages above."
-		AbortScript
+		Write-Warning "`n`n`t`tCompany Name is blank so Cover Page will not show a Company Name."
+		Write-Warning "`n`t`tCheck HKCU:\Software\Microsoft\Office\Common\UserInfo for Company or CompanyName value."
+		Write-Warning "`n`t`tYou may want to use the -CompanyName parameter is you need a Company Name on the cover page.`n`n"
 	}
 }
 
@@ -984,7 +971,7 @@ Write-Verbose "$(Get-Date): Validate cover page"
 [bool]$ValidCP = ValidateCoverPage $WordVersion $CoverPage
 If(!$ValidCP)
 {
-	Write-Error "For $WordProduct, $CoverPage is not a valid Cover Page option.  Script cannot continue."
+	Write-Error "`n`n`t`tFor $WordProduct, $CoverPage is not a valid Cover Page option.`n`n`t`tScript cannot continue.`n`n"
 	AbortScript
 }
 
@@ -994,7 +981,6 @@ Write-Verbose "$(Get-Date): Company Name : $CompanyName"
 Write-Verbose "$(Get-Date): Cover Page   : $CoverPage"
 Write-Verbose "$(Get-Date): User Name    : $UserName"
 Write-Verbose "$(Get-Date): Save As PDF  : $PDF"
-## Write-Verbose "$(Get-Date): HW Inventory : $Hardware"
 Write-Verbose "$(Get-Date): Title        : $Title"
 Write-Verbose "$(Get-Date): Filename1    : $filename1"
 If($PDF)
@@ -1055,7 +1041,7 @@ If($BuildingBlocks -ne $Null)
 If(!$CoverPagesExist)
 {
 	Write-Verbose "$(Get-Date): Cover Pages are not installed or the Cover Page $($CoverPage) does not exist."
-	Write-Error "Cover Pages are not installed or the Cover Page $($CoverPage) does not exist.  Script cannot continue."
+	Write-Error "`n`n`t`tCover Pages are not installed or the Cover Page $($CoverPage) does not exist.`n`n`t`tScript cannot continue.`n`n"
 	Write-Verbose "$(Get-Date): Closing Word"
 	AbortScript
 }
@@ -1065,7 +1051,7 @@ $Doc = $Word.Documents.Add()
 If($Doc -eq $Null)
 {
 	Write-Verbose "$(Get-Date): "
-	Write-Error "An empty Word document could not be created.  Script cannot continue."
+	Write-Error "`n`n`t`tAn empty Word document could not be created.`n`n`t`tScript cannot continue.`n`n"
 	AbortScript
 }
 
@@ -1073,7 +1059,7 @@ $Selection = $Word.Selection
 If($Selection -eq $Null)
 {
 	Write-Verbose "$(Get-Date): "
-	Write-Error "An unknown error happened selecting the entire Word document for default formatting options.  Script cannot continue."
+	Write-Error "`n`n`t`tAn unknown error happened selecting the entire Word document for default formatting options.`n`n`t`tScript cannot continue.`n`n"
 	AbortScript
 }
 
@@ -2587,7 +2573,7 @@ If ($Rows -eq 1) {WriteWordLine 0 0 "No Local Groups configured"} else {
             $X = ($_ -replace 'add system group ' , '').split()
             $xRow++
             $Table.Cell($xRow,1).Range.Font.size = 9
-		    $Table.Cell($xRow,1).Range.Text = $X[0]
+		    $Table.Cell($xRow,1).Range.Text = $X
         }
     }
     $table.AutoFitBehavior($wdAutoFitContent)
@@ -3502,7 +3488,7 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Load Balancer have been configured"} els
 
             $LBNAMEBIND = "bind lb vserver $($Y[0]) *"
             ##Services Table
-            WriteWordLine 4 0 "Services"
+            WriteWordLine 4 0 "Services and Service Groups"
             $ROWS2 = 1
             $LoadbalancerBind | foreach {
                 if ($_ -like $LBNAMEBIND) {
@@ -4835,8 +4821,8 @@ $Str = $Null
 # SIG # Begin signature block
 # MIIiywYJKoZIhvcNAQcCoIIivDCCIrgCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUkM/ATOoB9eWaBQ6zJguINIxo
-# ZICggh41MIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUISAbEj2xmV7MDu7j7bRltMLi
+# taaggh41MIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
 # AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMzExMTEwMDAwMDAwWjBlMQsw
@@ -5001,22 +4987,22 @@ $Str = $Null
 # ChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMS4wLAYD
 # VQQDEyVEaWdpQ2VydCBBc3N1cmVkIElEIENvZGUgU2lnbmluZyBDQS0xAhAEpVF+
 # 1fcA0OvDT46NhL3GMAkGBSsOAwIaBQCgQDAZBgkqhkiG9w0BCQMxDAYKKwYBBAGC
-# NwIBBDAjBgkqhkiG9w0BCQQxFgQUQQD757+U7sDeecf90fNIIRNYQmMwDQYJKoZI
-# hvcNAQEBBQAEggEATYJZMjXuu1C7mXTxSYMqUAYHU11fhiPcUSJsi1Vv0qmmkMku
-# 8Ae/NFwAbgxZpBI4MPEdn+I2DVWe/Ar3NYLbD69MiuGMToBjuGxzltPNGSwP03wA
-# cr0742EqYu6BTHcHXcKi9L3lOTTVIlBmZwIs0ncThPWKE3jFEADX8+5tpKAlOajY
-# UdWyk+OIa4xkbwqpsSYzle4Or2l3cUVZGmCySaW0T4ZDreqXzEWdM9k6KEsZ+3qV
-# oms3ny8eQWaqsGOUUKJoJRpae3m4DubjL7DhlKR2jwy0XExdzaw7bGg2aoP/ClP3
-# qiBm5Dbfg7UFBxKh6sli1CMRyx3sDUuo4VBqAqGCAg8wggILBgkqhkiG9w0BCQYx
+# NwIBBDAjBgkqhkiG9w0BCQQxFgQUksNkWkhNEsg6cfs621AqpuXXNHEwDQYJKoZI
+# hvcNAQEBBQAEggEAtiU+QD+vmTpX9j5OHaqF7ZouVmBWhK/8bbRQZIZUSAnF+SHE
+# e13lI8QrAfWrzCLNii1UVKdJ3QKLVajNZMsW6XeVlejmJmf/makBJTTm4f6Fvr+w
+# x9VfKK2DqK5WkObJN5BC7uf7j3OctiAMKum/w0vxYdcOTVUeyo9+nkZNA17/w+XE
+# 5veGbJJ2dVyAa7V2u+f17QGiiJCaIUjqg3OwLg/OmI8C2JIj1eP7WnGr65qmdkxv
+# xRjobHaQhY8M4MefAu04hswSxvwmD4yFX4sAhG09NRM6UAM4j2sKxl04a5Yu8pFb
+# QP5w7YG+uEdpczGI2po9IhzF/s5lO4iXDUAHxKGCAg8wggILBgkqhkiG9w0BCQYx
 # ggH8MIIB+AIBATB2MGIxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJ
 # bmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xITAfBgNVBAMTGERpZ2lDZXJ0
 # IEFzc3VyZWQgSUQgQ0EtMQIQA5/t7ct5W43tMgyJGfA2iTAJBgUrDgMCGgUAoF0w
-# GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTQwNTAx
-# MTQzNzI2WjAjBgkqhkiG9w0BCQQxFgQU0S8YQrLtMoHP4Sz/eOJsymdK9/EwDQYJ
-# KoZIhvcNAQEBBQAEggEAuN6oAZbHnaW5b2riOdlAlDjmDaMuM1dMIAIWOQ+PyS81
-# FwMRpC+uFrkHtQt9OQG+QpoMODuaOB/M/SXiYUsskLrlX7xyNkEIcfYBYYCT9uGe
-# FKe5eEAAgsHOfmfYrJGcSCFqkUWtotS7qs64E+iNInXhTKrkT/Hqx5g4miSbrH4t
-# T14fF/gk7vk85yJK0yPFLJsFmcaR9bewQAJ9wdJV8oDwJy9h+wJWSpXcRCLnLFSf
-# C1Ubkjgd6mDml+SRKeCcSnRK6W68d03amEckNMAyTzU/qskoXmIrPfgcGYc5ACjJ
-# lBeqpmA8usEymsTan470CaBEoJqVmMaQg0bMnDWLdg==
+# GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTQwNTEy
+# MTUxMTU4WjAjBgkqhkiG9w0BCQQxFgQUkZL1ARZmSX+TBnChk7ojHcbXFPYwDQYJ
+# KoZIhvcNAQEBBQAEggEARHu7FTCKog0YlgIHjnlEEUO+MtboenNZwu6BRiDZqmKv
+# +kbi9VqSXmKY5o67IoEEOb5s+pj4Lg0mX0jOfshHDkZEM2c/drzNeMoskmA7xX17
+# vXM3FiMQgRmeMuE9VDsvvGSJrm1aawOf5aOfDjZV2cWq+01KF5LpCe2SCM2S3x4B
+# tqP3xdxrYTfFyMx4qZlEMk09R/J5qVQxN4cTEUW3dbq63uoNaXki4Z5Cq7ODYr9E
+# GaBWA34Z/y6kIv/178Hw2ffYS5s/Xn9+jwQapf3DftJGAD5fHwPcz9lzuERYWZuv
+# IA8Uf1knMFl1BwT4EQeOcGCqRvIWrIoMJCiR7GWjFw==
 # SIG # End signature block
