@@ -49,7 +49,7 @@
 .PARAMETER Credential
     NetScaler username/password
 .PARAMETER UseSSL
-	EXPERIMENTAL: Require SSL/TLS for communication with the NetScaler Nitro API. NOTE: This requires the client to trust to the NetScaler's certificate chain.
+	EXPERIMENTAL: Require SSL/TLS for communication with the NetScaler Nitro API. NOTE: This requires the client to trust the NetScaler's certificate chain.
 .PARAMETER CompanyName
 	Company Name to use for the Cover Page.  
 	Default value is contained in HKCU:\Software\Microsoft\Office\Common\UserInfo\CompanyName or
@@ -105,35 +105,17 @@
 	For Word 2007, the Microsoft add-in for saving as a PDF muct be installed.
 	For Word 2007, please see http://www.microsoft.com/en-us/download/details.aspx?id=9943
 	The PDF file is roughly 5X to 10X larger than the DOCX file.
-.PARAMETER Text
-	Creates a formatted text file with a .txt extension.
-	This parameter is disabled by default.
 .PARAMETER MSWord
 	SaveAs DOCX file
 	This parameter is set True if no other output format is selected.
-.PARAMETER HTML
-	Creates an HTML file with an .html extension.
-	This parameter is disabled by default.
 .PARAMETER AddDateTime
 	Adds a date time stamp to the end of the file name.
 	Time stamp is in the format of yyyy-MM-dd_HHmm.
 	June 1, 2014 at 6PM is 2014-06-01_1800.
 	Output filename will be ReportName_2014-06-01_1800.docx (or .pdf).
 	This parameter is disabled by default.
-.PARAMETER Hardware
-	Use WMI to gather hardware information on: Computer System, Disks, Processor and Network Interface Cards
-	This parameter may require the script be run from an elevated PowerShell session 
-	using an account with permission to retrieve hardware information (i.e. Domain Admin or Local Administrator).
-	Selecting this parameter will add to both the time it takes to run the script and size of the report.
-	This parameter is disabled by default.
-.PARAMETER ComputerName
-	Specifies a computer to use to run the script against.
-	ComputerName can be entered as the NetBIOS name, FQDN, localhost or IP Address.
-	If entered as localhost, the actual computer name is determined and used.
-	If entered as an IP address, an attempt is made to determine and use the actual computer name.
-	Default is localhost.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1
+	PS C:\PSScript > .\NetScaler_Script_v3_Signed.ps1
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -144,7 +126,7 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -PDF
+	PS C:\PSScript > .\NetScaler_Script_v3_Signed.ps1 -PDF
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -155,43 +137,21 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -TEXT
-	
-	Will use all default values and save the document as a formatted text file.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
-	$env:username = Administrator
-
-	Carl Webster for the Company Name.
-	Sideline for the Cover Page format.
-	Administrator for the User Name.
-.EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -HTML
-	
-	Will use all default values and save the document as an HTML file.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
-	$env:username = Administrator
-
-	Carl Webster for the Company Name.
-	Sideline for the Cover Page format.
-	Administrator for the User Name.
-.EXAMPLE
-	PS C:\PSScript .\NetScaler_Script_v2_0.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
+	PS C:\PSScript .\NetScaler_Script_v3_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name.
 		Mod for the Cover Page format.
 		Carl Webster for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\NetScaler_Script_v2_0.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
+	PS C:\PSScript .\NetScaler_Script_v3_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name (alias CN).
 		Mod for the Cover Page format (alias CP).
 		Carl Webster for the User Name (alias UN).
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -AddDateTime
+	PS C:\PSScript > .\NetScaler_Script_v3_Signed.ps1 -AddDateTime
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -207,7 +167,7 @@
 	June 1, 2014 at 6PM is 2014-06-01_1800.
 	Output filename will be Script_Template_2014-06-01_1800.docx
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -PDF -AddDateTime
+	PS C:\PSScript > .\NetScaler_Script_v3_Signed.ps1 -PDF -AddDateTime
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -222,37 +182,11 @@
 	Time stamp is in the format of yyyy-MM-dd_HHmm.
 	June 1, 2014 at 6PM is 2014-06-01_1800.
 	Output filename will be Script_Template_2014-06-01_1800.PDF
-.EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -Hardware
-	
-	Will use all default values.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
-	$env:username = Administrator
-
-	Carl Webster for the Company Name.
-	Sideline for the Cover Page format.
-	Administrator for the User Name.
-	localhost for running hardware inventory.
-	localhost will be replaced by the actual computer name.
-.EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_v2_0.ps1 -Hardware -ComputerName 192.168.1.51
-	
-	Will use all default values.
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
-	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\Company="Carl Webster"
-	$env:username = Administrator
-
-	Carl Webster for the Company Name.
-	Sideline for the Cover Page format.
-	Administrator for the User Name.
-	192.168.1.51 for running hardware inventory.
-	192.168.1.51 will be replaced by the actual computer name, if possible.
 .INPUTS
 	None.  You cannot pipe objects to this script.
 .OUTPUTS
 	No objects are output from this script.  
-	This script creates a Word, PDF, Formatted Text or HTML document.
+	This script creates a Word or PDF document.
 .NOTES
 	NAME: Based on Script Template date 17072014
 	VERSION: 17072014
@@ -327,88 +261,39 @@
 [CmdletBinding(SupportsShouldProcess = $False, ConfirmImpact = "None", DefaultParameterSetName = "WordOrPDF") ]
 
 Param(
-    [parameter(
-    Position = 0,
-    Mandatory=$true )
-    ]
+    [parameter(Mandatory=$true )]
     [string] $NSIP,
     
-    [parameter(
-    Mandatory=$false )
-    ]
+    [parameter(Mandatory=$false )]
     [PSCredential] $Credential = (Get-Credential -Message 'Enter NetScaler credentials'),
 	
 	## EXPERIMENTAL: Require SSL/TLS, e.g. https://. This requires the client to trust to the NetScaler's certificate.
-    [parameter(
-    Mandatory=$false )	
-	]
+    [parameter( Mandatory=$false )]
 	[System.Management.Automation.SwitchParameter] $UseSSL,
     
-	[parameter(ParameterSetName="WordOrPDF",
-	Position = 1, 
-	Mandatory=$False )
-	] 
+	[parameter(ParameterSetName="WordOrPDF",Mandatory=$False )] 
 	[Alias("CN")]
 	[ValidateNotNullOrEmpty()]
 	[string]$CompanyName="",
     
-	[parameter(ParameterSetName="WordOrPDF",
-	Position = 2, 
-	Mandatory=$False )
-	] 
+	[parameter(ParameterSetName="WordOrPDF",Mandatory=$False )] 
 	[Alias("CP")]
 	[ValidateNotNullOrEmpty()]
 	[string]$CoverPage="Sideline", 
 
-	[parameter(ParameterSetName="WordOrPDF",
-	Position = 3, 
-	Mandatory=$False )
-	] 
+	[parameter(ParameterSetName="WordOrPDF",Mandatory=$False )] 
 	[Alias("UN")]
 	[ValidateNotNullOrEmpty()]
 	[string]$UserName=$env:username,
 
-	[parameter(ParameterSetName="WordOrPDF",
-	Position = 4, 
-	Mandatory=$False )
-	] 
+	[parameter(ParameterSetName="WordOrPDF",Mandatory=$False )] 
 	[Switch]$PDF=$False,
 
-	[parameter(ParameterSetName="Text",
-	Position = 5, 
-	Mandatory=$False )
-	] 
-	[Switch]$Text=$False,
-
-	[parameter(ParameterSetName="WordOrPDF",
-	Position = 5, 
-	Mandatory=$False )
-	] 
+	[parameter(ParameterSetName="WordOrPDF",Mandatory=$False )] 
 	[Switch]$MSWord=$False,
 
-	[parameter(ParameterSetName="HTML",
-	Position = 5, 
-	Mandatory=$False )
-	] 
-	[Switch]$HTML=$False,
-
-	[parameter(
-	Position = 6, 
-	Mandatory=$False )
-	] 
-	[Switch]$AddDateTime=$False,
-	
-	[parameter(
-	Position = 7, 
-	Mandatory=$False )
-	] 
-	[Switch]$Hardware=$False,
-
-	[parameter(
-	Position = 8, 
-	Mandatory=$False )
-	] 
-	[string]$ComputerName="LocalHost"
+	[parameter(Mandatory=$False )] 
+	[Switch]$AddDateTime=$False
 	
 	)
 
@@ -431,67 +316,31 @@ If($Null -eq $PDF)
 {
 	$PDF = $False
 }
-If($Null -eq $Text)
-{
-	$Text = $False
-}
 If($Null -eq $MSWord)
 {
 	$MSWord = $False
 }
-If($Null -eq $HTML)
-{
-	$HTML = $False
-}
 If($Null -eq $AddDateTime)
 {
 	$AddDateTime = $False
-}
-If($Null -eq $ComputerName)
-{
-	$ComputerName = "LocalHost"
-}
-If($Null -eq $Hardware)
-{
-	$Hardware = $False
-}
-If($Null -eq $ComputerName)
-{
-	$ComputerName = "LocalHost"
 }
 
 If(!(Test-Path Variable:PDF))
 {
 	$PDF = $False
 }
-If(!(Test-Path Variable:Text))
-{
-	$Text = $False
-}
 If(!(Test-Path Variable:MSWord))
 {
 	$MSWord = $False
-}
-If(!(Test-Path Variable:HTML))
-{
-	$HTML = $False
 }
 If(!(Test-Path Variable:AddDateTime))
 {
 	$AddDateTime = $False
 }
-If(!(Test-Path Variable:Hardware))
-{
-	$Hardware = $False
-}
-If(!(Test-Path Variable:ComputerName))
-{
-	$ComputerName = "LocalHost"
-}
 
 If($MSWord -eq $Null)
 {
-	If($Text -or $HTML -or $PDF)
+	If($PDF)
 	{
 		$MSWord = $False
 	}
@@ -501,7 +350,7 @@ If($MSWord -eq $Null)
 	}
 }
 
-If($MSWord -eq $False -and $PDF -eq $False -and $Text -eq $False -and $HTML -eq $False)
+If($MSWord -eq $False -and $PDF -eq $False)
 {
 	$MSWord = $True
 }
@@ -516,14 +365,6 @@ ElseIf($PDF)
 {
 	Write-Verbose "$(Get-Date): PDF is set"
 }
-ElseIf($Text)
-{
-	Write-Verbose "$(Get-Date): Text is set"
-}
-ElseIf($HTML)
-{
-	Write-Verbose "$(Get-Date): HTML is set"
-}
 Else
 {
 	$ErrorActionPreference = $SaveEAPreference
@@ -536,20 +377,10 @@ Else
 	{
 		Write-Verbose "$(Get-Date): PDF is Null"
 	}
-	ElseIf($Text -eq $Null)
-	{
-		Write-Verbose "$(Get-Date): Text is Null"
-	}
-	ElseIf($HTML -eq $Null)
-	{
-		Write-Verbose "$(Get-Date): HTML is Null"
-	}
 	Else
 	{
 		Write-Verbose "$(Get-Date): MSWord is $($MSWord)"
 		Write-Verbose "$(Get-Date): PDF is $($PDF)"
-		Write-Verbose "$(Get-Date): Text is $($Text)"
-		Write-Verbose "$(Get-Date): HTML is $($HTML)"
 	}
 	Write-Error "Unable to determine output parameter.  Script cannot continue"
 	Exit
@@ -620,946 +451,6 @@ If($MSWord -or $PDF)
 
 	[int]$wdHeadingFormatTrue = -1
 	[int]$wdHeadingFormatFalse = 0 
-}
-
-Function GetComputerWMIInfo
-{
-	Param([string]$RemoteComputerName)
-	
-	# original work by Kees Baggerman, 
-	# Senior Technical Consultant @ Inter Access
-	# k.baggerman@myvirtualvision.com
-	# @kbaggerman on Twitter
-	# http://blog.myvirtualvision.com
-	# modified 1-May-2014 to work in trusted AD Forests and using different domain admin credentials	
-
-	#Get Computer info
-	Write-Verbose "$(Get-Date): `t`tProcessing WMI Computer information"
-	Write-Verbose "$(Get-Date): `t`t`tHardware information"
-	If($MSWord -or $PDF)
-	{
-		WriteWordLine 3 0 "Computer Information"
-		WriteWordLine 0 1 "General Computer"
-	}
-	ElseIf($Text)
-	{
-		Line 0 "Computer Information"
-		Line 1 "General Computer"
-	}
-	ElseIf($HTML)
-	{
-	}
-	
-	[bool]$GotComputerItems = $True
-	
-	Try
-	{
-		$Results = Get-WmiObject -computername $RemoteComputerName win32_computersystem
-	}
-	
-	Catch
-	{
-		$Results = $Null
-	}
-	
-	If($? -and $Results -ne $Null)
-	{
-		$ComputerItems = $Results | Select Manufacturer, Model, Domain, @{N="TotalPhysicalRam"; E={[math]::round(($_.TotalPhysicalMemory / 1GB),0)}}
-		$Results = $Null
-
-		ForEach($Item in $ComputerItems)
-		{
-			OutputComputerItem $Item
-		}
-	}
-	ElseIf(!$?)
-	{
-		Write-Verbose "$(Get-Date): Get-WmiObject win32_computersystem failed for $($RemoteComputerName)"
-		Write-Warning "Get-WmiObject win32_computersystem failed for $($RemoteComputerName)"
-		If($MSWORD -or $PDF)
-		{
-			WriteWordLine 0 2 "Get-WmiObject win32_computersystem failed for $($RemoteComputerName)" "" $Null 0 $False $True
-			WriteWordLine 0 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository" "" $Null 0 $False $True
-			WriteWordLine 0 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may" "" $Null 0 $False $True
-			WriteWordLine 0 2 "need to rerun the script with Domain Admin credentials from the trusted Forest." "" $Null 0 $False $True
-		}
-		ElseIf($Text)
-		{
-			Line 2 "Get-WmiObject win32_computersystem failed for $($RemoteComputerName)"
-			Line 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository"
-			Line 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may"
-			Line 2 "need to rerun the script with Domain Admin credentials from the trusted Forest."
-			Line 2 ""
-		}
-		ElseIf($HTML)
-		{
-		}
-	}
-	Else
-	{
-		Write-Verbose "$(Get-Date): No results returned for Computer information"
-		If($MSWORD -or $PDF)
-		{
-			WriteWordLine 0 2 "No results returned for Computer information" "" $Null 0 $False $True
-		}
-		ElseIf($Text)
-		{
-			Line 2 "No results returned for Computer information"
-		}
-		ElseIf($HTML)
-		{
-		}
-	}
-	
-	#Get Disk info
-	Write-Verbose "$(Get-Date): `t`t`tDrive information"
-
-	If($MSWord -or $PDF)
-	{
-		WriteWordLine 0 1 "Drive(s)"
-	}
-	ElseIf($Text)
-	{
-		Line 1 "Drive(s)"
-	}
-	ElseIf($HTML)
-	{
-	}
-
-	[bool]$GotDrives = $True
-	
-	Try
-	{
-		$Results = Get-WmiObject -computername $RemoteComputerName Win32_LogicalDisk
-	}
-	
-	Catch
-	{
-		$Results = $Null
-	}
-
-	If($? -and $Results -ne $Null)
-	{
-		$drives = $Results | Select caption, @{N="drivesize"; E={[math]::round(($_.size / 1GB),0)}}, 
-		filesystem, @{N="drivefreespace"; E={[math]::round(($_.freespace / 1GB),0)}}, 
-		volumename, drivetype, volumedirty, volumeserialnumber
-		$Results = $Null
-		ForEach($drive in $drives)
-		{
-			If($drive.caption -ne "A:" -and $drive.caption -ne "B:")
-			{
-				OutputDriveItem $drive
-			}
-		}
-	}
-	ElseIf(!$?)
-	{
-		Write-Verbose "$(Get-Date): Get-WmiObject Win32_LogicalDisk failed for $($RemoteComputerName)"
-		Write-Warning "Get-WmiObject Win32_LogicalDisk failed for $($RemoteComputerName)"
-		If($MSWORD -or $PDF)
-		{
-			WriteWordLine 0 2 "Get-WmiObject Win32_LogicalDisk failed for $($RemoteComputerName)" "" $Null 0 $False $True
-			WriteWordLine 0 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository" "" $Null 0 $False $True
-			WriteWordLine 0 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may" "" $Null 0 $False $True
-			WriteWordLine 0 2 "need to rerun the script with Domain Admin credentials from the trusted Forest." "" $Null 0 $False $True
-		}
-		ElseIf($Text)
-		{
-			Line 2 "Get-WmiObject Win32_LogicalDisk failed for $($RemoteComputerName)"
-			Line 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository"
-			Line 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may"
-			Line 2 "need to rerun the script with Domain Admin credentials from the trusted Forest."
-		}
-		ElseIf($HTML)
-		{
-		}
-	}
-	Else
-	{
-		Write-Verbose "$(Get-Date): No results returned for Drive information"
-		If($MSWORD -or $PDF)
-		{
-			WriteWordLine 0 2 "No results returned for Drive information" "" $Null 0 $False $True
-		}
-		ElseIf($Text)
-		{
-			Line 2 "No results returned for Drive information"
-		}
-		ElseIf($HTML)
-		{
-		}
-	}
-	
-
-	#Get CPU's and stepping
-	Write-Verbose "$(Get-Date): `t`t`tProcessor information"
-
-	If($MSWord -or $PDF)
-	{
-		WriteWordLine 0 1 "Processor(s)"
-	}
-	ElseIf($Text)
-	{
-		Line 1 "Processor(s)"
-	}
-	ElseIf($HTML)
-	{
-	}
-
-	[bool]$GotProcessors = $True
-	
-	Try
-	{
-		$Results = Get-WmiObject -computername $RemoteComputerName win32_Processor
-	}
-	
-	Catch
-	{
-		$Results = $Null
-	}
-
-	If($? -and $Results -ne $Null)
-	{
-		$Processors = $Results | Select availability, name, description, maxclockspeed, 
-		l2cachesize, l3cachesize, numberofcores, numberoflogicalprocessors
-		$Results = $Null
-		ForEach($processor in $processors)
-		{
-			OutputProcessorItem $processor
-		}
-	}
-	ElseIf(!$?)
-	{
-		Write-Verbose "$(Get-Date): Get-WmiObject win32_Processor failed for $($RemoteComputerName)"
-		Write-Warning "Get-WmiObject win32_Processor failed for $($RemoteComputerName)"
-		If($MSWORD -or $PDF)
-		{
-			WriteWordLine 0 2 "Get-WmiObject win32_Processor failed for $($RemoteComputerName)" "" $Null 0 $False $True
-			WriteWordLine 0 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository" "" $Null 0 $False $True
-			WriteWordLine 0 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may" "" $Null 0 $False $True
-			WriteWordLine 0 2 "need to rerun the script with Domain Admin credentials from the trusted Forest." "" $Null 0 $False $True
-		}
-		ElseIf($Text)
-		{
-			Line 2 "Get-WmiObject win32_Processor failed for $($RemoteComputerName)"
-			Line 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository"
-			Line 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may"
-			Line 2 "need to rerun the script with Domain Admin credentials from the trusted Forest."
-		}
-		ElseIf($HTML)
-		{
-		}
-	}
-	Else
-	{
-		Write-Verbose "$(Get-Date): No results returned for Processor information"
-		If($MSWORD -or $PDF)
-		{
-			WriteWordLine 0 2 "No results returned for Processor information" "" $Null 0 $False $True
-		}
-		ElseIf($Text)
-		{
-			Line 2 "No results returned for Processor information"
-		}
-		ElseIf($HTML)
-		{
-		}
-	}
-
-	#Get Nics
-	Write-Verbose "$(Get-Date): `t`t`tNIC information"
-
-	If($MSWord -or $PDF)
-	{
-		WriteWordLine 0 1 "Network Interface(s)"
-	}
-	ElseIf($Text)
-	{
-		Line 1 "Network Interface(s)"
-	}
-	ElseIf($HTML)
-	{
-	}
-
-	[bool]$GotNics = $True
-	
-	Try
-	{
-		$Results = Get-WmiObject -computername $RemoteComputerName win32_networkadapterconfiguration
-	}
-	
-	Catch
-	{
-		$Results
-	}
-
-	If($? -and $Results -ne $Null)
-	{
-		$Nics = $Results | Where {$_.ipaddress -ne $Null}
-		$Results = $Null
-
-		If($Nics -eq $Null ) 
-		{ 
-			$GotNics = $False 
-		} 
-		Else 
-		{ 
-			$GotNics = !($Nics.__PROPERTY_COUNT -eq 0) 
-		} 
-	
-		If($GotNics)
-		{
-			ForEach($nic in $nics)
-			{
-				Try
-				{
-					$ThisNic = Get-WmiObject -computername $RemoteComputerName win32_networkadapter | Where {$_.index -eq $nic.index}
-				}
-				
-				Catch 
-				{
-					$ThisNic = $Null
-				}
-				
-				If($? -and $ThisNic -ne $Null)
-				{
-					OutputNicItem $Nic $ThisNic
-				}
-				ElseIf(!$?)
-				{
-					Write-Warning "$(Get-Date): Error retrieving NIC information"
-					Write-Verbose "$(Get-Date): Get-WmiObject win32_networkadapterconfiguration failed for $($RemoteComputerName)"
-					Write-Warning "Get-WmiObject win32_networkadapterconfiguration failed for $($RemoteComputerName)"
-					If($MSWORD -or $PDF)
-					{
-						WriteWordLine 0 2 "Error retrieving NIC information" "" $Null 0 $False $True
-						WriteWordLine 0 2 "Get-WmiObject win32_networkadapterconfiguration failed for $($RemoteComputerName)" "" $Null 0 $False $True
-						WriteWordLine 0 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository" "" $Null 0 $False $True
-						WriteWordLine 0 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may" "" $Null 0 $False $True
-						WriteWordLine 0 2 "need to rerun the script with Domain Admin credentials from the trusted Forest." "" $Null 0 $False $True
-					}
-					ElseIf($Text)
-					{
-						Line 2 "Error retrieving NIC information"
-						Line 2 "Get-WmiObject win32_networkadapterconfiguration failed for $($RemoteComputerName)"
-						Line 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository"
-						Line 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may"
-						Line 2 "need to rerun the script with Domain Admin credentials from the trusted Forest."
-					}
-					ElseIf($HTML)
-					{
-					}
-				}
-				Else
-				{
-					Write-Verbose "$(Get-Date): No results returned for NIC information"
-					If($MSWORD -or $PDF)
-					{
-						WriteWordLine 0 2 "No results returned for NIC information" "" $Null 0 $False $True
-					}
-					ElseIf($Text)
-					{
-						Line 2 "No results returned for NIC information"
-					}
-					ElseIf($HTML)
-					{
-					}
-				}
-			}
-		}	
-	}
-	ElseIf(!$?)
-	{
-		Write-Warning "$(Get-Date): Error retrieving NIC configuration information"
-		Write-Verbose "$(Get-Date): Get-WmiObject win32_networkadapterconfiguration failed for $($RemoteComputerName)"
-		Write-Warning "Get-WmiObject win32_networkadapterconfiguration failed for $($RemoteComputerName)"
-		If($MSWORD -or $PDF)
-		{
-			WriteWordLine 0 2 "Error retrieving NIC configuration information" "" $Null 0 $False $True
-			WriteWordLine 0 2 "Get-WmiObject win32_networkadapterconfiguration failed for $($RemoteComputerName)" "" $Null 0 $False $True
-			WriteWordLine 0 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository" "" $Null 0 $False $True
-			WriteWordLine 0 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may" "" $Null 0 $False $True
-			WriteWordLine 0 2 "need to rerun the script with Domain Admin credentials from the trusted Forest." "" $Null 0 $False $True
-		}
-		ElseIf($Text)
-		{
-			Line 2 "Error retrieving NIC configuration information"
-			Line 2 "Get-WmiObject win32_networkadapterconfiguration failed for $($RemoteComputerName)"
-			Line 2 "On $($RemoteComputerName) you may need to run winmgmt /verifyrepository"
-			Line 2 "and winmgmt /salvagerepository.  If this is a trusted Forest, you may"
-			Line 2 "need to rerun the script with Domain Admin credentials from the trusted Forest."
-		}
-		ElseIf($HTML)
-		{
-		}
-	}
-	Else
-	{
-		Write-Verbose "$(Get-Date): No results returned for NIC configuration information"
-		If($MSWORD -or $PDF)
-		{
-			WriteWordLine 0 2 "No results returned for NIC configuration information" "" $Null 0 $False $True
-		}
-		ElseIf($Text)
-		{
-			Line 2 "No results returned for NIC configuration information"
-		}
-		ElseIf($HTML)
-		{
-		}
-	}
-	
-	If($MSWORD -or $PDF)
-	{
-		WriteWordLine 0 0 ""
-	}
-	ElseIf($Text)
-	{
-		Line 0 ""
-	}
-	ElseIf($HTML)
-	{
-	}
-
-	$Results = $Null
-	$ComputerItems = $Null
-	$Drives = $Null
-	$Processors = $Null
-	$Nics = $Null
-}
-
-Function OutputComputerItem
-{
-	Param([object]$Item)
-	If($MSWord -or $PDF)
-	{
-		[System.Collections.Hashtable[]] $ItemInformation = @()
-		$ItemInformation += @{ Data = "Manufacturer"; Value = $Item.manufacturer; }
-		$ItemInformation += @{ Data = "Model"; Value = $Item.model; }
-		$ItemInformation += @{ Data = "Domain"; Value = $Item.domain; }
-		$ItemInformation += @{ Data = "Total Ram"; Value = "$($Item.totalphysicalram) GB"; }
-		$Table = AddWordTable -Hashtable $ItemInformation -Columns Data,Value -List -AutoFit $wdAutoFitFixed;
-
-		## Set first column format
-		SetWordCellFormat -Collection $Table.Columns.Item(1).Cells -Bold -BackgroundColor $wdColorGray15;
-
-		## IB - set column widths without recursion
-		$Table.Columns.Item(1).Width = 125;
-		$Table.Columns.Item(2).Width = 100;
-
-		$Table.Rows.SetLeftIndent($Indent2TabStops,$wdAdjustNone)
-
-		FindWordDocumentEnd
-		$TableRange = $Null
-		$Table = $Null
-		WriteWordLine 0 2 ""
-		
-	}
-	ElseIf($Text)
-	{
-		Line 2 "Manufacturer`t: " $Item.manufacturer
-		Line 2 "Model`t`t: " $Item.model
-		Line 2 "Domain`t`t: " $Item.domain
-		Line 2 "Total Ram`t: $($Item.totalphysicalram) GB"
-		Line 2 ""
-	}
-	ElseIf($HTML)
-	{
-	}
-}
-
-Function OutputDriveItem
-{
-	Param([object]$Drive)
-	If($MSWORD -or $PDF)
-	{
-		[System.Collections.Hashtable[]] $DriveInformation = @()
-		$DriveInformation += @{ Data = "Caption"; Value = $Drive.caption; }
-		$DriveInformation += @{ Data = "Size"; Value = "$($drive.drivesize) GB"; }
-		If(![String]::IsNullOrEmpty($drive.filesystem))
-		{
-			$DriveInformation += @{ Data = "File System"; Value = $Drive.filesystem; }
-		}
-		$DriveInformation += @{ Data = "Free Space"; Value = "$($drive.drivefreespace) GB"; }
-		If(![String]::IsNullOrEmpty($drive.volumename))
-		{
-			$DriveInformation += @{ Data = "Volume Name"; Value = $Drive.volumename; }
-		}
-		If(![String]::IsNullOrEmpty($drive.volumedirty))
-		{
-			If($drive.volumedirty)
-			{
-				$tmp = "Yes"
-			}
-			Else
-			{
-				$tmp = "No"
-			}
-			$DriveInformation += @{ Data = "Volume is Dirty"; Value = $tmp; }
-		}
-		If(![String]::IsNullOrEmpty($drive.volumeserialnumber))
-		{
-			$DriveInformation += @{ Data = "Volume Serial Number"; Value = $Drive.volumeserialnumber; }
-		}
-		Switch ($drive.drivetype)
-		{
-			0	{$tmp = "Unknown"}
-			1	{$tmp = "No Root Directory"}
-			2	{$tmp = "Removable Disk"}
-			3	{$tmp = "Local Disk"}
-			4	{$tmp = "Network Drive"}
-			5	{$tmp = "Compact Disc"}
-			6	{$tmp = "RAM Disk"}
-			Default {$tmp = "Unknown"}
-		}
-		$DriveInformation += @{ Data = "Drive Type"; Value = $tmp; }
-		$Table = AddWordTable -Hashtable $DriveInformation -Columns Data,Value -List -AutoFit $wdAutoFitContent;
-
-		## Set first column format
-		SetWordCellFormat -Collection $Table.Columns.Item(1).Cells -Bold -BackgroundColor $wdColorGray15;
-
-		## IB - set column widths without recursion
-		$Table.Columns.Item(1).Width = 125;
-		$Table.Columns.Item(2).Width = 100;
-
-		$Table.Rows.SetLeftIndent($Indent2TabStops,$wdAdjustNone)
-
-		FindWordDocumentEnd
-		$TableRange = $Null
-		$Table = $Null
-		WriteWordLine 0 2 ""
-	}
-	ElseIf($Text)
-	{
-		Line 2 "Caption`t`t: " $drive.caption
-		Line 2 "Size`t`t: $($drive.drivesize) GB"
-		If(![String]::IsNullOrEmpty($drive.filesystem))
-		{
-			Line 2 "File System`t: " $drive.filesystem
-		}
-		Line 2 "Free Space`t: $($drive.drivefreespace) GB"
-		If(![String]::IsNullOrEmpty($drive.volumename))
-		{
-			Line 2 "Volume Name`t: " $drive.volumename
-		}
-		If(![String]::IsNullOrEmpty($drive.volumedirty))
-		{
-			Line 2 "Volume is Dirty`t: " -nonewline
-			If($drive.volumedirty)
-			{
-				Line 0 "Yes"
-			}
-			Else
-			{
-				Line 0 "No"
-			}
-		}
-		If(![String]::IsNullOrEmpty($drive.volumeserialnumber))
-		{
-			Line 2 "Volume Serial #`t: " $drive.volumeserialnumber
-		}
-		Line 2 "Drive Type`t: " -nonewline
-		Switch ($drive.drivetype)
-		{
-			0	{Line 0 "Unknown"}
-			1	{Line 0 "No Root Directory"}
-			2	{Line 0 "Removable Disk"}
-			3	{Line 0 "Local Disk"}
-			4	{Line 0 "Network Drive"}
-			5	{Line 0 "Compact Disc"}
-			6	{Line 0 "RAM Disk"}
-			Default {Line 0 "Unknown"}
-		}
-		Line 2 ""
-	}
-	ElseIf($HTML)
-	{
-	}
-}
-
-Function OutputProcessorItem
-{
-	Param([object]$Processor)
-	If($MSWORD -or $PDF)
-	{
-		[System.Collections.Hashtable[]] $ProcessorInformation = @()
-		$ProcessorInformation += @{ Data = "Name"; Value = $Processor.name; }
-		$ProcessorInformation += @{ Data = "Description"; Value = $Processor.description; }
-		$ProcessorInformation += @{ Data = "Max Clock Speed"; Value = "$($processor.maxclockspeed) MHz"; }
-		If($processor.l2cachesize -gt 0)
-		{
-			$ProcessorInformation += @{ Data = "L2 Cache Size"; Value = "$($processor.l2cachesize) KB"; }
-		}
-		If($processor.l3cachesize -gt 0)
-		{
-			$ProcessorInformation += @{ Data = "L3 Cache Size"; Value = "$($processor.l3cachesize) KB"; }
-		}
-		If($processor.numberofcores -gt 0)
-		{
-			$ProcessorInformation += @{ Data = "Number of Cores"; Value = $Processor.numberofcores; }
-		}
-		If($processor.numberoflogicalprocessors -gt 0)
-		{
-			$ProcessorInformation += @{ Data = "Number of Logical Processors"; Value = $Processor.numberoflogicalprocessors; }
-		}
-		Switch ($processor.availability)
-		{
-			1	{$tmp = "Other"}
-			2	{$tmp = "Unknown"}
-			3	{$tmp = "Running or Full Power"}
-			4	{$tmp = "Warning"}
-			5	{$tmp = "In Test"}
-			6	{$tmp = "Not Applicable"}
-			7	{$tmp = "Power Off"}
-			8	{$tmp = "Off Line"}
-			9	{$tmp = "Off Duty"}
-			10	{$tmp = "Degraded"}
-			11	{$tmp = "Not Installed"}
-			12	{$tmp = "Install Error"}
-			13	{$tmp = "Power Save - Unknown"}
-			14	{$tmp = "Power Save - Low Power Mode"}
-			15	{$tmp = "Power Save - Standby"}
-			16	{$tmp = "Power Cycle"}
-			17	{$tmp = "Power Save - Warning"}
-			Default	{$tmp = "Unknown"}
-		}
-		$ProcessorInformation += @{ Data = "Availability"; Value = $tmp; }
-		$Table = AddWordTable -Hashtable $ProcessorInformation -Columns Data,Value -List -AutoFit $wdAutoFitFixed;
-
-		## Set first column format
-		SetWordCellFormat -Collection $Table.Columns.Item(1).Cells -Bold -BackgroundColor $wdColorGray15;
-
-		## IB - set column widths without recursion
-		$Table.Columns.Item(1).Width = 150;
-		$Table.Columns.Item(2).Width = 200;
-
-		$Table.Rows.SetLeftIndent($Indent2TabStops,$wdAdjustNone)
-
-		FindWordDocumentEnd
-		$TableRange = $Null
-		$Table = $Null
-		WriteWordLine 0 2 ""
-	}
-	ElseIf($Text)
-	{
-		Line 2 "Name`t`t`t: " $processor.name
-		Line 2 "Description`t`t: " $processor.description
-		Line 2 "Max Clock Speed`t`t: $($processor.maxclockspeed) MHz"
-		If($processor.l2cachesize -gt 0)
-		{
-			Line 2 "L2 Cache Size`t`t: $($processor.l2cachesize) KB"
-		}
-		If($processor.l3cachesize -gt 0)
-		{
-			Line 2 "L3 Cache Size`t`t: $($processor.l3cachesize) KB"
-		}
-		If($processor.numberofcores -gt 0)
-		{
-			Line 2 "# of Cores`t`t: " $processor.numberofcores
-		}
-		If($processor.numberoflogicalprocessors -gt 0)
-		{
-			Line 2 "# of Logical Procs`t: " $processor.numberoflogicalprocessors
-		}
-		Line 2 "Availability`t`t: " -nonewline
-		Switch ($processor.availability)
-		{
-			1	{Line 0 "Other"}
-			2	{Line 0 "Unknown"}
-			3	{Line 0 "Running or Full Power"}
-			4	{Line 0 "Warning"}
-			5	{Line 0 "In Test"}
-			6	{Line 0 "Not Applicable"}
-			7	{Line 0 "Power Off"}
-			8	{Line 0 "Off Line"}
-			9	{Line 0 "Off Duty"}
-			10	{Line 0 "Degraded"}
-			11	{Line 0 "Not Installed"}
-			12	{Line 0 "Install Error"}
-			13	{Line 0 "Power Save - Unknown"}
-			14	{Line 0 "Power Save - Low Power Mode"}
-			15	{Line 0 "Power Save - Standby"}
-			16	{Line 0 "Power Cycle"}
-			17	{Line 0 "Power Save - Warning"}
-			Default	{Line 0 "Unknown"}
-		}
-		Line 2 ""
-	}
-	ElseIf($HTML)
-	{
-	}
-}
-
-Function OutputNicItem
-{
-	Param([object]$Nic, [object]$ThisNic)
-	If($MSWORD -or $PDF)
-	{
-		[System.Collections.Hashtable[]] $NicInformation = @()
-		If($ThisNic.Name -eq $nic.description)
-		{
-			$NicInformation += @{ Data = "Name"; Value = $ThisNic.Name; }
-		}
-		Else
-		{
-			$NicInformation += @{ Data = "Name"; Value = $ThisNic.Name; }
-			$NicInformation += @{ Data = "Description"; Value = $Nic.description; }
-		}
-		$NicInformation += @{ Data = "Connection ID"; Value = $ThisNic.NetConnectionID; }
-		$NicInformation += @{ Data = "Manufacturer"; Value = $Nic.manufacturer; }
-		Switch ($ThisNic.availability)
-		{
-			1	{$tmp = "Other"}
-			2	{$tmp = "Unknown"}
-			3	{$tmp = "Running or Full Power"}
-			4	{$tmp = "Warning"}
-			5	{$tmp = "In Test"}
-			6	{$tmp = "Not Applicable"}
-			7	{$tmp = "Power Off"}
-			8	{$tmp = "Off Line"}
-			9	{$tmp = "Off Duty"}
-			10	{$tmp = "Degraded"}
-			11	{$tmp = "Not Installed"}
-			12	{$tmp = "Install Error"}
-			13	{$tmp = "Power Save - Unknown"}
-			14	{$tmp = "Power Save - Low Power Mode"}
-			15	{$tmp = "Power Save - Standby"}
-			16	{$tmp = "Power Cycle"}
-			17	{$tmp = "Power Save - Warning"}
-			Default	{$tmp = "Unknown"}
-		}
-		$NicInformation += @{ Data = "Availability"; Value = $tmp; }
-		$NicInformation += @{ Data = "Physical Address"; Value = $Nic.macaddress; }
-		$NicInformation += @{ Data = "IP Address"; Value = $Nic.ipaddress; }
-		$NicInformation += @{ Data = "Default Gateway"; Value = $Nic.Defaultipgateway; }
-		$NicInformation += @{ Data = "Subnet Mask"; Value = $Nic.ipsubnet; }
-		If($nic.dhcpenabled)
-		{
-			$DHCPLeaseObtainedDate = $nic.ConvertToDateTime($nic.dhcpleaseobtained)
-			$DHCPLeaseExpiresDate = $nic.ConvertToDateTime($nic.dhcpleaseexpires)
-			$NicInformation += @{ Data = "DHCP Enabled"; Value = $Nic.dhcpenabled; }
-			$NicInformation += @{ Data = "DHCP Lease Obtained"; Value = $dhcpleaseobtaineddate; }
-			$NicInformation += @{ Data = "DHCP Lease Expires"; Value = $dhcpleaseexpiresdate; }
-			$NicInformation += @{ Data = "DHCP Server"; Value = $Nic.dhcpserver; }
-		}
-		If(![String]::IsNullOrEmpty($nic.dnsdomain))
-		{
-			$NicInformation += @{ Data = "DNS Domain"; Value = $Nic.dnsdomain; }
-		}
-		If($nic.dnsdomainsuffixsearchorder -ne $Null -and $nic.dnsdomainsuffixsearchorder.length -gt 0)
-		{
-			[int]$x = 1
-			WriteWordLine 0 2 "DNS Search Suffixes`t:" -nonewline
-			$nicdnsdomainsuffixsearchorder = $nic.dnsdomainsuffixsearchorder
-			$tmp = @()
-			ForEach($DNSDomain in $nicdnsdomainsuffixsearchorder)
-			{
-				$tmp += "$($DNSDomain)`r"
-			}
-			$NicInformation += @{ Data = "DNS Search Suffixes"; Value = $tmp; }
-		}
-		If($nic.dnsenabledforwinsresolution)
-		{
-			$tmp = "Yes"
-		}
-		Else
-		{
-			$tmp = "No"
-		}
-		$NicInformation += @{ Data = "DNS WINS Enabled"; Value = $tmp; }
-		If($nic.dnsserversearchorder -ne $Null -and $nic.dnsserversearchorder.length -gt 0)
-		{
-			$nicdnsserversearchorder = $nic.dnsserversearchorder
-			$tmp = @()
-			ForEach($DNSServer in $nicdnsserversearchorder)
-			{
-				$tmp += "$($DNSServer)`r"
-			}
-			$NicInformation += @{ Data = "DNS Servers"; Value = $tmp; }
-		}
-		Switch ($nic.TcpipNetbiosOptions)
-		{
-			0	{$tmp = "Use NetBIOS setting from DHCP Server"}
-			1	{$tmp = "Enable NetBIOS"}
-			2	{$tmp = "Disable NetBIOS"}
-			Default	{$tmp = "Unknown"}
-		}
-		$NicInformation += @{ Data = "NetBIOS Setting"; Value = $tmp; }
-		If($nic.winsenablelmhostslookup)
-		{
-			$tmp = "Yes"
-		}
-		Else
-		{
-			$tmp = "No"
-		}
-		$NicInformation += @{ Data = "WINS: Enabled LMHosts"; Value = $tmp; }
-		If(![String]::IsNullOrEmpty($nic.winshostlookupfile))
-		{
-			$NicInformation += @{ Data = "Host Lookup File"; Value = $Nic.winshostlookupfile; }
-		}
-		If(![String]::IsNullOrEmpty($nic.winsprimaryserver))
-		{
-			$NicInformation += @{ Data = "Primary Server"; Value = $Nic.winsprimaryserver; }
-		}
-		If(![String]::IsNullOrEmpty($nic.winssecondaryserver))
-		{
-			$NicInformation += @{ Data = "Secondary Server"; Value = $Nic.winssecondaryserver; }
-		}
-		If(![String]::IsNullOrEmpty($nic.winsscopeid))
-		{
-			$NicInformation += @{ Data = "Scope ID"; Value = $Nic.winsscopeid; }
-		}
-		$Table = AddWordTable -Hashtable $NicInformation -Columns Data,Value -List -AutoFit $wdAutoFitFixed;
-
-		## Set first column format
-		SetWordCellFormat -Collection $Table.Columns.Item(1).Cells -Bold -BackgroundColor $wdColorGray15;
-
-		## IB - set column widths without recursion
-		$Table.Columns.Item(1).Width = 150;
-		$Table.Columns.Item(2).Width = 200;
-
-		$Table.Rows.SetLeftIndent($Indent2TabStops,$wdAdjustNone)
-
-		FindWordDocumentEnd
-		$TableRange = $Null
-		$Table = $Null
-	}
-	ElseIf($Text)
-	{
-		If($ThisNic.Name -eq $nic.description)
-		{
-			Line 2 "Name`t`t`t: " $ThisNic.Name
-		}
-		Else
-		{
-			Line 2 "Name`t`t`t: " $ThisNic.Name
-			Line 2 "Description`t`t: " $nic.description
-		}
-		Line 2 "Connection ID`t`t: " $ThisNic.NetConnectionID
-		Line 2 "Manufacturer`t`t: " $ThisNic.manufacturer
-		Line 2 "Availability`t`t: " -nonewline
-		Switch ($ThisNic.availability)
-		{
-			1	{Line 0 "Other"}
-			2	{Line 0 "Unknown"}
-			3	{Line 0 "Running or Full Power"}
-			4	{Line 0 "Warning"}
-			5	{Line 0 "In Test"}
-			6	{Line 0 "Not Applicable"}
-			7	{Line 0 "Power Off"}
-			8	{Line 0 "Off Line"}
-			9	{Line 0 "Off Duty"}
-			10	{Line 0 "Degraded"}
-			11	{Line 0 "Not Installed"}
-			12	{Line 0 "Install Error"}
-			13	{Line 0 "Power Save - Unknown"}
-			14	{Line 0 "Power Save - Low Power Mode"}
-			15	{Line 0 "Power Save - Standby"}
-			16	{Line 0 "Power Cycle"}
-			17	{Line 0 "Power Save - Warning"}
-			Default	{Line 0 "Unknown"}
-		}
-		Line 2 "Physical Address`t: " $nic.macaddress
-		Line 2 "IP Address`t`t: " $nic.ipaddress
-		Line 2 "Default Gateway`t`t: " $nic.Defaultipgateway
-		Line 2 "Subnet Mask`t`t: " $nic.ipsubnet
-		If($nic.dhcpenabled)
-		{
-			$DHCPLeaseObtainedDate = $nic.ConvertToDateTime($nic.dhcpleaseobtained)
-			$DHCPLeaseExpiresDate = $nic.ConvertToDateTime($nic.dhcpleaseexpires)
-			Line 2 "DHCP Enabled`t`t: " $nic.dhcpenabled
-			Line 2 "DHCP Lease Obtained`t: " $dhcpleaseobtaineddate
-			Line 2 "DHCP Lease Expires`t: " $dhcpleaseexpiresdate
-			Line 2 "DHCP Server`t`t:" $nic.dhcpserver
-		}
-		If(![String]::IsNullOrEmpty($nic.dnsdomain))
-		{
-			Line 2 "DNS Domain`t`t: " $nic.dnsdomain
-		}
-		If($nic.dnsdomainsuffixsearchorder -ne $Null -and $nic.dnsdomainsuffixsearchorder.length -gt 0)
-		{
-			[int]$x = 1
-			Line 2 "DNS Search Suffixes`t:" -nonewline
-			$nicdnsdomainsuffixsearchorder = $nic.dnsdomainsuffixsearchorder
-			ForEach($DNSDomain in $nicdnsdomainsuffixsearchorder)
-			{
-				If($x -eq 1)
-				{
-					$x = 2
-					Line 0 " $($DNSDomain)"
-				}
-				Else
-				{
-					Line 5 " $($DNSDomain)"
-				}
-			}
-		}
-		Line 2 "DNS WINS Enabled`t: " -nonewline
-		If($nic.dnsenabledforwinsresolution)
-		{
-			Line 0 "Yes"
-		}
-		Else
-		{
-			Line 0 "No"
-		}
-		If($nic.dnsserversearchorder -ne $Null -and $nic.dnsserversearchorder.length -gt 0)
-		{
-			[int]$x = 1
-			Line 2 "DNS Servers`t`t:" -nonewline
-			$nicdnsserversearchorder = $nic.dnsserversearchorder
-			ForEach($DNSServer in $nicdnsserversearchorder)
-			{
-				If($x -eq 1)
-				{
-					$x = 2
-					Line 0 " $($DNSServer)"
-				}
-				Else
-				{
-					Line 5 " $($DNSServer)"
-				}
-			}
-		}
-		Line 2 "NetBIOS Setting`t`t: " -nonewline
-		Switch ($nic.TcpipNetbiosOptions)
-		{
-			0	{Line 0 "Use NetBIOS setting from DHCP Server"}
-			1	{Line 0 "Enable NetBIOS"}
-			2	{Line 0 "Disable NetBIOS"}
-			Default	{Line 0 "Unknown"}
-		}
-		Line 2 "WINS:"
-		Line 3 "Enabled LMHosts`t: " -nonewline
-		If($nic.winsenablelmhostslookup)
-		{
-			Line 0 "Yes"
-		}
-		Else
-		{
-			Line 0 "No"
-		}
-		If(![String]::IsNullOrEmpty($nic.winshostlookupfile))
-		{
-			Line 3 "Host Lookup File`t: " $nic.winshostlookupfile
-		}
-		If(![String]::IsNullOrEmpty($nic.winsprimaryserver))
-		{
-			Line 3 "Primary Server`t`t: " $nic.winsprimaryserver
-		}
-		If(![String]::IsNullOrEmpty($nic.winssecondaryserver))
-		{
-			Line 3 "Secondary Server`t: " $nic.winssecondaryserver
-		}
-		If(![String]::IsNullOrEmpty($nic.winsscopeid))
-		{
-			Line 3 "Scope ID`t`t: " $nic.winsscopeid
-		}
-	}
-	ElseIf($HTML)
-	{
-	}
 }
 
 Function SetWordHashTable
@@ -2066,26 +957,6 @@ Function Get-RegistryValue($path, $name)
 	}
 }
 
-Function line
-#function created by Michael B. Smith, Exchange MVP
-#@essentialexchange on Twitter
-#http://TheEssentialExchange.com
-#for creating the formatted text report
-#created March 2011
-#updated March 2014
-{
-	Param( [int]$tabs = 0, [string]$name = '', [string]$value = '', [string]$newline = "`r`n", [switch]$nonewline )
-	While( $tabs -gt 0 ) { $Global:Output += "`t"; $tabs--; }
-	If( $nonewline )
-	{
-		$Global:Output += $name + $value
-	}
-	Else
-	{
-		$Global:Output += $name + $value + $newline
-	}
-}
-	
 Function WriteWordLine
 #Function created by Ryan Revord
 #@rsrevord on Twitter
@@ -2636,11 +1507,8 @@ Function ShowScriptOptions
 	Write-Verbose "$(Get-Date): Cover Page   : $($CoverPage)"
 	Write-Verbose "$(Get-Date): User Name    : $($UserName)"
 	Write-Verbose "$(Get-Date): Save As PDF  : $($PDF)"
-	Write-Verbose "$(Get-Date): Save As TEXT : $($TEXT)"
 	Write-Verbose "$(Get-Date): Save As WORD : $($MSWORD)"
-	Write-Verbose "$(Get-Date): Save As HTML : $($HTML)"
 	Write-Verbose "$(Get-Date): Add DateTime : $($AddDateTime)"
-	Write-Verbose "$(Get-Date): HW Inventory : $($Hardware)"
 	Write-Verbose "$(Get-Date): Filename1    : $($Script:FileName1)"
 	If($PDF)
 	{
@@ -3190,28 +2058,6 @@ Function SaveandCloseDocumentandShutdownWord
 	}
 }
 
-#updated by Webster 23-Apr-2016
-Function SaveandCloseTextDocument
-{
-	If($AddDateTime)
-	{
-		$Script:FileName1 += "_$(Get-Date -f yyyy-MM-dd_HHmm).txt"
-	}
-
-	Write-Output $Global:Output | Out-File $Script:Filename1 4>$Null
-}
-
-#updated by Webster 23-Apr-2016
-Function SaveandCloseHTMLDocument
-{
-	If($AddDateTime)
-	{
-		$Script:FileName1 += "_$(Get-Date -f yyyy-MM-dd_HHmm).html"
-	}
-	
-	Out-File -FilePath $Script:FileName1 -Append -InputObject "<p></p></body></html>" 4>$Null
-}
-
 Function SetFileName1andFileName2
 {
 	Param([string]$OutputFileName)
@@ -3248,94 +2094,12 @@ Function SetFileName1andFileName2
 
 		SetupWord
 	}
-	ElseIf($Text)
-	{
-		If(!$AddDateTime)
-		{
-			[string]$Script:FileName1 = "$($pwdpath)\$($OutputFileName).txt"
-		}
-	}
-	ElseIf($HTML)
-	{
-		If(!$AddDateTime)
-		{
-			[string]$Script:FileName1 = "$($pwdpath)\$($OutputFileName).html"
-		}
-	}
-}
-
-Function TestComputerName
-{
-	Param([string]$Cname)
-	If(![String]::IsNullOrEmpty($CName)) 
-	{
-		#get computer name
-		#first test to make sure the computer is reachable
-		Write-Verbose "$(Get-Date): Testing to see if $($CName) is online and reachable"
-		If(Test-Connection -ComputerName $CName -quiet)
-		{
-			Write-Verbose "$(Get-Date): Server $($CName) is online."
-		}
-		Else
-		{
-			Write-Verbose "$(Get-Date): Computer $($CName) is offline"
-			$ErrorActionPreference = $SaveEAPreference
-			Write-Error "`n`n`t`tComputer $($CName) is offline.`nScript cannot continue.`n`n"
-			Exit
-		}
-	}
-
-	#if computer name is localhost, get actual computer name
-	If($CName -eq "localhost")
-	{
-		$CName = $env:ComputerName
-		Write-Verbose "$(Get-Date): Computer name has been renamed from localhost to $($CName)"
-		Return $CName
-	}
-
-	#if computer name is an IP address, get host name from DNS
-	#http://blogs.technet.com/b/gary/archive/2009/08/29/resolve-ip-addresses-to-hostname-using-powershell.aspx
-	#help from Michael B. Smith
-	$ip = $CName -as [System.Net.IpAddress]
-	If($ip)
-	{
-		$Result = [System.Net.Dns]::gethostentry($ip)
-		
-		If($? -and $Result -ne $Null)
-		{
-			$CName = $Result.HostName
-			Write-Verbose "$(Get-Date): Computer name has been renamed from $($ip) to $($CName)"
-			Return $CName
-		}
-		Else
-		{
-			Write-Warning "Unable to resolve $($CName) to a hostname"
-		}
-	}
-	Else
-	{
-		#computer is online but for some reason $ComputerName cannot be converted to a System.Net.IpAddress
-	}
-	Return $CName
 }
 
 #Script begins
 
 $script:startTime = Get-Date
 
-If($TEXT)
-{
-	$global:output = ""
-}
-
-$ComputerName = TestComputerName $ComputerName
-<#
-###The function SetFileName1andFileName2 needs your script output filename
-SetFileName1andFileName2 "Script_Template"
-
-###change title for your report
-[string]$Script:Title = "This is the Report Title"
-#>
 #endregion script template
 
 #region file name and title name
@@ -6596,14 +5360,6 @@ If($MSWORD -or $PDF)
 {
     SaveandCloseDocumentandShutdownWord
 }
-ElseIf($Text)
-{
-    SaveandCloseTextDocument
-}
-ElseIf($HTML)
-{
-    SaveandCloseHTMLDocument
-}
 
 Write-Verbose "$(Get-Date): Script has completed"
 Write-Verbose "$(Get-Date): "
@@ -6652,176 +5408,3 @@ $ErrorActionPreference = $SaveEAPreference
 #recommended by webster
 #$error
 #endregion script template 2
-# SIG # Begin signature block
-# MIIgCgYJKoZIhvcNAQcCoIIf+zCCH/cCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
-# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUm1TUZQHEqPUjDf4KMplAiz6d
-# KcCgghtxMIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
-# AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
-# VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
-# IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMzExMTEwMDAwMDAwWjBlMQsw
-# CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cu
-# ZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVkIElEIFJvb3Qg
-# Q0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCtDhXO5EOAXLGH87dg
-# +XESpa7cJpSIqvTO9SA5KFhgDPiA2qkVlTJhPLWxKISKityfCgyDF3qPkKyK53lT
-# XDGEKvYPmDI2dsze3Tyoou9q+yHyUmHfnyDXH+Kx2f4YZNISW1/5WBg1vEfNoTb5
-# a3/UsDg+wRvDjDPZ2C8Y/igPs6eD1sNuRMBhNZYW/lmci3Zt1/GiSw0r/wty2p5g
-# 0I6QNcZ4VYcgoc/lbQrISXwxmDNsIumH0DJaoroTghHtORedmTpyoeb6pNnVFzF1
-# roV9Iq4/AUaG9ih5yLHa5FcXxH4cDrC0kqZWs72yl+2qp/C3xag/lRbQ/6GW6whf
-# GHdPAgMBAAGjYzBhMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0G
-# A1UdDgQWBBRF66Kv9JLLgjEtUYunpyGd823IDzAfBgNVHSMEGDAWgBRF66Kv9JLL
-# gjEtUYunpyGd823IDzANBgkqhkiG9w0BAQUFAAOCAQEAog683+Lt8ONyc3pklL/3
-# cmbYMuRCdWKuh+vy1dneVrOfzM4UKLkNl2BcEkxY5NM9g0lFWJc1aRqoR+pWxnmr
-# EthngYTffwk8lOa4JiwgvT2zKIn3X/8i4peEH+ll74fg38FnSbNd67IJKusm7Xi+
-# fT8r87cmNW1fiQG2SVufAQWbqz0lwcy2f8Lxb4bG+mRo64EtlOtCt/qMHt1i8b5Q
-# Z7dsvfPxH2sMNgcWfzd8qVttevESRmCD1ycEvkvOl77DZypoEd+A5wwzZr8TDRRu
-# 838fYxAe+o0bJW1sj6W3YQGx0qMmoRBxna3iw/nDmVG3KwcIzi7mULKn+gpFL6Lw
-# 8jCCBTAwggQYoAMCAQICEAQJGBtf1btmdVNDtW+VUAgwDQYJKoZIhvcNAQELBQAw
-# ZTELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQ
-# d3d3LmRpZ2ljZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgQXNzdXJlZCBJRCBS
-# b290IENBMB4XDTEzMTAyMjEyMDAwMFoXDTI4MTAyMjEyMDAwMFowcjELMAkGA1UE
-# BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2lj
-# ZXJ0LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUg
-# U2lnbmluZyBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPjTsxx/
-# DhGvZ3cH0wsxSRnP0PtFmbE620T1f+Wondsy13Hqdp0FLreP+pJDwKX5idQ3Gde2
-# qvCchqXYJawOeSg6funRZ9PG+yknx9N7I5TkkSOWkHeC+aGEI2YSVDNQdLEoJrsk
-# acLCUvIUZ4qJRdQtoaPpiCwgla4cSocI3wz14k1gGL6qxLKucDFmM3E+rHCiq85/
-# 6XzLkqHlOzEcz+ryCuRXu0q16XTmK/5sy350OTYNkO/ktU6kqepqCquE86xnTrXE
-# 94zRICUj6whkPlKWwfIPEvTFjg/BougsUfdzvL2FsWKDc0GCB+Q4i2pzINAPZHM8
-# np+mM6n9Gd8lk9ECAwEAAaOCAc0wggHJMBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYD
-# VR0PAQH/BAQDAgGGMBMGA1UdJQQMMAoGCCsGAQUFBwMDMHkGCCsGAQUFBwEBBG0w
-# azAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMGCCsGAQUF
-# BzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVk
-# SURSb290Q0EuY3J0MIGBBgNVHR8EejB4MDqgOKA2hjRodHRwOi8vY3JsNC5kaWdp
-# Y2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3JsMDqgOKA2hjRodHRw
-# Oi8vY3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3Js
-# ME8GA1UdIARIMEYwOAYKYIZIAYb9bAACBDAqMCgGCCsGAQUFBwIBFhxodHRwczov
-# L3d3dy5kaWdpY2VydC5jb20vQ1BTMAoGCGCGSAGG/WwDMB0GA1UdDgQWBBRaxLl7
-# KgqjpepxA8Bg+S32ZXUOWDAfBgNVHSMEGDAWgBRF66Kv9JLLgjEtUYunpyGd823I
-# DzANBgkqhkiG9w0BAQsFAAOCAQEAPuwNWiSz8yLRFcgsfCUpdqgdXRwtOhrE7zBh
-# 134LYP3DPQ/Er4v97yrfIFU3sOH20ZJ1D1G0bqWOWuJeJIFOEKTuP3GOYw4TS63X
-# X0R58zYUBor3nEZOXP+QsRsHDpEV+7qvtVHCjSSuJMbHJyqhKSgaOnEoAjwukaPA
-# JRHinBRHoXpoaK+bp1wgXNlxsQyPu6j4xRJon89Ay0BEpRPw5mQMJQhCMrI2iiQC
-# /i9yfhzXSUWW6Fkd6fp0ZGuy62ZD2rOwjNXpDd32ASDOmTFjPQgaGLOBm0/GkxAG
-# /AeB+ova+YJJ92JuoVP6EpQYhS6SkepobEQysmah5xikmmRR7zCCBT8wggQnoAMC
-# AQICEAmkTdj/HQvKi5Whef7gyA8wDQYJKoZIhvcNAQELBQAwcjELMAkGA1UEBhMC
-# VVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0
-# LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2ln
-# bmluZyBDQTAeFw0xNTEwMjkwMDAwMDBaFw0xNjExMDIxMjAwMDBaMHwxCzAJBgNV
-# BAYTAlVTMQswCQYDVQQIEwJUTjESMBAGA1UEBxMJVHVsbGFob21hMSUwIwYDVQQK
-# ExxDYXJsIFdlYnN0ZXIgQ29uc3VsdGluZywgTExDMSUwIwYDVQQDExxDYXJsIFdl
-# YnN0ZXIgQ29uc3VsdGluZywgTExDMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
-# CgKCAQEA35g9yG7Fh7/h1rbQmW2x6BmWEWCBw6qwOKfXDJyMMeSunAKZ+rnBYX3K
-# T1ERQYMYi2/tK1/hNcgW3ja6sSqwEWBde/nLmqdkzMJb2pUPGUhVP0ZMO7KCS8oz
-# Ed5FPpT4Hete/8OQyGKTdU16Ne2xhWzgVvKP1g0zLXJojIWYB4+kKOY2OCl8oPhX
-# LwMlQEraFUz39JDkwumteT2/MEjORclAAJ+odAk9R1jjOD5p5GzLRi27vDrBUDq2
-# wNsHgejZrq4mbyLiNqdZnFKUeQCzCF8YF32U9E0O+fdhY4QvTM2Jdtusz1d/IIz/
-# JqM2AjkDkEXUMK6nQ3015j9yoOAQiQIDAQABo4IBxTCCAcEwHwYDVR0jBBgwFoAU
-# WsS5eyoKo6XqcQPAYPkt9mV1DlgwHQYDVR0OBBYEFLdZN8kA2rYz8RkS85RNuO4I
-# GxMHMA4GA1UdDwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDAzB3BgNVHR8E
-# cDBuMDWgM6Axhi9odHRwOi8vY3JsMy5kaWdpY2VydC5jb20vc2hhMi1hc3N1cmVk
-# LWNzLWcxLmNybDA1oDOgMYYvaHR0cDovL2NybDQuZGlnaWNlcnQuY29tL3NoYTIt
-# YXNzdXJlZC1jcy1nMS5jcmwwTAYDVR0gBEUwQzA3BglghkgBhv1sAwEwKjAoBggr
-# BgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzAIBgZngQwBBAEw
-# gYQGCCsGAQUFBwEBBHgwdjAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNl
-# cnQuY29tME4GCCsGAQUFBzAChkJodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20v
-# RGlnaUNlcnRTSEEyQXNzdXJlZElEQ29kZVNpZ25pbmdDQS5jcnQwDAYDVR0TAQH/
-# BAIwADANBgkqhkiG9w0BAQsFAAOCAQEAGz9cEmjU3FosI30XHF355vqavCPByB2F
-# TYvGpToMODFnVKul0dQjbF9CWWNeuknYfVjmYBKOgBaFkF/eAy4yfk41tmZZnN9D
-# j4Ngenvbrx7ZJqC/ZMNgoIM7un1WLrqZKS5tOaFpBwaEeAIzfU9dHHE27zchIoAJ
-# x5aDQbnP6SVWitxa/jGa78b9pDslLpv7Pm4KAEv5d2NYiQ7nhvHShFnWY6wMNBTE
-# i+q5rSNcm4TzYsyYSoYT+bGs21vvSAlMSKlvsL0oMWLHMdsMKtC+1Wp2sE4Fshdt
-# 9K8DBkl33XhdprC2KabgZa6GTz5NA/rV4FW6oDUidts19XbWIjlB7DCCBmowggVS
-# oAMCAQICEAMBmgI6/1ixa9bV6uYX8GYwDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
-# BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2lj
-# ZXJ0LmNvbTEhMB8GA1UEAxMYRGlnaUNlcnQgQXNzdXJlZCBJRCBDQS0xMB4XDTE0
-# MTAyMjAwMDAwMFoXDTI0MTAyMjAwMDAwMFowRzELMAkGA1UEBhMCVVMxETAPBgNV
-# BAoTCERpZ2lDZXJ0MSUwIwYDVQQDExxEaWdpQ2VydCBUaW1lc3RhbXAgUmVzcG9u
-# ZGVyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo2Rd/Hyz4II14OD2
-# xirmSXU7zG7gU6mfH2RZ5nxrf2uMnVX4kuOe1VpjWwJJUNmDzm9m7t3LhelfpfnU
-# h3SIRDsZyeX1kZ/GFDmsJOqoSyyRicxeKPRktlC39RKzc5YKZ6O+YZ+u8/0SeHUO
-# plsU/UUjjoZEVX0YhgWMVYd5SEb3yg6Np95OX+Koti1ZAmGIYXIYaLm4fO7m5zQv
-# MXeBMB+7NgGN7yfj95rwTDFkjePr+hmHqH7P7IwMNlt6wXq4eMfJBi5GEMiN6ARg
-# 27xzdPpO2P6qQPGyznBGg+naQKFZOtkVCVeZVjCT88lhzNAIzGvsYkKRrALA76Tw
-# iRGPdwIDAQABo4IDNTCCAzEwDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAw
-# FgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwggG/BgNVHSAEggG2MIIBsjCCAaEGCWCG
-# SAGG/WwHATCCAZIwKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNv
-# bS9DUFMwggFkBggrBgEFBQcCAjCCAVYeggFSAEEAbgB5ACAAdQBzAGUAIABvAGYA
-# IAB0AGgAaQBzACAAQwBlAHIAdABpAGYAaQBjAGEAdABlACAAYwBvAG4AcwB0AGkA
-# dAB1AHQAZQBzACAAYQBjAGMAZQBwAHQAYQBuAGMAZQAgAG8AZgAgAHQAaABlACAA
-# RABpAGcAaQBDAGUAcgB0ACAAQwBQAC8AQwBQAFMAIABhAG4AZAAgAHQAaABlACAA
-# UgBlAGwAeQBpAG4AZwAgAFAAYQByAHQAeQAgAEEAZwByAGUAZQBtAGUAbgB0ACAA
-# dwBoAGkAYwBoACAAbABpAG0AaQB0ACAAbABpAGEAYgBpAGwAaQB0AHkAIABhAG4A
-# ZAAgAGEAcgBlACAAaQBuAGMAbwByAHAAbwByAGEAdABlAGQAIABoAGUAcgBlAGkA
-# bgAgAGIAeQAgAHIAZQBmAGUAcgBlAG4AYwBlAC4wCwYJYIZIAYb9bAMVMB8GA1Ud
-# IwQYMBaAFBUAEisTmLKZB+0e36K+Vw0rZwLNMB0GA1UdDgQWBBRhWk0ktkkynUoq
-# eRqDS/QeicHKfTB9BgNVHR8EdjB0MDigNqA0hjJodHRwOi8vY3JsMy5kaWdpY2Vy
-# dC5jb20vRGlnaUNlcnRBc3N1cmVkSURDQS0xLmNybDA4oDagNIYyaHR0cDovL2Ny
-# bDQuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEQ0EtMS5jcmwwdwYIKwYB
-# BQUHAQEEazBpMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20w
-# QQYIKwYBBQUHMAKGNWh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2Vy
-# dEFzc3VyZWRJRENBLTEuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQCdJX4bM02yJoFc
-# m4bOIyAPgIfliP//sdRqLDHtOhcZcRfNqRu8WhY5AJ3jbITkWkD73gYBjDf6m7Gd
-# JH7+IKRXrVu3mrBgJuppVyFdNC8fcbCDlBkFazWQEKB7l8f2P+fiEUGmvWLZ8Cc9
-# OB0obzpSCfDscGLTYkuw4HOmksDTjjHYL+NtFxMG7uQDthSr849Dp3GdId0UyhVd
-# kkHa+Q+B0Zl0DSbEDn8btfWg8cZ3BigV6diT5VUW8LsKqxzbXEgnZsijiwoc5ZXa
-# rsQuWaBh3drzbaJh6YoLbewSGL33VVRAA5Ira8JRwgpIr7DUbuD0FAo6G+OPPcqv
-# ao173NhEMIIGzTCCBbWgAwIBAgIQBv35A5YDreoACus/J7u6GzANBgkqhkiG9w0B
-# AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
-# VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
-# IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMjExMTEwMDAwMDAwWjBiMQsw
-# CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cu
-# ZGlnaWNlcnQuY29tMSEwHwYDVQQDExhEaWdpQ2VydCBBc3N1cmVkIElEIENBLTEw
-# ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDogi2Z+crCQpWlgHNAcNKe
-# VlRcqcTSQQaPyTP8TUWRXIGf7Syc+BZZ3561JBXCmLm0d0ncicQK2q/LXmvtrbBx
-# MevPOkAMRk2T7It6NggDqww0/hhJgv7HxzFIgHweog+SDlDJxofrNj/YMMP/pvf7
-# os1vcyP+rFYFkPAyIRaJxnCI+QWXfaPHQ90C6Ds97bFBo+0/vtuVSMTuHrPyvAwr
-# mdDGXRJCgeGDboJzPyZLFJCuWWYKxI2+0s4Grq2Eb0iEm09AufFM8q+Y+/bOQF1c
-# 9qjxL6/siSLyaxhlscFzrdfx2M8eCnRcQrhofrfVdwonVnwPYqQ/MhRglf0HBKIJ
-# AgMBAAGjggN6MIIDdjAOBgNVHQ8BAf8EBAMCAYYwOwYDVR0lBDQwMgYIKwYBBQUH
-# AwEGCCsGAQUFBwMCBggrBgEFBQcDAwYIKwYBBQUHAwQGCCsGAQUFBwMIMIIB0gYD
-# VR0gBIIByTCCAcUwggG0BgpghkgBhv1sAAEEMIIBpDA6BggrBgEFBQcCARYuaHR0
-# cDovL3d3dy5kaWdpY2VydC5jb20vc3NsLWNwcy1yZXBvc2l0b3J5Lmh0bTCCAWQG
-# CCsGAQUFBwICMIIBVh6CAVIAQQBuAHkAIAB1AHMAZQAgAG8AZgAgAHQAaABpAHMA
-# IABDAGUAcgB0AGkAZgBpAGMAYQB0AGUAIABjAG8AbgBzAHQAaQB0AHUAdABlAHMA
-# IABhAGMAYwBlAHAAdABhAG4AYwBlACAAbwBmACAAdABoAGUAIABEAGkAZwBpAEMA
-# ZQByAHQAIABDAFAALwBDAFAAUwAgAGEAbgBkACAAdABoAGUAIABSAGUAbAB5AGkA
-# bgBnACAAUABhAHIAdAB5ACAAQQBnAHIAZQBlAG0AZQBuAHQAIAB3AGgAaQBjAGgA
-# IABsAGkAbQBpAHQAIABsAGkAYQBiAGkAbABpAHQAeQAgAGEAbgBkACAAYQByAGUA
-# IABpAG4AYwBvAHIAcABvAHIAYQB0AGUAZAAgAGgAZQByAGUAaQBuACAAYgB5ACAA
-# cgBlAGYAZQByAGUAbgBjAGUALjALBglghkgBhv1sAxUwEgYDVR0TAQH/BAgwBgEB
-# /wIBADB5BggrBgEFBQcBAQRtMGswJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRp
-# Z2ljZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2NhY2VydHMuZGlnaWNlcnQu
-# Y29tL0RpZ2lDZXJ0QXNzdXJlZElEUm9vdENBLmNydDCBgQYDVR0fBHoweDA6oDig
-# NoY0aHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEUm9v
-# dENBLmNybDA6oDigNoY0aHR0cDovL2NybDQuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0
-# QXNzdXJlZElEUm9vdENBLmNybDAdBgNVHQ4EFgQUFQASKxOYspkH7R7for5XDStn
-# As0wHwYDVR0jBBgwFoAUReuir/SSy4IxLVGLp6chnfNtyA8wDQYJKoZIhvcNAQEF
-# BQADggEBAEZQPsm3KCSnOB22WymvUs9S6TFHq1Zce9UNC0Gz7+x1H3Q48rJcYaKc
-# lcNQ5IK5I9G6OoZyrTh4rHVdFxc0ckeFlFbR67s2hHfMJKXzBBlVqefj56tizfuL
-# LZDCwNK1lL1eT7EF0g49GqkUW6aGMWKoqDPkmzmnxPXOHXh2lCVz5Cqrz5x2S+1f
-# wksW5EtwTACJHvzFebxMElf+X+EevAJdqP77BzhPDcZdkbkPZ0XN1oPt55INjbFp
-# jE/7WeAjD9KqrgB87pxCDs+R1ye3Fu4Pw718CqDuLAhVhSK46xgaTfwqIa1JMYNH
-# lXdx3LEbS0scEJx3FMGdTy9alQgpECYxggQDMIID/wIBATCBhjByMQswCQYDVQQG
-# EwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNl
-# cnQuY29tMTEwLwYDVQQDEyhEaWdpQ2VydCBTSEEyIEFzc3VyZWQgSUQgQ29kZSBT
-# aWduaW5nIENBAhAJpE3Y/x0LyouVoXn+4MgPMAkGBSsOAwIaBQCgQDAZBgkqhkiG
-# 9w0BCQMxDAYKKwYBBAGCNwIBBDAjBgkqhkiG9w0BCQQxFgQUiwqNK4kVMSCRHs4T
-# kd2uBA7Nv18wDQYJKoZIhvcNAQEBBQAEggEAm9jq2CVejmu9TrYoR98cpCT1n3NN
-# MqcyHYpn7ySedUoHPjwyXNr63cqPRp9WwPTarcnfCYhGmeBAMsCOusq6y3y8Ar4K
-# gOSOHkEDsoEdZAziSL7INapZ9p24IekjEdk7wgDkAwblMl7Jl8Zewc5kq7EfGxyX
-# LHrO5aWehdhS6A+wdznoouYpJm4YO0xiCKtpeuR/pTQC1H5pZ59fhbEy5TQdApSF
-# Jl8aSdOsoZ6k0IZLjpLnH9HVK73v0lQIXEpsvz+DVyIB5d/8MZND485OuAxgnlGO
-# 0JM/Z3vlsHdY2UMK2QYZ4nprQHD0+3U6QtciTnOJsf7vBkF0PrcUJQD9paGCAg8w
-# ggILBgkqhkiG9w0BCQYxggH8MIIB+AIBATB2MGIxCzAJBgNVBAYTAlVTMRUwEwYD
-# VQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xITAf
-# BgNVBAMTGERpZ2lDZXJ0IEFzc3VyZWQgSUQgQ0EtMQIQAwGaAjr/WLFr1tXq5hfw
-# ZjAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG
-# 9w0BCQUxDxcNMTYwNTIyMjE0MjE5WjAjBgkqhkiG9w0BCQQxFgQUOpmHL/JKr+sS
-# mPLlxU5aj673LFswDQYJKoZIhvcNAQEBBQAEggEAFoffgnGzklKy/rkWW6LOJqZZ
-# Dy9XPVmapwMTNJ7qrOcwGKBoENlJbFqNX2E1APTnbL2DFHBf/8o+tEZzMIka64pQ
-# KYRk3L5miW316bqg4ZG/JbkIzjfORfnZEm+pmKMfx5HpXIUp6NjJ6UoRn4oUEPfE
-# AC50r3tJoJ7CwpwhnFJfT2PTYQKUuZ9CnvBEQSYVHfxOhO3vDkO5if5ETmCZNVYm
-# 8KlNd66Obo34YmHMRetaRk0covWbb7/fuSzLGmo9nJf0RruP4T4QLLJRR46gGFgu
-# 5rUapmhiqWCuKnXPTPAvaBS9Pncb63SKnjgTsXvNHZIwjXbMp6aKchL4+ZWzbg==
-# SIG # End signature block
