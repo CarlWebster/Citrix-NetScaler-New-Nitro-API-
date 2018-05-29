@@ -2,6 +2,42 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #To contact, please use e-mail address info@barryschiffer.com
 
+#Version 2.0 23-July-2014
+New Script Features
+•	New table function that now utilizes native word tables. Looks a lot better and is way faster
+•	Performance improvements; over 500% faster
+•	Better support for multi language Word versions. Will now always utilize cover page and TOC
+New NetScaler functionality:
+•	NetScaler Gateway
+o	Global Settings
+o	Virtual Servers settings and policies
+o	Policies Session/Traffic
+•	NetScaler administration users and groups
+•	NetScaler Authentication
+•	Policies LDAP / Radius
+•	Actions Local / RADIUS
+•	Action LDAP more configuration reported and changed table layout
+•	NetScaler Networking
+•	Channels
+•	ACL
+•	NetScaler Cache redirection
+Bugfixes
+•	Naming of items with spaces and quotes fixed
+•	Expressions with spaces, quotes, dashes and slashed fixed
+•	Grammatical corrections
+•	Rechecked all settings like enabled/disabled or on/off and corrected when necessary
+•	Time zone not show correctly when in GMT+….
+•	A lot more small items
+
+#Version 1.0.4 4-Jun-2014
+#	Added an AddDateTime parameter
+
+#Version 1.0.3 26-May-2014
+#	All functions moved to the top of the script
+#	Error check added if ns.conf is not found
+#	Error check added to verify ns.conf file is read successfully
+#	Converted all Advanced Configuration sections to tables
+
 #Version 1.0.2 20-May-2014
 #	Bring up-to-date with the changes made to the Active Directory and DHCP documentation scripts
 #		Remove all hard-coded values for Word and Table functions
