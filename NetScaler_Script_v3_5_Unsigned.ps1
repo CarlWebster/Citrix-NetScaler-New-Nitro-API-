@@ -804,7 +804,7 @@ Function SetWordHashTable
 {
 	Param([string]$CultureCode)
 
-	#optimized by Michael B. Smith
+	#optimized by Michael B. SMith
 	
 	# DE and FR translations for Word 2010 by Vladimir Radojevic
 	# Vladimir.Radojevic@Commerzreal.com
@@ -826,21 +826,23 @@ Function SetWordHashTable
 	#nl - Dutch
 	#pt - Portuguese
 	#sv - Swedish
-
+	#zh - Chinese
+	
 	[string]$toc = $(
 		Switch ($CultureCode)
 		{
-			'ca-'	{ 'Taula automática 2' ; Break}
-			'da-'	{ 'Automatisk tabel 2' ; Break}
-			'de-'	{ 'Automatische Tabelle 2' ; Break}
-			'en-'	{ 'Automatic Table 2' ; Break}
-			'es-'	{ 'Tabla automática 2' ; Break}
-			'fi-'	{ 'Automaattinen taulukko 2' ; Break}
-			'fr-'	{ 'Sommaire Automatique 2' ; Break}
-			'nb-'	{ 'Automatisk tabell 2' ; Break}
-			'nl-'	{ 'Automatische inhoudsopgave 2' ; Break}
-			'pt-'	{ 'Sumário Automático 2' ; Break}
-			'sv-'	{ 'Automatisk innehållsförteckning2' ; Break}
+			'ca-'	{ 'Taula automática 2'; Break }
+			'da-'	{ 'Automatisk tabel 2'; Break }
+			'de-'	{ 'Automatische Tabelle 2'; Break }
+			'en-'	{ 'Automatic Table 2'; Break }
+			'es-'	{ 'Tabla automática 2'; Break }
+			'fi-'	{ 'Automaattinen taulukko 2'; Break }
+			'fr-'	{ 'Sommaire Automatique 2'; Break }
+			'nb-'	{ 'Automatisk tabell 2'; Break }
+			'nl-'	{ 'Automatische inhoudsopgave 2'; Break }
+			'pt-'	{ 'Sumário Automático 2'; Break }
+			'sv-'	{ 'Automatisk innehållsförteckning2'; Break }
+			'zh-'	{ '自动目录 2'; Break }
 		}
 	)
 
@@ -861,6 +863,7 @@ Function GetCulture
 	#codes obtained from http://support.microsoft.com/kb/221435
 	#http://msdn.microsoft.com/en-us/library/bb213877(v=office.12).aspx
 	$CatalanArray = 1027
+	$ChineseArray = 2052,3076,5124,4100
 	$DanishArray = 1030
 	$DutchArray = 2067, 1043
 	$EnglishArray = 3081, 10249, 4105, 9225, 6153, 8201, 5129, 13321, 7177, 11273, 2057, 1033, 12297
@@ -883,20 +886,22 @@ Function GetCulture
 	#nl - Dutch
 	#pt - Portuguese
 	#sv - Swedish
+	#zh - Chinese
 
 	Switch ($WordValue)
 	{
-		{$CatalanArray -contains $_} {$CultureCode = "ca-"; Break}
-		{$DanishArray -contains $_} {$CultureCode = "da-"; Break}
-		{$DutchArray -contains $_} {$CultureCode = "nl-"; Break}
-		{$EnglishArray -contains $_} {$CultureCode = "en-"; Break}
-		{$FinnishArray -contains $_} {$CultureCode = "fi-"; Break}
-		{$FrenchArray -contains $_} {$CultureCode = "fr-"; Break}
-		{$GermanArray -contains $_} {$CultureCode = "de-"; Break}
-		{$NorwegianArray -contains $_} {$CultureCode = "nb-"; Break}
-		{$PortugueseArray -contains $_} {$CultureCode = "pt-"; Break}
-		{$SpanishArray -contains $_} {$CultureCode = "es-"; Break}
-		{$SwedishArray -contains $_} {$CultureCode = "sv-"; Break}
+		{$CatalanArray -contains $_} {$CultureCode = "ca-"}
+		{$ChineseArray -contains $_} {$CultureCode = "zh-"}
+		{$DanishArray -contains $_} {$CultureCode = "da-"}
+		{$DutchArray -contains $_} {$CultureCode = "nl-"}
+		{$EnglishArray -contains $_} {$CultureCode = "en-"}
+		{$FinnishArray -contains $_} {$CultureCode = "fi-"}
+		{$FrenchArray -contains $_} {$CultureCode = "fr-"}
+		{$GermanArray -contains $_} {$CultureCode = "de-"}
+		{$NorwegianArray -contains $_} {$CultureCode = "nb-"}
+		{$PortugueseArray -contains $_} {$CultureCode = "pt-"}
+		{$SpanishArray -contains $_} {$CultureCode = "es-"}
+		{$SwedishArray -contains $_} {$CultureCode = "sv-"}
 		Default {$CultureCode = "en-"}
 	}
 	
@@ -1135,6 +1140,16 @@ Function ValidateCoverPage
 				}
 			}
 
+		'zh-'	{
+				If($xWordVersion -eq $wdWord2010 -or $xWordVersion -eq $wdWord2013 -or $xWordVersion -eq $wdWord2016)
+				{
+					$xArray = ('奥斯汀', '边线型', '花丝', '怀旧', '积分',
+					'离子(浅色)', '离子(深色)', '母版型', '平面', '切片(浅色)',
+					'切片(深色)', '丝状', '网格', '镶边', '信号灯',
+					'运动型')
+				}
+			}
+
 		Default	{
 					If($xWordVersion -eq $wdWord2013 -or $xWordVersion -eq $wdWord2016)
 					{
@@ -1154,10 +1169,12 @@ Function ValidateCoverPage
 	
 	If($xArray -contains $xCP)
 	{
+		$xArray = $Null
 		Return $True
 	}
 	Else
 	{
+		$xArray = $Null
 		Return $False
 	}
 }
@@ -1406,6 +1423,14 @@ Function SetupWord
 						$CPChanged = $True
 					}
 				}
+
+			'zh-'	{
+					If($CoverPage -eq "Sideline")
+					{
+						$CoverPage = "边线型"
+						$CPChanged = $True
+					}
+				}
 		}
 
 		If($CPChanged)
@@ -1440,7 +1465,7 @@ Function SetupWord
 	[bool]$BuildingBlocksExist = $False
 
 	$Script:Word.Templates.LoadBuildingBlocks()
-	#word 2010/2013
+	#word 2010/2013/2016
 	$BuildingBlocksCollection = $Script:Word.Templates | Where {$_.name -eq "Built-In Building Blocks.dotx"}
 
 	Write-Verbose "$(Get-Date): Attempt to load cover page $($CoverPage)"
@@ -1448,7 +1473,7 @@ Function SetupWord
 
 	$BuildingBlocksCollection | 
 	ForEach{
-		If($_.BuildingBlockEntries.Item($CoverPage).Name -eq $CoverPage) 
+		If ($_.BuildingBlockEntries.Item($CoverPage).Name -eq $CoverPage) 
 		{
 			$BuildingBlocks = $_
 		}
@@ -1549,7 +1574,7 @@ Function SetupWord
 	$Script:Doc.ActiveWindow.ActivePane.view.SeekView = $wdSeekPrimaryFooter
 	#get the footer and format font
 	$footers = $Script:Doc.Sections.Last.Footers
-	ForEach($footer in $footers) 
+	ForEach ($footer in $footers) 
 	{
 		If($footer.exists) 
 		{
