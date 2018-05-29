@@ -2,6 +2,16 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #To contact, please use e-mail address info@barryschiffer.com
 
+#Version 3.6 21-dec-2016
+
+The script is now fully compatible with NetScaler 11.1 released in July 2016.
+
+    * Added NetScaler Gateway reporting for Custom Themes
+    * Added HTTPS redirect for Load Balancing
+    * Added Policy Based Routing
+    * Added several items to advanced configuration for Load Balancer and Services
+    * Numerous bug fixes
+
 #Version 3.5 24-Oct-2016
 
 Most work on version 3.5 has been done by Andy McCullough!
