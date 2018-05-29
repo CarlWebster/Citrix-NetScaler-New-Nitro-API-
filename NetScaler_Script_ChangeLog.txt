@@ -2,6 +2,18 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #To contact, please use e-mail address info@barryschiffer.com
 
+#Version 4.0 31-Aug-2017
+#	The script is now fully compatible with NetScaler 12.0 released in july 2017
+#	Fixed NetScaler SSL connections
+#	Added SAML Authentication policies
+#	Updated GSLB Parameters to include late 11.1 build enhancements
+#	Added Support for NetScaler Clustering
+#	Added AppExpert
+	#	Pattern Sets
+	#	HTTP Callouts
+	#	Data Sets
+#	Numerous bug fixes
+
 #Version 3.61 13-Feb-2017
 #	Fixed French wording for Table of Contents 2 (Thanks to David Rouquier)
 
