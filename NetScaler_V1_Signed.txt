@@ -144,9 +144,9 @@
 	No objects are output from this script.  This script creates a Word document.
 .NOTES
 	NAME: NetScaler_V1.ps1
-	VERSION: 1.0.2
-	AUTHOR: Barry Schiffer
-	LASTEDIT: May 21, 2014
+	VERSION: 1.0.3
+	AUTHOR: Barry Schiffer with help from Carl Webster
+	LASTEDIT: May 26, 2014
 #>
 #endregion Support
 
@@ -186,6 +186,9 @@ Param(
 	] 
 	[Switch]$PDF=$False)
 	
+#Version 1.0 script
+#originally released to the Citrix community on May 6, 2014
+#
 #Version 1.0.1 script May 12, 2014
 #Minor bug fix release
 #	Load Balancer: Changed the chapter name "Services" to "Services and Service Groups". Thanks to Carl Behrent for the heads up!
@@ -201,11 +204,11 @@ Param(
 #		Format most Warning and Error messages to make them more readable
 #		Test for existence of "word" variable before removal
 #	Next script update will require PowerShell Version 3.0 or higher
-
-
-#Version 1.0 script
-#originally released to the Citrix community on May 6, 2014
-
+#Version 1.0.3
+#	All functions moved to the top of the script
+#	Error check added if ns.conf is not found
+#	Error check added to verify ns.conf file is read successfully
+#	Converted all Advanced Configuration sections to tables
 
 #force -verbose on
 $PSDefaultParameterValues = @{"*:Verbose"=$True}
@@ -816,6 +819,140 @@ Function AbortScript
 	Exit
 }
 
+#region NetScaler Documentation Functions
+
+##############################################################################
+#.SYNOPSIS
+# Get named property from a string.
+#
+#.DESCRIPTION
+# Returns a case-insensitive property from a string, assuming the property is
+# named before the actual property value and is separated by a space. For
+# example, if the specified SearchString contained
+# "-property1 <value1> -property2 <value2>Ô¬ searching # for "-Property1"
+# would return "<value1>".
+##############################################################################
+function Get-StringProperty([string]$SearchString, [string]$SearchProperty, [string]$EmptyString = "Undefined")
+{
+    # Locate and replace quotes with '^^' and quoted spaces '^' to aid with parsing, until there are none left
+    While ($SearchString.Contains('"')) {
+        # Store the right-hand side temporarily, skipping the first quote
+        $SearchStringRight = $SearchString.Substring($SearchString.IndexOf('"') +1);
+        # Extract the quoted text from the original string
+        $QuotedString = $SearchString.Substring($SearchString.IndexOf('"'), $SearchStringRight.IndexOf('"') +2);
+        # Replace the quoted text, replacing spaces with '^' and quotes with '^^'
+        $SearchString = $SearchString.Replace($QuotedString, $QuotedString.Replace(" ", "^").Replace('"', "^^"));
+    }
+
+    # Split the $SearchString based on one or more blank spaces
+    $StringComponents = $SearchString.Split(' +',[StringSplitOptions]'RemoveEmptyEntries'); 
+    For($i = 0; $i -le $StringComponents.Length; $i++) {
+        # The standard Powershell CompareTo method is case-sensitive
+        If([string]::Compare($StringComponents[$i], $SearchProperty, $True) -eq 0) {
+            # Check that we're not over the array boundary
+            If($i+1 -le $StringComponents.Length) {
+                # Restore any escaped quotation marks and spaces
+                # If you wanted to trim quotation marks you could use this instead:
+                #  return $StringComponents[$i+1].Replace("^^", '"').Replace("^", " ").Trim('"');
+                return $StringComponents[$i+1].Replace("^^", '"').Replace("^", " ");
+            }
+        }
+    }
+    # If nothing has been found or we're over the array boundary, return the $EmptyString value
+    return $EmptyString;
+}
+
+##############################################################################
+#.SYNOPSIS
+# Tests whether a named property in a string exists
+#
+#.DESCRIPTION
+# Returns a boolean value if a string property is present. For example, if
+# the specified SearchString contained "-property1 -property2 <value2>Ô¬
+# searching for "-Property1" or "-Property2" would return true, but searching
+# for "-Property3" would return false
+##############################################################################
+function Test-StringProperty([string]$SearchString, [string]$SearchProperty)
+{
+    # Split the $SearchString based on one or more blank spaces
+    $StringComponents = $SearchString.Split(' +',[StringSplitOptions]'RemoveEmptyEntries'); 
+    for ($i = 0; $i -le $StringComponents.Length; $i++) {
+        # The standard Powershell CompareTo method is case-sensitive
+        If([string]::Compare($StringComponents[$i], $SearchProperty, $True) -eq 0) { return $true; }
+    }
+    # No value found so return false
+    return $false;
+}
+
+##############################################################################
+#.SYNOPSIS
+# Tests whether a named property in a string exists and returns either Yes
+# ($true) or No ($false)
+##############################################################################
+function Test-StringPropertyYesNo([string]$SearchString, [string]$SearchProperty)
+{
+    if (Test-StringProperty $SearchString $SearchProperty) { return "Yes"; }
+    else { return "No"; }
+}
+
+##############################################################################
+#.SYNOPSIS
+# Tests whether a named property in a string exists and returns either Yes
+# ($false) or No ($true)
+##############################################################################
+function Test-NotStringPropertyYesNo([string]$SearchString, [string]$SearchProperty)
+{
+    if (-not (Test-StringProperty $SearchString $SearchProperty)) { return "Yes"; }
+    else { return "No"; }
+}
+
+##############################################################################
+#.SYNOPSIS
+# Tests whether a named property in a string exists and returns either Enabled
+# ($true) or Disabled ($false)
+##############################################################################
+function Test-StringPropertyEnabledDisabled([string]$SearchString, [string]$SearchProperty)
+{
+    if (Test-StringProperty $SearchString $SearchProperty) { return "Enabled"; }
+    else { return "Disabled"; }
+}
+
+##############################################################################
+#.SYNOPSIS
+# Tests whether a named property in a string exists and returns either Disabled
+# ($true) or Enabled ($false)
+##############################################################################
+function Test-NotStringPropertyEnabledDisabled([string]$SearchString, [string]$SearchProperty)
+{
+    if (-not (Test-StringProperty $SearchString $SearchProperty)) { return "Enabled"; }
+    else { return "Disabled"; }
+}
+
+##############################################################################
+#.SYNOPSIS
+# Tests whether a named property in a string exists and returns either On
+# ($true) or Off ($false)
+##############################################################################
+function Test-StringPropertyOnOff([string]$SearchString, [string]$SearchProperty)
+{
+    if (Test-StringProperty $SearchString $SearchProperty) { return "On"; }
+    else { return "Off"; }
+}
+
+##############################################################################
+#.SYNOPSIS
+# Tests whether a named property in a string exists and returns either Off
+# ($true) or On ($false)
+##############################################################################
+function Test-NotStringPropertyOnOff([string]$SearchString, [string]$SearchProperty)
+{
+    if (-not (Test-StringProperty $SearchString $SearchProperty)) { return "On"; }
+    else { return "Off"; }
+}
+
+#endregion NetScaler Documentation Functions
+
+
 If([String]::IsNullOrEmpty($CompanyName))
 {
 	[string]$Title = "NetScaler Configuration"
@@ -831,7 +968,62 @@ If($PDF)
 }
 
 CheckWordPreReq
+
 $script:startTime = Get-Date
+
+#region NetScaler Documentation Setup
+
+$Scriptver = 1
+$SourceFileName = "ns.conf";
+
+## Iain Brighton - Try and resolve the ns.conf file in the current working directory
+if(Test-Path (Join-Path ((Get-Location).ProviderPath) $SourceFileName)) 
+{
+	$SourceFile = Join-Path ((Get-Location).ProviderPath) $SourceFileName; 
+}
+else 
+{
+	## Otherwise try the script's directory
+	if(Test-Path (Join-Path (Split-Path $MyInvocation.MyCommand.Path) $SourceFileName)) 
+	{
+		$SourceFile = Join-Path (Split-Path $MyInvocation.MyCommand.Path) $SourceFileName; 
+	}
+	else 
+	{
+		throw "Cannot locate a NetScaler ns.conf file in either the working or script directory."; 
+	}
+}
+
+#added by Carl Webster 24-May-2014
+If(!$?)
+{
+	Write-Error "`n`n`t`tCannot locate a NetScaler ns.conf file in either the working or script directory.`n`n`t`tScript cannot continue.`n`n"
+	Exit
+}
+
+Write-Verbose "$(Get-Date): NetScaler file : $SourceFile"
+
+## Iain Brighton - Set the output locations to the current working directory
+$filename1 = Join-Path ((Get-Location).ProviderPath) $filename1;
+if($PDF) 
+{ 
+	$filename2 = Join-Path ((Get-Location).ProviderPath) $filename2;
+	Write-Verbose "$(Get-Date): Target Word file : $filename1, PDF file : $filename2";
+}
+else 
+{ 
+	Write-Verbose "$(Get-Date): Target Word file : $filename1"; 
+}
+
+## We read the file in once as each Get-Content call goes to disk and also creates a new string[]
+$File = Get-Content $SourceFile
+
+#added by Carl Webster 24-May-2014
+If(!$? -or $File -eq $Null)
+{
+	Write-Error "`n`n`t`tUnable to read the NetScaler ns.conf file.`n`n`t`tScript cannot continue.`n`n"
+	Exit
+}
 
 Write-Verbose "$(Get-Date): Setting up Word"
 
@@ -1170,168 +1362,6 @@ $selection.EndKey($wdStory,$wdMove) | Out-Null
 #endregion Word Setup
 
 #region NetScaler Documentation Build
-
-#region NetScaler Documentation Functions
-
-##############################################################################
-#.SYNOPSIS
-# Get named property from a string.
-#
-#.DESCRIPTION
-# Returns a case-insensitive property from a string, assuming the property is
-# named before the actual property value and is separated by a space. For
-# example, if the specified SearchString contained
-# "-property1 <value1> -property2 <value2>”, searching # for "-Property1"
-# would return "<value1>".
-##############################################################################
-function Get-StringProperty([string]$SearchString, [string]$SearchProperty, [string]$EmptyString = "Undefined")
-{
-    # Locate and replace quotes with '^^' and quoted spaces '^' to aid with parsing, until there are none left
-    While ($SearchString.Contains('"')) {
-        # Store the right-hand side temporarily, skipping the first quote
-        $SearchStringRight = $SearchString.Substring($SearchString.IndexOf('"') +1);
-        # Extract the quoted text from the original string
-        $QuotedString = $SearchString.Substring($SearchString.IndexOf('"'), $SearchStringRight.IndexOf('"') +2);
-        # Replace the quoted text, replacing spaces with '^' and quotes with '^^'
-        $SearchString = $SearchString.Replace($QuotedString, $QuotedString.Replace(" ", "^").Replace('"', "^^"));
-    }
-
-    # Split the $SearchString based on one or more blank spaces
-    $StringComponents = $SearchString.Split(' +',[StringSplitOptions]'RemoveEmptyEntries'); 
-    For($i = 0; $i -le $StringComponents.Length; $i++) {
-        # The standard Powershell CompareTo method is case-sensitive
-        If([string]::Compare($StringComponents[$i], $SearchProperty, $True) -eq 0) {
-            # Check that we're not over the array boundary
-            If($i+1 -le $StringComponents.Length) {
-                # Restore any escaped quotation marks and spaces
-                # If you wanted to trim quotation marks you could use this instead:
-                #  return $StringComponents[$i+1].Replace("^^", '"').Replace("^", " ").Trim('"');
-                return $StringComponents[$i+1].Replace("^^", '"').Replace("^", " ");
-            }
-        }
-    }
-    # If nothing has been found or we're over the array boundary, return the $EmptyString value
-    return $EmptyString;
-}
-
-##############################################################################
-#.SYNOPSIS
-# Tests whether a named property in a string exists
-#
-#.DESCRIPTION
-# Returns a boolean value if a string property is present. For example, if
-# the specified SearchString contained "-property1 -property2 <value2>”,
-# searching for "-Property1" or "-Property2" would return true, but searching
-# for "-Property3" would return false
-##############################################################################
-function Test-StringProperty([string]$SearchString, [string]$SearchProperty)
-{
-    # Split the $SearchString based on one or more blank spaces
-    $StringComponents = $SearchString.Split(' +',[StringSplitOptions]'RemoveEmptyEntries'); 
-    for ($i = 0; $i -le $StringComponents.Length; $i++) {
-        # The standard Powershell CompareTo method is case-sensitive
-        If([string]::Compare($StringComponents[$i], $SearchProperty, $True) -eq 0) { return $true; }
-    }
-    # No value found so return false
-    return $false;
-}
-
-##############################################################################
-#.SYNOPSIS
-# Tests whether a named property in a string exists and returns either Yes
-# ($true) or No ($false)
-##############################################################################
-function Test-StringPropertyYesNo([string]$SearchString, [string]$SearchProperty)
-{
-    if (Test-StringProperty $SearchString $SearchProperty) { return "Yes"; }
-    else { return "No"; }
-}
-
-##############################################################################
-#.SYNOPSIS
-# Tests whether a named property in a string exists and returns either Yes
-# ($false) or No ($true)
-##############################################################################
-function Test-NotStringPropertyYesNo([string]$SearchString, [string]$SearchProperty)
-{
-    if (-not (Test-StringProperty $SearchString $SearchProperty)) { return "Yes"; }
-    else { return "No"; }
-}
-
-##############################################################################
-#.SYNOPSIS
-# Tests whether a named property in a string exists and returns either Enabled
-# ($true) or Disabled ($false)
-##############################################################################
-function Test-StringPropertyEnabledDisabled([string]$SearchString, [string]$SearchProperty)
-{
-    if (Test-StringProperty $SearchString $SearchProperty) { return "Enabled"; }
-    else { return "Disabled"; }
-}
-
-##############################################################################
-#.SYNOPSIS
-# Tests whether a named property in a string exists and returns either Disabled
-# ($true) or Enabled ($false)
-##############################################################################
-function Test-NotStringPropertyEnabledDisabled([string]$SearchString, [string]$SearchProperty)
-{
-    if (-not (Test-StringProperty $SearchString $SearchProperty)) { return "Enabled"; }
-    else { return "Disabled"; }
-}
-
-##############################################################################
-#.SYNOPSIS
-# Tests whether a named property in a string exists and returns either On
-# ($true) or Off ($false)
-##############################################################################
-function Test-StringPropertyOnOff([string]$SearchString, [string]$SearchProperty)
-{
-    if (Test-StringProperty $SearchString $SearchProperty) { return "On"; }
-    else { return "Off"; }
-}
-
-##############################################################################
-#.SYNOPSIS
-# Tests whether a named property in a string exists and returns either Off
-# ($true) or On ($false)
-##############################################################################
-function Test-NotStringPropertyOnOff([string]$SearchString, [string]$SearchProperty)
-{
-    if (-not (Test-StringProperty $SearchString $SearchProperty)) { return "On"; }
-    else { return "Off"; }
-}
-
-#endregion NetScaler Documentation Functions
-
-#region NetScaler Documentation Setup
-
-$Scriptver = 1
-$SourceFileName = "ns.conf";
-
-## Iain Brighton - Try and resolve the ns.conf file in the current working directory
-if (Test-Path (Join-Path ((Get-Location).ProviderPath) $SourceFileName)) {
-    $SourceFile = Join-Path ((Get-Location).ProviderPath) $SourceFileName; }
-else {
-    ## Otherwise try the script's directory
-    if (Test-Path (Join-Path (Split-Path $MyInvocation.MyCommand.Path) $SourceFileName)) {
-        $SourceFile = Join-Path (Split-Path $MyInvocation.MyCommand.Path) $SourceFileName; }
-    else {
-        throw "Cannot locate a NetScaler ns.conf file in either the working or script directory."; }
-}
-
-Write-Verbose "$(Get-Date): NetScaler file : $SourceFile"
-
-## Iain Brighton - Set the output locations to the current working directory
-$filename1 = Join-Path ((Get-Location).ProviderPath) $filename1;
-if ($PDF) { 
-    $filename2 = Join-Path ((Get-Location).ProviderPath) $filename2;
-    Write-Verbose "$(Get-Date): Target Word file : $filename1, PDF file : $filename2";
-    }
-    else { Write-Verbose "$(Get-Date): Target Word file : $filename1"; }
-
-## We read the file in once as each Get-Content call goes to disk and also creates a new string[]
-$File = Get-Content $SourceFile
 
 ## Create collections for faster processing of ns conf.
 $Set = $File | Where { $_ -Like "Set *" }
@@ -3438,29 +3468,163 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Content Switches have been configured"} 
     
             ##Advanced Configuration   
             WriteWordLine 4 0 "Advanced Configuration"
-            if ($(Get-StringProperty $_ "-comment") -ne $null) {$X = Get-StringProperty $_ "-comment" "No comment";
-            WriteWordLine 0 0 "Comment`t`t`t`t: $(Get-StringProperty "-comment" "No comment")";
-            WriteWordLine 0 0 "Apply AppFlow logging`t`t`t: $(Test-NotStringPropertyEnabledDisabled $_ "-appflowLog")";
-            WriteWordLine 0 0 "Name of the TCP profile`t`t`t: $(Get-StringProperty $_ "-tcpProfileName" "None")";
-            WriteWordLine 0 0 "Name of the HTTP profile`t`t: $(Get-StringProperty $_ "-httpProfileName" "None")";
-            WriteWordLine 0 0 "Name of the NET profile`t`t`t: $(Get-StringProperty $_ "-netProfile" "None")";
-            WriteWordLine 0 0 "Name of the DB profile`t`t`t: $(Get-StringProperty $_ "-dbProfileName" "None")";
-            WriteWordLine 0 0 "Enable or disable user authentication`t: $(Test-StringPropertyOnOff $_ "-Authentication")";
-            WriteWordLine 0 0 "Authentication virtual server fqdn`t: $(Get-StringProperty $_ "-AuthenticationHost" "NA")";
-            WriteWordLine 0 0 "Name of the Authentication profile`t: $(Get-StringProperty $_ "-authnProfile" "None")";
-            WriteWordLine 0 0 "Syntax expression identifying traffic`t: $(Get-StringProperty $_ "-Listenpolicy" "None")"
-            WriteWordLine 0 0 "Priority of the Listener Policy`t`t: $(Get-StringProperty $_ "-Listenpriority" "101 (Maximum Value)")";
-            WriteWordLine 0 0 "Name of the backup virtual server`t: $(Get-StringProperty $_ "-backupVserver" "NA")";
-            WriteWordLine 0 0 "Enable state updates`t`t`t: $(Test-StringPropertyEnabledDisabled $_ "-stateupdate")";
-            WriteWordLine 0 0 "Route requests to the cache server`t: $(Test-StringPropertyYesNo $_ "-cacheable")";
-            WriteWordLine 0 0 "precedence to use for policies`t`t: $(Get-StringProperty $_ "-precedence" "CS_PRIORITY_RULE (Default)")";
-            WriteWordLine 0 0 "URL Case sensitive`t`t`t: $(Test-NotStringPropertyOnOff $_ "-caseSensitive")";
-            WriteWordLine 0 0 "Type of spillover`t`t`t: $(Get-StringProperty $_ "-soMethod" "None")";
-            WriteWordLine 0 0 "Maintain source-IP based persistence`t: Minutes $(Get-StringProperty $_ "-soPersistence" "None")";
-            WriteWordLine 0 0 "Action if spillover is to take effect`t: $(Get-StringProperty $_ "-soBackupAction" "NA")";
-            WriteWordLine 0 0 "State of port rewrite HTTP redirect`t: $(Test-NotStringPropertyEnabledDisabled $_ "-redirectPortRewrite")";
-            WriteWordLine 0 0 "Continue forwarding to backup vServer`t: $(Test-StringPropertyEnabledDisabled $_ "-disablePrimaryOnDown")";
-            }
+            if ($(Get-StringProperty $_ "-comment") -ne $null) 
+		{
+			$X = Get-StringProperty $_ "-comment" "No comment";
+			<#
+			WriteWordLine 0 0 "Comment`t`t`t`t: $(Get-StringProperty "-comment" "No comment")";
+			WriteWordLine 0 0 "Apply AppFlow logging`t`t`t: $(Test-NotStringPropertyEnabledDisabled $_ "-appflowLog")";
+			WriteWordLine 0 0 "Name of the TCP profile`t`t`t: $(Get-StringProperty $_ "-tcpProfileName" "None")";
+			WriteWordLine 0 0 "Name of the HTTP profile`t`t: $(Get-StringProperty $_ "-httpProfileName" "None")";
+			WriteWordLine 0 0 "Name of the NET profile`t`t`t: $(Get-StringProperty $_ "-netProfile" "None")";
+			WriteWordLine 0 0 "Name of the DB profile`t`t`t: $(Get-StringProperty $_ "-dbProfileName" "None")";
+			WriteWordLine 0 0 "Enable or disable user authentication`t: $(Test-StringPropertyOnOff $_ "-Authentication")";
+			WriteWordLine 0 0 "Authentication virtual server fqdn`t: $(Get-StringProperty $_ "-AuthenticationHost" "NA")";
+			WriteWordLine 0 0 "Name of the Authentication profile`t: $(Get-StringProperty $_ "-authnProfile" "None")";
+			WriteWordLine 0 0 "Syntax expression identifying traffic`t: $(Get-StringProperty $_ "-Listenpolicy" "None")"
+			WriteWordLine 0 0 "Priority of the Listener Policy`t`t: $(Get-StringProperty $_ "-Listenpriority" "101 (Maximum Value)")";
+			WriteWordLine 0 0 "Name of the backup virtual server`t: $(Get-StringProperty $_ "-backupVserver" "NA")";
+			WriteWordLine 0 0 "Enable state updates`t`t`t: $(Test-StringPropertyEnabledDisabled $_ "-stateupdate")";
+			WriteWordLine 0 0 "Route requests to the cache server`t: $(Test-StringPropertyYesNo $_ "-cacheable")";
+			WriteWordLine 0 0 "precedence to use for policies`t`t: $(Get-StringProperty $_ "-precedence" "CS_PRIORITY_RULE (Default)")";
+			WriteWordLine 0 0 "URL Case sensitive`t`t`t: $(Test-NotStringPropertyOnOff $_ "-caseSensitive")";
+			WriteWordLine 0 0 "Type of spillover`t`t`t: $(Get-StringProperty $_ "-soMethod" "None")";
+			WriteWordLine 0 0 "Maintain source-IP based persistence`t: Minutes $(Get-StringProperty $_ "-soPersistence" "None")";
+			WriteWordLine 0 0 "Action if spillover is to take effect`t: $(Get-StringProperty $_ "-soBackupAction" "NA")";
+			WriteWordLine 0 0 "State of port rewrite HTTP redirect`t: $(Test-NotStringPropertyEnabledDisabled $_ "-redirectPortRewrite")";
+			WriteWordLine 0 0 "Continue forwarding to backup vServer`t: $(Test-StringPropertyEnabledDisabled $_ "-disablePrimaryOnDown")";
+			#>
+			
+			#added by Carl Webster 24-May-2014
+			$TableRange = $doc.Application.Selection.Range
+			[int]$Columns = 2
+			[int]$Rows = 21
+
+			$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+			$Table.Style = $myHash.Word_TableGrid
+			$table.Borders.InsideLineStyle = $wdLineStyleNone
+			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+			$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(2,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(3,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(4,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(5,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(6,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(7,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(8,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(9,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(10,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(11,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(12,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(13,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(14,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(15,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(16,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(17,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(18,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(19,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(20,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(21,1).Shading.BackgroundPatternColor = $wdColorGray15
+
+			$Table.Cell(1,1).Range.Font.Bold = $True
+			$Table.Cell(2,1).Range.Font.Bold = $True
+			$Table.Cell(3,1).Range.Font.Bold = $True
+			$Table.Cell(4,1).Range.Font.Bold = $True
+			$Table.Cell(5,1).Range.Font.Bold = $True
+			$Table.Cell(6,1).Range.Font.Bold = $True
+			$Table.Cell(7,1).Range.Font.Bold = $True
+			$Table.Cell(8,1).Range.Font.Bold = $True
+			$Table.Cell(9,1).Range.Font.Bold = $True
+			$Table.Cell(10,1).Range.Font.Bold = $True
+			$Table.Cell(11,1).Range.Font.Bold = $True
+			$Table.Cell(12,1).Range.Font.Bold = $True
+			$Table.Cell(13,1).Range.Font.Bold = $True
+			$Table.Cell(14,1).Range.Font.Bold = $True
+			$Table.Cell(15,1).Range.Font.Bold = $True
+			$Table.Cell(16,1).Range.Font.Bold = $True
+			$Table.Cell(17,1).Range.Font.Bold = $True
+			$Table.Cell(18,1).Range.Font.Bold = $True
+			$Table.Cell(19,1).Range.Font.Bold = $True
+			$Table.Cell(20,1).Range.Font.Bold = $True
+			$Table.Cell(21,1).Range.Font.Bold = $True
+
+			$Table.Cell(1,1).Range.Text = "Comment"
+			$Table.Cell(2,1).Range.Text = "Apply AppFlow logging"
+			$Table.Cell(3,1).Range.Text = "Name of the TCP profile"
+			$Table.Cell(4,1).Range.Text = "Name of the HTTP profile"
+			$Table.Cell(5,1).Range.Text = "Name of the NET profile"
+			$Table.Cell(6,1).Range.Text = "Name of the DB profile"
+			$Table.Cell(7,1).Range.Text = "Enable or disable user authentication"
+			$Table.Cell(8,1).Range.Text = "Authentication virtual server FQDN"
+			$Table.Cell(9,1).Range.Text = "Name of the Authentication profile"
+			$Table.Cell(10,1).Range.Text = "Syntax expression identifying traffic"
+			$Table.Cell(11,1).Range.Text = "Priority of the Listener Policy"
+			$Table.Cell(12,1).Range.Text = "Name of the backup virtual server"
+			$Table.Cell(13,1).Range.Text = "Enable state updates"
+			$Table.Cell(14,1).Range.Text = "Route requests to the cache server"
+			$Table.Cell(15,1).Range.Text = "Precedence to use for policies"
+			$Table.Cell(16,1).Range.Text = "URL Case sensitive"
+			$Table.Cell(17,1).Range.Text = "Type of spillover"
+			$Table.Cell(18,1).Range.Text = "Maintain source-IP based persistence"
+			$Table.Cell(19,1).Range.Text = "Action if spillover is to take effect"
+			$Table.Cell(20,1).Range.Text = "State of port rewrite HTTP redirect"
+			$Table.Cell(21,1).Range.Text = "Continue forwarding to backup vServer"
+
+
+			$Table.Cell(1,2).Range.Font.size = 9
+			$Table.Cell(2,2).Range.Font.size = 9
+			$Table.Cell(3,2).Range.Font.size = 9
+			$Table.Cell(4,2).Range.Font.size = 9
+			$Table.Cell(5,2).Range.Font.size = 9
+			$Table.Cell(6,2).Range.Font.size = 9
+			$Table.Cell(7,2).Range.Font.size = 9
+			$Table.Cell(8,2).Range.Font.size = 9
+			$Table.Cell(9,2).Range.Font.size = 9
+			$Table.Cell(10,2).Range.Font.size = 9
+			$Table.Cell(11,2).Range.Font.size = 9
+			$Table.Cell(12,2).Range.Font.size = 9
+			$Table.Cell(13,2).Range.Font.size = 9
+			$Table.Cell(14,2).Range.Font.size = 9
+			$Table.Cell(15,2).Range.Font.size = 9
+			$Table.Cell(16,2).Range.Font.size = 9
+			$Table.Cell(17,2).Range.Font.size = 9
+			$Table.Cell(18,2).Range.Font.size = 9
+			$Table.Cell(19,2).Range.Font.size = 9
+			$Table.Cell(20,2).Range.Font.size = 9
+			$Table.Cell(21,2).Range.Font.size = 9
+
+			$Table.Cell(1,2).Range.Text = Get-StringProperty "-comment" "No comment"
+			$Table.Cell(2,2).Range.Text = Test-NotStringPropertyEnabledDisabled $_ "-appflowLog"
+			$Table.Cell(3,2).Range.Text = Get-StringProperty $_ "-tcpProfileName" "None"
+			$Table.Cell(4,2).Range.Text = Get-StringProperty $_ "-httpProfileName" "None"
+			$Table.Cell(5,2).Range.Text = Get-StringProperty $_ "-netProfile" "None"
+			$Table.Cell(6,2).Range.Text = Get-StringProperty $_ "-dbProfileName" "None"
+			$Table.Cell(7,2).Range.Text = Test-StringPropertyOnOff $_ "-Authentication"
+			$Table.Cell(8,2).Range.Text = Get-StringProperty $_ "-AuthenticationHost" "NA"
+			$Table.Cell(9,2).Range.Text = Get-StringProperty $_ "-authnProfile" "None"
+			$Table.Cell(10,2).Range.Text = Get-StringProperty $_ "-Listenpolicy" "None"
+			$Table.Cell(11,2).Range.Text = Get-StringProperty $_ "-Listenpriority" "101 (Maximum Value)"
+			$Table.Cell(12,2).Range.Text = Get-StringProperty $_ "-backupVserver" "NA"
+			$Table.Cell(13,2).Range.Text = Test-StringPropertyEnabledDisabled $_ "-stateupdate"
+			$Table.Cell(14,2).Range.Text = Test-StringPropertyYesNo $_ "-cacheable"
+			$Table.Cell(15,2).Range.Text = Get-StringProperty $_ "-precedence" "CS_PRIORITY_RULE (Default)"
+			$Table.Cell(16,2).Range.Text = Test-NotStringPropertyOnOff $_ "-caseSensitive"
+			$Table.Cell(17,2).Range.Text = Get-StringProperty $_ "-soMethod" "None"
+			$Table.Cell(18,2).Range.Text = "Minutes $(Get-StringProperty $_ "-soPersistence" "None")"
+			$Table.Cell(19,2).Range.Text = Get-StringProperty $_ "-soBackupAction" "NA"
+			$Table.Cell(20,2).Range.Text = Test-NotStringPropertyEnabledDisabled $_ "-redirectPortRewrite"
+			$Table.Cell(21,2).Range.Text = Test-StringPropertyEnabledDisabled $_ "-disablePrimaryOnDown"
+			
+			$table.AutoFitBehavior($wdAutoFitContent)
+
+			#return focus back to document
+			$doc.ActiveWindow.ActivePane.view.SeekView=$wdSeekMainDocument
+
+			#move to the end of the current document
+			$selection.EndKey($wdStory,$wdMove) | Out-Null
+			$TableRange = $Null
+			$Table = $Null
+           }
         }
     }
     $selection.InsertNewPage()
@@ -3683,35 +3847,197 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Load Balancer have been configured"} els
         ##Advanced Configuration   
 
         WriteWordLine 4 0 "Advanced Configuration"
-        WriteWordLine 0 0 "Comment`t`t`t`t: $(Get-StringProperty $_ "-comment" "No comment")";
-        WriteWordLine 0 0 "Apply AppFlow logging`t`t`t: $(Test-NotStringPropertyEnabledDisabled $_ "-appflowLog")";
-        WriteWordLine 0 0 "Name of the TCP profile`t`t`t: $(Get-StringProperty $_ "-tcpProfileName" "None")";
-        WriteWordLine 0 0 "Name of the HTTP profile`t`t: $(Get-StringProperty $_ "-httpProfileName" "None")";
-        WriteWordLine 0 0 "Name of the NET profile`t`t`t: $(Get-StringProperty $_ "-netProfile" "None")";
-        WriteWordLine 0 0 "Name of the DB profile`t`t`t: $(Get-StringProperty $_ "-dbProfileName" "None")";
-        WriteWordLine 0 0 "Enable or disable user authentication`t: $(Test-StringPropertyOnOff $_ "-Authentication")";
-        WriteWordLine 0 0 "Authentication virtual server fqdn`t: $(Get-StringProperty $_ "-AuthenticationHost" "NA")";
-        WriteWordLine 0 0 "Authentication virtual server name`t: $(Get-StringProperty $_ "-authnVsname" "NA")";
-        WriteWordLine 0 0 "Name of the Authentication profile`t: $(Get-StringProperty $_ "-authnProfile" "None")"; 
-        WriteWordLine 0 0 "User authentication with HTTP 401`t: $(Test-StringPropertyOnOff $_ "-authn401")";
-        WriteWordLine 0 0 "Syntax expression identifying traffic`t: $(Get-StringProperty $_ "-Listenpolicy" "None")";
-        WriteWordLine 0 0 "Priority of the Listener Policy`t`t: $(Get-StringProperty $_ "-Listenpriority" "101 (Maximum Value)")";
-        WriteWordLine 0 0 "Name of the backup virtual server`t: $(Get-StringProperty $_ "-backupVServer" "NA")";
-        WriteWordLine 0 0 "Time period a persistence session`t: $(Get-StringProperty $_ "-timeout" "2 (Default Value)")";
-        WriteWordLine 0 0 "Backup persistence type`t`t: $(Get-StringProperty $_ "-persistenceBackup" "None")";
-        WriteWordLine 0 0 "Time period a persistence session`t: $(Get-StringProperty $_ "-backupPersistenceTimeout" "2 (Default Value)")";
-        WriteWordLine 0 0 "Use priority queuing`t`t`t: $(Test-StringPropertyOnOff $_ "-pq")";
-        WriteWordLine 0 0 "Use SureConnect`t`t`t: $(Test-StringPropertyOnOff $_ "-sc")";
-        WriteWordLine 0 0 "Use network address translation`t: $(Test-StringPropertyOnOff $_ "-rtspNat")";
-        WriteWordLine 0 0 "Redirection mode for load balancing`t: $(Get-StringProperty $_ "-m" "NSFWD_IP (Default)")";
-        WriteWordLine 0 0 "Use Layer 2 parameters`t`t`t: $(Test-StringPropertyOnOff $_ "-l2Conn")";
-        WriteWordLine 0 0 "TOS ID of the virtual server`t`t: $(Get-StringProperty $_ "-tosId" "1 (Default)")";
-        WriteWordLine 0 0 "Expression against which traffic is evaluated`t`t: $(Get-StringProperty $_ "-rule" "None")";
-        WriteWordLine 0 0 "Perform load balancing on a per-packet basis`t`t: $(Test-StringPropertyEnabledDisabled $_ "-sessionless")";
-        WriteWordLine 0 0 "How the NetScaler appliance responds to ping requests`t: $(Get-StringProperty $_ "-icmpVsrResponse" "NS_VSR_PASSIVE (Default)")";
-        WriteWordLine 0 0 "Route cacheable requests to a cache redirection server`t: $(Test-StringPropertyYesNo $_ "-cacheable")";
+		<#
+		WriteWordLine 0 0 "Comment`t`t`t`t: $(Get-StringProperty $_ "-comment" "No comment")";
+		WriteWordLine 0 0 "Apply AppFlow logging`t`t`t: $(Test-NotStringPropertyEnabledDisabled $_ "-appflowLog")";
+		WriteWordLine 0 0 "Name of the TCP profile`t`t`t: $(Get-StringProperty $_ "-tcpProfileName" "None")";
+		WriteWordLine 0 0 "Name of the HTTP profile`t`t: $(Get-StringProperty $_ "-httpProfileName" "None")";
+		WriteWordLine 0 0 "Name of the NET profile`t`t`t: $(Get-StringProperty $_ "-netProfile" "None")";
+		WriteWordLine 0 0 "Name of the DB profile`t`t`t: $(Get-StringProperty $_ "-dbProfileName" "None")";
+		WriteWordLine 0 0 "Enable or disable user authentication`t: $(Test-StringPropertyOnOff $_ "-Authentication")";
+		WriteWordLine 0 0 "Authentication virtual server fqdn`t: $(Get-StringProperty $_ "-AuthenticationHost" "NA")";
+		WriteWordLine 0 0 "Authentication virtual server name`t: $(Get-StringProperty $_ "-authnVsname" "NA")";
+		WriteWordLine 0 0 "Name of the Authentication profile`t: $(Get-StringProperty $_ "-authnProfile" "None")"; 
+		WriteWordLine 0 0 "User authentication with HTTP 401`t: $(Test-StringPropertyOnOff $_ "-authn401")";
+		WriteWordLine 0 0 "Syntax expression identifying traffic`t: $(Get-StringProperty $_ "-Listenpolicy" "None")";
+		WriteWordLine 0 0 "Priority of the Listener Policy`t`t: $(Get-StringProperty $_ "-Listenpriority" "101 (Maximum Value)")";
+		WriteWordLine 0 0 "Name of the backup virtual server`t: $(Get-StringProperty $_ "-backupVServer" "NA")";
+		WriteWordLine 0 0 "Time period a persistence session`t: $(Get-StringProperty $_ "-timeout" "2 (Default Value)")";
+		WriteWordLine 0 0 "Backup persistence type`t`t: $(Get-StringProperty $_ "-persistenceBackup" "None")";
+		WriteWordLine 0 0 "Time period a persistence session`t: $(Get-StringProperty $_ "-backupPersistenceTimeout" "2 (Default Value)")";
+		WriteWordLine 0 0 "Use priority queuing`t`t`t: $(Test-StringPropertyOnOff $_ "-pq")";
+		WriteWordLine 0 0 "Use SureConnect`t`t`t: $(Test-StringPropertyOnOff $_ "-sc")";
+		WriteWordLine 0 0 "Use network address translation`t: $(Test-StringPropertyOnOff $_ "-rtspNat")";
+		WriteWordLine 0 0 "Redirection mode for load balancing`t: $(Get-StringProperty $_ "-m" "NSFWD_IP (Default)")";
+		WriteWordLine 0 0 "Use Layer 2 parameters`t`t`t: $(Test-StringPropertyOnOff $_ "-l2Conn")";
+		WriteWordLine 0 0 "TOS ID of the virtual server`t`t: $(Get-StringProperty $_ "-tosId" "1 (Default)")";
+		WriteWordLine 0 0 "Expression against which traffic is evaluated`t`t: $(Get-StringProperty $_ "-rule" "None")";
+		WriteWordLine 0 0 "Perform load balancing on a per-packet basis`t`t: $(Test-StringPropertyEnabledDisabled $_ "-sessionless")";
+		WriteWordLine 0 0 "How the NetScaler appliance responds to ping requests`t: $(Get-StringProperty $_ "-icmpVsrResponse" "NS_VSR_PASSIVE (Default)")";
+		WriteWordLine 0 0 "Route cacheable requests to a cache redirection server`t: $(Test-StringPropertyYesNo $_ "-cacheable")";
+		#>
 
-<# Seems like a lot of information turned off for now!
+			#added by Carl Webster 24-May-2014
+			$TableRange = $doc.Application.Selection.Range
+			[int]$Columns = 2
+			[int]$Rows = 27
+
+			$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+			$Table.Style = $myHash.Word_TableGrid
+			$table.Borders.InsideLineStyle = $wdLineStyleNone
+			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+			$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(2,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(3,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(4,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(5,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(6,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(7,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(8,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(9,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(10,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(11,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(12,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(13,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(14,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(15,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(16,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(17,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(18,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(19,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(20,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(21,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(22,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(23,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(24,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(25,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(26,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(27,1).Shading.BackgroundPatternColor = $wdColorGray15
+
+			$Table.Cell(1,1).Range.Font.Bold = $True
+			$Table.Cell(2,1).Range.Font.Bold = $True
+			$Table.Cell(3,1).Range.Font.Bold = $True
+			$Table.Cell(4,1).Range.Font.Bold = $True
+			$Table.Cell(5,1).Range.Font.Bold = $True
+			$Table.Cell(6,1).Range.Font.Bold = $True
+			$Table.Cell(7,1).Range.Font.Bold = $True
+			$Table.Cell(8,1).Range.Font.Bold = $True
+			$Table.Cell(9,1).Range.Font.Bold = $True
+			$Table.Cell(10,1).Range.Font.Bold = $True
+			$Table.Cell(11,1).Range.Font.Bold = $True
+			$Table.Cell(12,1).Range.Font.Bold = $True
+			$Table.Cell(13,1).Range.Font.Bold = $True
+			$Table.Cell(14,1).Range.Font.Bold = $True
+			$Table.Cell(15,1).Range.Font.Bold = $True
+			$Table.Cell(16,1).Range.Font.Bold = $True
+			$Table.Cell(17,1).Range.Font.Bold = $True
+			$Table.Cell(18,1).Range.Font.Bold = $True
+			$Table.Cell(19,1).Range.Font.Bold = $True
+			$Table.Cell(20,1).Range.Font.Bold = $True
+			$Table.Cell(21,1).Range.Font.Bold = $True
+			$Table.Cell(22,1).Range.Font.Bold = $True
+			$Table.Cell(23,1).Range.Font.Bold = $True
+			$Table.Cell(24,1).Range.Font.Bold = $True
+			$Table.Cell(25,1).Range.Font.Bold = $True
+			$Table.Cell(26,1).Range.Font.Bold = $True
+			$Table.Cell(27,1).Range.Font.Bold = $True
+
+			$Table.Cell(1,1).Range.Text = "Comment"
+			$Table.Cell(2,1).Range.Text = "Apply AppFlow logging"
+			$Table.Cell(3,1).Range.Text = "Name of the TCP profile"
+			$Table.Cell(4,1).Range.Text = "Name of the HTTP profile"
+			$Table.Cell(5,1).Range.Text = "Name of the NET profile"
+			$Table.Cell(6,1).Range.Text = "Name of the DB profile"
+			$Table.Cell(7,1).Range.Text = "Enable or disable user authentication"
+			$Table.Cell(8,1).Range.Text = "Authentication virtual server FQDN"
+			$Table.Cell(9,1).Range.Text = "Authentication virtual server name"
+			$Table.Cell(10,1).Range.Text = "Name of the Authentication profile"
+			$Table.Cell(11,1).Range.Text = "User authentication with HTTP 401"
+			$Table.Cell(12,1).Range.Text = "Syntax expression identifying traffic"
+			$Table.Cell(13,1).Range.Text = "Priority of the Listener Policy"
+			$Table.Cell(14,1).Range.Text = "Name of the backup virtual server"
+			$Table.Cell(15,1).Range.Text = "Time period a persistence session"
+			$Table.Cell(16,1).Range.Text = "Backup persistence type"
+			$Table.Cell(17,1).Range.Text = "Time period a backup persistence session"
+			$Table.Cell(18,1).Range.Text = "Use priority queuing"
+			$Table.Cell(19,1).Range.Text = "Use SureConnect"
+			$Table.Cell(20,1).Range.Text = "Use network address translation"
+			$Table.Cell(21,1).Range.Text = "Redirection mode for load balancing"
+			$Table.Cell(22,1).Range.Text = "Use Layer 2 parameter"
+			$Table.Cell(23,1).Range.Text = "TOS ID of the virtual server"
+			$Table.Cell(24,1).Range.Text = "Expression against which traffic is evaluated"
+			$Table.Cell(25,1).Range.Text = "Perform load balancing on a per-packet basis"
+			$Table.Cell(26,1).Range.Text = "How the NetScaler appliance responds to ping requests"
+			$Table.Cell(27,1).Range.Text = "Route cacheable requests to a cache redirection server"
+
+
+			$Table.Cell(1,2).Range.Font.size = 9
+			$Table.Cell(2,2).Range.Font.size = 9
+			$Table.Cell(3,2).Range.Font.size = 9
+			$Table.Cell(4,2).Range.Font.size = 9
+			$Table.Cell(5,2).Range.Font.size = 9
+			$Table.Cell(6,2).Range.Font.size = 9
+			$Table.Cell(7,2).Range.Font.size = 9
+			$Table.Cell(8,2).Range.Font.size = 9
+			$Table.Cell(9,2).Range.Font.size = 9
+			$Table.Cell(10,2).Range.Font.size = 9
+			$Table.Cell(11,2).Range.Font.size = 9
+			$Table.Cell(12,2).Range.Font.size = 9
+			$Table.Cell(13,2).Range.Font.size = 9
+			$Table.Cell(14,2).Range.Font.size = 9
+			$Table.Cell(15,2).Range.Font.size = 9
+			$Table.Cell(16,2).Range.Font.size = 9
+			$Table.Cell(17,2).Range.Font.size = 9
+			$Table.Cell(18,2).Range.Font.size = 9
+			$Table.Cell(19,2).Range.Font.size = 9
+			$Table.Cell(20,2).Range.Font.size = 9
+			$Table.Cell(21,2).Range.Font.size = 9
+			$Table.Cell(22,2).Range.Font.size = 9
+			$Table.Cell(23,2).Range.Font.size = 9
+			$Table.Cell(24,2).Range.Font.size = 9
+			$Table.Cell(25,2).Range.Font.size = 9
+			$Table.Cell(26,2).Range.Font.size = 9
+			$Table.Cell(27,2).Range.Font.size = 9
+
+			$Table.Cell(1,2).Range.Text = Get-StringProperty "-comment" "No comment"
+			$Table.Cell(2,2).Range.Text = Test-NotStringPropertyEnabledDisabled $_ "-appflowLog"
+			$Table.Cell(3,2).Range.Text = Get-StringProperty $_ "-tcpProfileName" "None"
+			$Table.Cell(4,2).Range.Text = Get-StringProperty $_ "-httpProfileName" "None"
+			$Table.Cell(5,2).Range.Text = Get-StringProperty $_ "-netProfile" "None"
+			$Table.Cell(6,2).Range.Text = Get-StringProperty $_ "-dbProfileName" "None"
+			$Table.Cell(7,2).Range.Text = Test-StringPropertyOnOff $_ "-Authentication"
+			$Table.Cell(8,2).Range.Text = Get-StringProperty $_ "-AuthenticationHost" "NA"
+			$Table.Cell(9,2).Range.Text = Get-StringProperty $_ "-authnVsname" "NA"
+			$Table.Cell(10,2).Range.Text = Get-StringProperty $_ "-authnProfile" "None"
+			$Table.Cell(11,2).Range.Text = Test-StringPropertyOnOff $_ "-authn401"
+			$Table.Cell(12,2).Range.Text = Get-StringProperty $_ "-Listenpolicy" "None"
+			$Table.Cell(13,2).Range.Text = Get-StringProperty $_ "-Listenpriority" "101 (Maximum Value)"
+			$Table.Cell(14,2).Range.Text = Get-StringProperty $_ "-backupVServer" "NA"
+			$Table.Cell(15,2).Range.Text = Get-StringProperty $_ "-timeout" "2 (Default Value)"
+			$Table.Cell(16,2).Range.Text = Get-StringProperty $_ "-persistenceBackup" "None"
+			$Table.Cell(17,2).Range.Text = Get-StringProperty $_ "-backupPersistenceTimeout" "2 (Default Value)"
+			$Table.Cell(18,2).Range.Text = Test-StringPropertyOnOff $_ "-pq"
+			$Table.Cell(19,2).Range.Text = Test-StringPropertyOnOff $_ "-sc"
+			$Table.Cell(20,2).Range.Text = Test-StringPropertyOnOff $_ "-rtspNat"
+			$Table.Cell(21,2).Range.Text = Get-StringProperty $_ "-m" "NSFWD_IP (Default)"
+			$Table.Cell(22,2).Range.Text = Test-StringPropertyOnOff $_ "-l2Conn"
+			$Table.Cell(23,2).Range.Text = Get-StringProperty $_ "-tosId" "1 (Default)"
+			$Table.Cell(24,2).Range.Text = Get-StringProperty $_ "-rule" "None"
+			$Table.Cell(25,2).Range.Text = Test-StringPropertyEnabledDisabled $_ "-sessionless"
+			$Table.Cell(26,2).Range.Text = Get-StringProperty $_ "-icmpVsrResponse" "NS_VSR_PASSIVE (Default)"
+			$Table.Cell(27,2).Range.Text = Test-StringPropertyYesNo $_ "-cacheable"
+			
+			$table.AutoFitBehavior($wdAutoFitContent)
+
+			#return focus back to document
+			$doc.ActiveWindow.ActivePane.view.SeekView=$wdSeekMainDocument
+
+			#move to the end of the current document
+			$selection.EndKey($wdStory,$wdMove) | Out-Null
+			$TableRange = $Null
+			$Table = $Null
+
+			<# Seems like a lot of information turned off for now!
         if ($(Get-StringProperty $_ "-downStateFlush") -ne $null) {$X = "Disabled"} else {$X = "Enabled"}
         WriteWordLine 0 0 "Flush all active transactions associated with a virtual server whose state transitions from UP to DOWN`t: $X"
         if ($(Get-StringProperty $_ "-dns64") -ne $null) {$X = "Enabled"} else {$X = "Disabled"}
@@ -3907,6 +4233,7 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Services have been configured"} else {
         WriteWordLine 0 0 " "
         WriteWordLine 0 0 " "
         WriteWordLine 4 0 "Advanced Configuration"
+	  <#
         WriteWordLine 0 0 "Clear text port`t`t`t: $(Get-StringProperty $_ "-clearTextPort" "NA")";
         WriteWordLine 0 0 "Cache Type `t`t`t: $(Get-StringProperty $_ "-cacheType" "NA")";
         WriteWordLine 0 0 "Maximum Client Requests`t: $(Get-StringProperty $_ "-maxClient" "4294967294 (Maximum Value)")";
@@ -3940,7 +4267,197 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Services have been configured"} else {
         WriteWordLine 0 0 "Comment about the service`t: $(Get-StringProperty $_ "-comment" "NA")";
         WriteWordLine 0 0 "Logging of AppFlow information`t: $(Test-NotStringPropertyEnabledDisabled $_ "-appflowLog")";
         WriteWordLine 0 0 "Network profile`t`t`t: $(Get-StringProperty $_ "-netProfile" "NA")";
+	  #>
 
+			#added by Carl Webster 24-May-2014
+			$TableRange = $doc.Application.Selection.Range
+			[int]$Columns = 2
+			[int]$Rows = 33
+
+			$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+			$Table.Style = $myHash.Word_TableGrid
+			$table.Borders.InsideLineStyle = $wdLineStyleNone
+			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+			$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(2,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(3,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(4,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(5,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(6,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(7,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(8,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(9,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(10,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(11,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(12,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(13,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(14,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(15,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(16,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(17,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(18,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(19,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(20,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(21,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(22,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(23,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(24,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(25,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(26,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(27,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(28,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(29,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(30,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(31,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(32,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(33,1).Shading.BackgroundPatternColor = $wdColorGray15
+
+			$Table.Cell(1,1).Range.Font.Bold = $True
+			$Table.Cell(2,1).Range.Font.Bold = $True
+			$Table.Cell(3,1).Range.Font.Bold = $True
+			$Table.Cell(4,1).Range.Font.Bold = $True
+			$Table.Cell(5,1).Range.Font.Bold = $True
+			$Table.Cell(6,1).Range.Font.Bold = $True
+			$Table.Cell(7,1).Range.Font.Bold = $True
+			$Table.Cell(8,1).Range.Font.Bold = $True
+			$Table.Cell(9,1).Range.Font.Bold = $True
+			$Table.Cell(10,1).Range.Font.Bold = $True
+			$Table.Cell(11,1).Range.Font.Bold = $True
+			$Table.Cell(12,1).Range.Font.Bold = $True
+			$Table.Cell(13,1).Range.Font.Bold = $True
+			$Table.Cell(14,1).Range.Font.Bold = $True
+			$Table.Cell(15,1).Range.Font.Bold = $True
+			$Table.Cell(16,1).Range.Font.Bold = $True
+			$Table.Cell(17,1).Range.Font.Bold = $True
+			$Table.Cell(18,1).Range.Font.Bold = $True
+			$Table.Cell(19,1).Range.Font.Bold = $True
+			$Table.Cell(20,1).Range.Font.Bold = $True
+			$Table.Cell(21,1).Range.Font.Bold = $True
+			$Table.Cell(22,1).Range.Font.Bold = $True
+			$Table.Cell(23,1).Range.Font.Bold = $True
+			$Table.Cell(24,1).Range.Font.Bold = $True
+			$Table.Cell(25,1).Range.Font.Bold = $True
+			$Table.Cell(26,1).Range.Font.Bold = $True
+			$Table.Cell(27,1).Range.Font.Bold = $True
+			$Table.Cell(28,1).Range.Font.Bold = $True
+			$Table.Cell(29,1).Range.Font.Bold = $True
+			$Table.Cell(30,1).Range.Font.Bold = $True
+			$Table.Cell(31,1).Range.Font.Bold = $True
+			$Table.Cell(32,1).Range.Font.Bold = $True
+			$Table.Cell(33,1).Range.Font.Bold = $True
+
+			$Table.Cell(1,1).Range.Text = "Clear text port"
+			$Table.Cell(2,1).Range.Text = "Cache Type"
+			$Table.Cell(3,1).Range.Text = "Maximum Client Requests"
+			$Table.Cell(4,1).Range.Text = "Monitor health of this service"
+			$Table.Cell(5,1).Range.Text = "Maximum Requests"
+			$Table.Cell(6,1).Range.Text = "Use Transparent Cache"
+			$Table.Cell(7,1).Range.Text = "Insert the Client IP header"
+			$Table.Cell(8,1).Range.Text = "Name for the HTTP header"
+			$Table.Cell(9,1).Range.Text = "Use Source IP"
+			$Table.Cell(10,1).Range.Text = "Path Monitoring"
+			$Table.Cell(11,1).Range.Text = "Individual Path monitoring"
+			$Table.Cell(12,1).Range.Text = "Use the proxy port"
+			$Table.Cell(13,1).Range.Text = "SureConnect"
+			$Table.Cell(14,1).Range.Text = "Surge protection"
+			$Table.Cell(15,1).Range.Text = "RTSP session ID mapping"
+			$Table.Cell(16,1).Range.Text = "Client Time-Out"
+			$Table.Cell(17,1).Range.Text = "Server Time-Out"
+			$Table.Cell(18,1).Range.Text = "Unique identifier for the service"
+			$Table.Cell(19,1).Range.Text = "The identifier for the service"
+			$Table.Cell(20,1).Range.Text = "Enable client keep-alive"
+			$Table.Cell(21,1).Range.Text = "Enable TCP buffering"
+			$Table.Cell(22,1).Range.Text = "Enable compression"
+			$Table.Cell(23,1).Range.Text = "Maximum bandwidth, in Kbps"
+			$Table.Cell(24,1).Range.Text = "Use Layer 2 mode"
+			$Table.Cell(25,1).Range.Text = "Sum of weights of the monitors"
+			$Table.Cell(26,1).Range.Text = "Initial state of the service"
+			$Table.Cell(27,1).Range.Text = "Perform delayed clean-up"
+			$Table.Cell(28,1).Range.Text = "TCP profile"
+			$Table.Cell(29,1).Range.Text = "HTTP profile"
+			$Table.Cell(30,1).Range.Text = "A numerical identifier"
+			$Table.Cell(31,1).Range.Text = "Comment about the service"
+			$Table.Cell(32,1).Range.Text = "Logging of AppFlow information"
+			$Table.Cell(33,1).Range.Text = "Network profile"
+
+			$Table.Cell(1,2).Range.Font.size = 9
+			$Table.Cell(2,2).Range.Font.size = 9
+			$Table.Cell(3,2).Range.Font.size = 9
+			$Table.Cell(4,2).Range.Font.size = 9
+			$Table.Cell(5,2).Range.Font.size = 9
+			$Table.Cell(6,2).Range.Font.size = 9
+			$Table.Cell(7,2).Range.Font.size = 9
+			$Table.Cell(8,2).Range.Font.size = 9
+			$Table.Cell(9,2).Range.Font.size = 9
+			$Table.Cell(10,2).Range.Font.size = 9
+			$Table.Cell(11,2).Range.Font.size = 9
+			$Table.Cell(12,2).Range.Font.size = 9
+			$Table.Cell(13,2).Range.Font.size = 9
+			$Table.Cell(14,2).Range.Font.size = 9
+			$Table.Cell(15,2).Range.Font.size = 9
+			$Table.Cell(16,2).Range.Font.size = 9
+			$Table.Cell(17,2).Range.Font.size = 9
+			$Table.Cell(18,2).Range.Font.size = 9
+			$Table.Cell(19,2).Range.Font.size = 9
+			$Table.Cell(20,2).Range.Font.size = 9
+			$Table.Cell(21,2).Range.Font.size = 9
+			$Table.Cell(22,2).Range.Font.size = 9
+			$Table.Cell(23,2).Range.Font.size = 9
+			$Table.Cell(24,2).Range.Font.size = 9
+			$Table.Cell(25,2).Range.Font.size = 9
+			$Table.Cell(26,2).Range.Font.size = 9
+			$Table.Cell(27,2).Range.Font.size = 9
+			$Table.Cell(28,2).Range.Font.size = 9
+			$Table.Cell(29,2).Range.Font.size = 9
+			$Table.Cell(30,2).Range.Font.size = 9
+			$Table.Cell(31,2).Range.Font.size = 9
+			$Table.Cell(32,2).Range.Font.size = 9
+			$Table.Cell(33,2).Range.Font.size = 9
+
+			$Table.Cell(1,2).Range.Text = Get-StringProperty $_ "-clearTextPort" "NA"
+			$Table.Cell(2,2).Range.Text = Get-StringProperty $_ "-cacheType" "NA"
+			$Table.Cell(3,2).Range.Text = Get-StringProperty $_ "-maxClient" "4294967294 (Maximum Value)"
+			$Table.Cell(4,2).Range.Text = Test-NotStringPropertyYesNo $_ "-healthMonitor"
+			$Table.Cell(5,2).Range.Text = Get-StringProperty $_ "-maxreq" "65535 (Maximum Value)"
+			$Table.Cell(6,2).Range.Text = Test-StringPropertyYesNo $_ "-cacheable"
+			$Table.Cell(7,2).Range.Text = Get-StringProperty $_ "-cip" "NA"
+			$Table.Cell(8,2).Range.Text = Get-StringProperty $_ "-cipHeader" "NA"
+			$Table.Cell(9,2).Range.Text = Test-StringPropertyYesNo $_ "-usip"
+			$Table.Cell(10,2).Range.Text = Test-StringPropertyYesNo $_ "-pathMonitor"
+			$Table.Cell(11,2).Range.Text = Test-StringPropertyYesNo $_ "-pathMonitorIndv"
+			$Table.Cell(12,2).Range.Text = Test-StringPropertyYesNo $_ "-useproxyport"
+			$Table.Cell(13,2).Range.Text = Test-StringPropertyOnOff $_ "-sc"
+			$Table.Cell(14,2).Range.Text = Test-StringPropertyOnOff $_ "-sp"
+			$Table.Cell(15,2).Range.Text = Test-StringPropertyOnOff $_ "-rtspSessionidRemap"
+			$Table.Cell(16,2).Range.Text = Get-StringProperty $_ "-cltTimeout" "31536000 (Maximum Value)"
+			$Table.Cell(17,2).Range.Text = Get-StringProperty $_ "-svrTimeout" "3153600 (Maximum Value)"
+			$Table.Cell(18,2).Range.Text = Get-StringProperty $_ "-CustomServerID" "None"
+			$Table.Cell(19,2).Range.Text = Get-StringProperty $_ "-serverID" "None"
+			$Table.Cell(20,2).Range.Text = Test-StringPropertyYesNo $_ "-CKA"
+			$Table.Cell(21,2).Range.Text = Test-StringPropertyYesNo $_ "-TCPB"
+			$Table.Cell(22,2).Range.Text = Test-StringPropertyYesNo $_ "-CMP"
+			$Table.Cell(23,2).Range.Text = Get-StringProperty $_ "-maxBandwidth" "4294967287 (Maximum Value)"
+			$Table.Cell(24,2).Range.Text = Test-StringPropertyYesNo $_ "-accessDown"
+			$Table.Cell(25,2).Range.Text = Get-StringProperty $_ "-monThreshold" "65535 (Maximum Value)"
+			$Table.Cell(26,2).Range.Text = Test-NotStringPropertyEnabledDisabled $_ "-state"
+			$Table.Cell(27,2).Range.Text = Test-NotStringPropertyEnabledDisabled $_ "-downStateFlush"
+			$Table.Cell(28,2).Range.Text = Get-StringProperty $_ "-tcppProfileName" "NA"
+			$Table.Cell(29,2).Range.Text = Get-StringProperty $_ "-httpProfileName" "NA"
+			$Table.Cell(30,2).Range.Text = Get-StringProperty $_ "-hashId" "NA"
+			$Table.Cell(31,2).Range.Text = Get-StringProperty $_ "-comment" "NA"
+			$Table.Cell(32,2).Range.Text = Test-NotStringPropertyEnabledDisabled $_ "-appflowLog"
+			$Table.Cell(33,2).Range.Text = Get-StringProperty $_ "-netProfile" "NA"
+			
+			$table.AutoFitBehavior($wdAutoFitContent)
+
+			#return focus back to document
+			$doc.ActiveWindow.ActivePane.view.SeekView=$wdSeekMainDocument
+
+			#move to the end of the current document
+			$selection.EndKey($wdStory,$wdMove) | Out-Null
+			$TableRange = $Null
+			$Table = $Null
+	  
         WriteWordLine 0 0 " "
 
         $selection.InsertNewPage() 
@@ -4065,7 +4582,7 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Service Groups have been configured"} el
         WriteWordLine 0 0 " " 
 
         WriteWordLine 4 0 "Advanced Configuration"
-
+	<#
         WriteWordLine 0 0 "Global Server Load Balancing`t: $(Test-StringPropertyOnOff $_ "-gslb")";
         WriteWordLine 0 0 "Clear text port`t`t`t: $(Get-StringProperty $_ "-clearTextPort" "NA")";
         WriteWordLine 0 0 "Cache Type `t`t`t: $(Get-StringProperty $_ "-cacheType" "NA")";
@@ -4100,6 +4617,201 @@ if($ROWS -eq 1) { WriteWordLine 0 0 "No Service Groups have been configured"} el
         WriteWordLine 0 0 "Comment`t`t`t: $(Get-StringProperty $_ "-comment" "NA")";
         WriteWordLine 0 0 "Logging of AppFlow information`t: $(Test-NotStringPropertyEnabledDisabled $_ "-appflowLog")";
         WriteWordLine 0 0 "Network profile`t`t`t: $(Get-StringProperty $_ "-netProfile" "NA")";
+#>
+
+			#added by Carl Webster 24-May-2014
+			$TableRange = $doc.Application.Selection.Range
+			[int]$Columns = 2
+			[int]$Rows = 34
+
+			$Table = $doc.Tables.Add($TableRange, $Rows, $Columns)
+			$Table.Style = $myHash.Word_TableGrid
+			$table.Borders.InsideLineStyle = $wdLineStyleNone
+			$table.Borders.OutsideLineStyle = $wdLineStyleSingle
+			$Table.Cell(1,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(2,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(3,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(4,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(5,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(6,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(7,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(8,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(9,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(10,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(11,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(12,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(13,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(14,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(15,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(16,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(17,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(18,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(19,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(20,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(21,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(22,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(23,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(24,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(25,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(26,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(27,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(28,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(29,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(30,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(31,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(32,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(33,1).Shading.BackgroundPatternColor = $wdColorGray15
+			$Table.Cell(34,1).Shading.BackgroundPatternColor = $wdColorGray15
+
+			$Table.Cell(1,1).Range.Font.Bold = $True
+			$Table.Cell(2,1).Range.Font.Bold = $True
+			$Table.Cell(3,1).Range.Font.Bold = $True
+			$Table.Cell(4,1).Range.Font.Bold = $True
+			$Table.Cell(5,1).Range.Font.Bold = $True
+			$Table.Cell(6,1).Range.Font.Bold = $True
+			$Table.Cell(7,1).Range.Font.Bold = $True
+			$Table.Cell(8,1).Range.Font.Bold = $True
+			$Table.Cell(9,1).Range.Font.Bold = $True
+			$Table.Cell(10,1).Range.Font.Bold = $True
+			$Table.Cell(11,1).Range.Font.Bold = $True
+			$Table.Cell(12,1).Range.Font.Bold = $True
+			$Table.Cell(13,1).Range.Font.Bold = $True
+			$Table.Cell(14,1).Range.Font.Bold = $True
+			$Table.Cell(15,1).Range.Font.Bold = $True
+			$Table.Cell(16,1).Range.Font.Bold = $True
+			$Table.Cell(17,1).Range.Font.Bold = $True
+			$Table.Cell(18,1).Range.Font.Bold = $True
+			$Table.Cell(19,1).Range.Font.Bold = $True
+			$Table.Cell(20,1).Range.Font.Bold = $True
+			$Table.Cell(21,1).Range.Font.Bold = $True
+			$Table.Cell(22,1).Range.Font.Bold = $True
+			$Table.Cell(23,1).Range.Font.Bold = $True
+			$Table.Cell(24,1).Range.Font.Bold = $True
+			$Table.Cell(25,1).Range.Font.Bold = $True
+			$Table.Cell(26,1).Range.Font.Bold = $True
+			$Table.Cell(27,1).Range.Font.Bold = $True
+			$Table.Cell(28,1).Range.Font.Bold = $True
+			$Table.Cell(29,1).Range.Font.Bold = $True
+			$Table.Cell(30,1).Range.Font.Bold = $True
+			$Table.Cell(31,1).Range.Font.Bold = $True
+			$Table.Cell(32,1).Range.Font.Bold = $True
+			$Table.Cell(33,1).Range.Font.Bold = $True
+			$Table.Cell(34,1).Range.Font.Bold = $True
+
+			$Table.Cell(1,1).Range.Text = "Global Server Load Balancing"
+			$Table.Cell(2,1).Range.Text = "Clear text port"
+			$Table.Cell(3,1).Range.Text = "Cache Type"
+			$Table.Cell(4,1).Range.Text = "Maximum Client Requests"
+			$Table.Cell(5,1).Range.Text = "Monitor health of this service"
+			$Table.Cell(6,1).Range.Text = "Maximum Requests"
+			$Table.Cell(7,1).Range.Text = "Use Transparent Cache"
+			$Table.Cell(8,1).Range.Text = "Insert the Client IP header"
+			$Table.Cell(9,1).Range.Text = "Name for the HTTP header"
+			$Table.Cell(10,1).Range.Text = "Use Source IP"
+			$Table.Cell(11,1).Range.Text = "Path Monitoring"
+			$Table.Cell(12,1).Range.Text = "Individual Path monitoring"
+			$Table.Cell(13,1).Range.Text = "Use the proxy port"
+			$Table.Cell(14,1).Range.Text = "SureConnect"
+			$Table.Cell(15,1).Range.Text = "Surge protection"
+			$Table.Cell(16,1).Range.Text = "RTSP session ID mapping"
+			$Table.Cell(17,1).Range.Text = "Client Time-Out"
+			$Table.Cell(18,1).Range.Text = "Server Time-Out"
+			$Table.Cell(19,1).Range.Text = "Unique identifier for the service"
+			$Table.Cell(20,1).Range.Text = "The identifier for the service"
+			$Table.Cell(21,1).Range.Text = "Enable client keep-alive"
+			$Table.Cell(22,1).Range.Text = "Enable TCP buffering"
+			$Table.Cell(23,1).Range.Text = "Enable compression"
+			$Table.Cell(24,1).Range.Text = "Maximum bandwidth"
+			$Table.Cell(25,1).Range.Text = "Use Layer 2 mode"
+			$Table.Cell(26,1).Range.Text = "Sum of weights of the monitors"
+			$Table.Cell(27,1).Range.Text = "Initial state of the service"
+			$Table.Cell(28,1).Range.Text = "Perform delayed clean-up"
+			$Table.Cell(29,1).Range.Text = "TCP profile"
+			$Table.Cell(30,1).Range.Text = "HTTP profile"
+			$Table.Cell(31,1).Range.Text = "A numerical identifier"
+			$Table.Cell(32,1).Range.Text = "Comment"
+			$Table.Cell(33,1).Range.Text = "Logging of AppFlow information"
+			$Table.Cell(34,1).Range.Text = "Network profile"
+
+			$Table.Cell(1,2).Range.Font.size = 9
+			$Table.Cell(2,2).Range.Font.size = 9
+			$Table.Cell(3,2).Range.Font.size = 9
+			$Table.Cell(4,2).Range.Font.size = 9
+			$Table.Cell(5,2).Range.Font.size = 9
+			$Table.Cell(6,2).Range.Font.size = 9
+			$Table.Cell(7,2).Range.Font.size = 9
+			$Table.Cell(8,2).Range.Font.size = 9
+			$Table.Cell(9,2).Range.Font.size = 9
+			$Table.Cell(10,2).Range.Font.size = 9
+			$Table.Cell(11,2).Range.Font.size = 9
+			$Table.Cell(12,2).Range.Font.size = 9
+			$Table.Cell(13,2).Range.Font.size = 9
+			$Table.Cell(14,2).Range.Font.size = 9
+			$Table.Cell(15,2).Range.Font.size = 9
+			$Table.Cell(16,2).Range.Font.size = 9
+			$Table.Cell(17,2).Range.Font.size = 9
+			$Table.Cell(18,2).Range.Font.size = 9
+			$Table.Cell(19,2).Range.Font.size = 9
+			$Table.Cell(20,2).Range.Font.size = 9
+			$Table.Cell(21,2).Range.Font.size = 9
+			$Table.Cell(22,2).Range.Font.size = 9
+			$Table.Cell(23,2).Range.Font.size = 9
+			$Table.Cell(24,2).Range.Font.size = 9
+			$Table.Cell(25,2).Range.Font.size = 9
+			$Table.Cell(26,2).Range.Font.size = 9
+			$Table.Cell(27,2).Range.Font.size = 9
+			$Table.Cell(28,2).Range.Font.size = 9
+			$Table.Cell(29,2).Range.Font.size = 9
+			$Table.Cell(30,2).Range.Font.size = 9
+			$Table.Cell(31,2).Range.Font.size = 9
+			$Table.Cell(32,2).Range.Font.size = 9
+			$Table.Cell(33,2).Range.Font.size = 9
+			$Table.Cell(34,2).Range.Font.size = 9
+
+			$Table.Cell(1,2).Range.Text = Test-StringPropertyOnOff $_ "-gslb"
+			$Table.Cell(2,2).Range.Text = Get-StringProperty $_ "-clearTextPort" "NA"
+			$Table.Cell(3,2).Range.Text = Get-StringProperty $_ "-cacheType" "NA"
+			$Table.Cell(4,2).Range.Text = Get-StringProperty $_ "-maxClient" "4294967294 (Maximum Value)"
+			$Table.Cell(5,2).Range.Text = Test-NotStringPropertyYesNo $_ "-healthMonitor"
+			$Table.Cell(6,2).Range.Text = Get-StringProperty $_ "-maxreq" "65535 (Maximum Value)"
+			$Table.Cell(7,2).Range.Text = Test-StringPropertyYesNo $_ "-cacheable"
+			$Table.Cell(8,2).Range.Text = Get-StringProperty $_ "-cip" "NA"
+			$Table.Cell(9,2).Range.Text = Get-StringProperty "-cipHeader" "NA"
+			$Table.Cell(10,2).Range.Text = Test-StringPropertyYesNo $_ "-usip"
+			$Table.Cell(11,2).Range.Text = Test-StringPropertyYesNo $_ "-pathMonitor"
+			$Table.Cell(12,2).Range.Text = Test-StringPropertyYesNo $_ "-pathMonitorIndv"
+			$Table.Cell(13,2).Range.Text = Test-StringPropertyYesNo $_ "-useproxyport"
+			$Table.Cell(14,2).Range.Text = Test-StringPropertyOnOff $_ "-sc"
+			$Table.Cell(15,2).Range.Text = Test-StringPropertyOnOff $_ "-sp"
+			$Table.Cell(16,2).Range.Text = Test-StringPropertyOnOff $_ "-rtspSessionidRemap"
+			$Table.Cell(17,2).Range.Text = Get-StringProperty $_ "-cltTimeout" "31536000 (Maximum Value)"
+			$Table.Cell(18,2).Range.Text = Get-StringProperty $_ "-svrTimeout" "31536000 (Maximum Value)"
+			$Table.Cell(19,2).Range.Text = Get-StringProperty $_ "-CustomServiceID" "None"
+			$Table.Cell(20,2).Range.Text = Get-StringProperty $_ "-serverID" "None"
+			$Table.Cell(21,2).Range.Text = Test-StringPropertyYesNo $_ "-CKA"
+			$Table.Cell(22,2).Range.Text = Test-StringPropertyYesNo $_ "-TCPB"
+			$Table.Cell(23,2).Range.Text = Test-StringPropertyYesNo $_ "-CMP"
+			$Table.Cell(24,2).Range.Text = Get-StringProperty $_ "-maxBandwidth" "4294967287 (Maximum Value)"
+			$Table.Cell(25,2).Range.Text = Test-StringPropertyYesNo $_ "-accessDown"
+			$Table.Cell(26,2).Range.Text = Get-StringProperty $_ "-monThreshold" "65535 (Maximum Value)"
+			$Table.Cell(27,2).Range.Text = Test-NotStringPropertyEnabledDisabled $_ "-state"
+			$Table.Cell(28,2).Range.Text = Test-NotStringPropertyEnabledDisabled $_ "-downStateFlush"
+			$Table.Cell(29,2).Range.Text = Get-StringProperty $_ "-tcpProfileName" "NA"
+			$Table.Cell(30,2).Range.Text = Get-StringProperty $_ "-httpProfileName" "NA"
+			$Table.Cell(31,2).Range.Text = Get-StringProperty $_ "-hashId" "NA"
+			$Table.Cell(32,2).Range.Text = Get-StringProperty $_ "-comment" "NA"
+			$Table.Cell(33,2).Range.Text = Test-NotStringPropertyEnabledDisabled $_ "-appflowLog"
+			$Table.Cell(34,2).Range.Text = Get-StringProperty $_ "-netProfile" "NA"
+			
+			$table.AutoFitBehavior($wdAutoFitContent)
+
+			#return focus back to document
+			$doc.ActiveWindow.ActivePane.view.SeekView=$wdSeekMainDocument
+
+			#move to the end of the current document
+			$selection.EndKey($wdStory,$wdMove) | Out-Null
+			$TableRange = $Null
+			$Table = $Null
 
         WriteWordLine 0 0 " "
 
@@ -4904,8 +5616,8 @@ $Str = $Null
 # SIG # Begin signature block
 # MIIiywYJKoZIhvcNAQcCoIIivDCCIrgCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU35TSJ7sZwT275NkL/bJwawhe
-# OtCggh41MIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU1g78/ejsaUHw/JJeaacqrPaR
+# ogyggh41MIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
 # AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
 # VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
 # IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMzExMTEwMDAwMDAwWjBlMQsw
@@ -5070,22 +5782,22 @@ $Str = $Null
 # ChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMS4wLAYD
 # VQQDEyVEaWdpQ2VydCBBc3N1cmVkIElEIENvZGUgU2lnbmluZyBDQS0xAhAEpVF+
 # 1fcA0OvDT46NhL3GMAkGBSsOAwIaBQCgQDAZBgkqhkiG9w0BCQMxDAYKKwYBBAGC
-# NwIBBDAjBgkqhkiG9w0BCQQxFgQUf5RlX6NXqaNGKC2klwHhp6FZdrYwDQYJKoZI
-# hvcNAQEBBQAEggEAtT7dExiu23wPA/48+xODDPxe+Gr5mvgR0PZZSMYWq3tWScA5
-# 5lK7ohkJAZe9yi0+c7wksBBE7+nN7dZHjTSVBLNxCCz6k/bBvSrN3gDYG1J5Hdfg
-# YjlRaL39y/eabRUM7K8SiyWSbPxRtyBtpDomWqoU8s3K0dGH2QK/sQpKsFAKGCSp
-# rJyq0cRPk8ALecoNTeKrihYJJ/RkRSXVb8by+Of1HmtBFuQSnAxbCJwXLY0kTBpm
-# VDHKK5YnYtnc8BOdNm4mUuTEvsn2FYkpDvu2y5wfVMJnHd1Kf61plQS+sJdsRMHm
-# NWs+Ghb7rZ24yyqsp06eHffeFkvIBNQtpYD286GCAg8wggILBgkqhkiG9w0BCQYx
+# NwIBBDAjBgkqhkiG9w0BCQQxFgQUi0a6nv31gYQT1fk5DNN8l+xM1IwwDQYJKoZI
+# hvcNAQEBBQAEggEADV3w7uTFN17bsBZEIN7DF9iLGLqWxkGCqQaNtIaNpDni6azi
+# yUrsr8jdSzcVt6mqg022317kNBXvyYbnzFso74WcWyiefuVYzrUPalk7w6Kc8i0T
+# W19A1farL73PIV/ecSOO6ux27A9ThaOYXGn6kd3BjcpElVfc61oe25XxxKK/Otay
+# EYCNsWTcJgc4Hjiv4TaDgrn2h2xUHPHe8VB3kYAQjfGJ/nG4j0m4AzKklhKQ8hqG
+# SPBPoFVBCQ4Ajqpni3smtcjDnSOsOFv46NjvzZVidVmOZ7wi1v+F8vE9xdq8Xs9W
+# Jq4pkts/YpR5KNtdTg1nco+JRQmQ+0EaKEQPLqGCAg8wggILBgkqhkiG9w0BCQYx
 # ggH8MIIB+AIBATB2MGIxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJ
 # bmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xITAfBgNVBAMTGERpZ2lDZXJ0
 # IEFzc3VyZWQgSUQgQ0EtMQIQA5/t7ct5W43tMgyJGfA2iTAJBgUrDgMCGgUAoF0w
-# GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTQwNTIx
-# MTA0NDUyWjAjBgkqhkiG9w0BCQQxFgQUnt41luosovAuTpeXhJULRQ+YTJQwDQYJ
-# KoZIhvcNAQEBBQAEggEAB/MWs9knUM7W/YFF+OSfaW0hDbwwqO/tKBGKFIghfFj7
-# vxg17Z6/cFE18tg5xASiHpL74903cI4KCWk/YLaPJr4qSjPsp1i7E8NKOtHw+C/i
-# 9sTE9E7ljw1ZH3SCKAmnb6HkuY+9+svb0C42zYonbPp2eFnVrwysiU3mtfywXAYj
-# KvqkzQCe41kuQXdvNEkBwKbXxOGHFQR76TuKTKbl/jkH7A6uHvJltd6DubThLbXH
-# vs1fo51ZkncTvbdw6hI0enpx+A2C697NGXSw1z8RyqvqVBVnMCF+KwBIxtb8mpNZ
-# dvF5SEuw0tIaM4CHPPwfxv9rtvTWIqYmva/augd/Xg==
+# GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTQwNTI2
+# MTAxNzU1WjAjBgkqhkiG9w0BCQQxFgQUXuAmrAJl9jK4sQPfxpKeGmiDirUwDQYJ
+# KoZIhvcNAQEBBQAEggEAnnBMoBmA1C4OrYOLH7qXJmHVm0PcgNyWukfqnED4LsqG
+# fpwQ6CfSnGcOAynp1WmH0o1a2zEeC1zHcaPcxtLcqKyVovbeUUn6o7Utkf+NWV/Q
+# XCxm+HuIOZsn4YAcMJ2ODzcj4qw4V5ojJ09uIBMRGrAfN5mezpOxCnqGW3Cn6NVD
+# RMmNunvhBPPTCspwR8Oq4Q4Y6cvIfKL168CLpvliucOPEp+0gyW7BIlgQiTj5Zfs
+# ShJAccqkhJvrhSnDKQmJE5N7RfbMtdpisjT4ECCJfWQ8wX6BMluvWCT/rF9ISzQQ
+# DZRjuW8cWa6OKuUSX7HPmjjTFsiYd3hoqMfKN/rlvg==
 # SIG # End signature block
