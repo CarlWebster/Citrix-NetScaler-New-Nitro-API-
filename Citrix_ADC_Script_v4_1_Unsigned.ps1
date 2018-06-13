@@ -5772,6 +5772,8 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
         @{ Description = "Route cacheable requests to a cache redirection server"; Value = $LoadBalancer.cacheable; }
         @{ Description = "Redirect Non-SSL Connections from port"; Value = $LoadBalancer.redirectfromport; }
         @{ Description = "Redirect Non-SSL Connections to URL"; Value = $LoadBalancer.httpsredirecturl; }
+        @{ Description = "Listen Policy Expression"; Value = $LoadBalancer.listenpolicy; }
+        @{ Description = "Listen Policy Priority"; Value = $LoadBalancer.listenpriority; }
     );
 
     ## IB - Create the parameters to pass to the AddWordTable function
