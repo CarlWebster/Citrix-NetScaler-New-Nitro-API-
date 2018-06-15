@@ -3,10 +3,10 @@
 
 <#
 .SYNOPSIS
-    Creates a complete inventory of a Citrix NetScaler configuration using Microsoft Word.
+    Creates a complete inventory of a Citrix ADC configuration using Microsoft Word.
 .DESCRIPTION
-	Creates a complete inventory of a Citrix NetScaler configuration using Microsoft Word and PowerShell.
-	Creates a Word document named after the Citrix NetScaler Configuration.
+	Creates a complete inventory of a Citrix ADC configuration using Microsoft Word and PowerShell.
+	Creates a Word document named after the Citrix ADC Configuration.
 	Document includes a Cover Page, Table of Contents and Footer.
 	Includes support for the following language versions of Microsoft Word:
 		Catalan
@@ -25,11 +25,11 @@
 	Script requires at least PowerShell version 3 but runs best in version 5.
 
 .PARAMETER NSIP
-    NetScaler IP address, could be NSIP or SNIP with management enabled
+    Citrix ADC IP address, could be NSIP or SNIP with management enabled
 .PARAMETER Credential
-	NetScaler username
+	Citrix ADC username
 	
-	Specifies a user name for the NetScaler credential, such as "User01" or "Domain01\User01".
+	Specifies a user name for the Citrix ADC credential, such as "User01" or "Domain01\User01".
 
 	You are prompted for a password.
 
@@ -139,7 +139,7 @@
 	This parameter is disabled by default.
 	This parameter has an alias of SI.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_V4_0_Signed.ps1
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -150,7 +150,7 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_V4_0_Signed.ps1 -PDF
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -PDF
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -161,21 +161,21 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\NetScaler_Script_V4_0_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_1_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name.
 		Mod for the Cover Page format.
 		Carl Webster for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\NetScaler_Script_V4_0_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_1_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name (alias CN).
 		Mod for the Cover Page format (alias CP).
 		Carl Webster for the User Name (alias UN).
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_V4_0_Signed.ps1 -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -AddDateTime
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -191,7 +191,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.docx
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_V4_0_Signed.ps1 -PDF -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -PDF -AddDateTime
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -207,7 +207,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.PDF
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_V4_0_Signed.ps1 -Folder \\FileServer\ShareName
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -Folder \\FileServer\ShareName
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -220,7 +220,7 @@
 
 	Output file will be saved in the path \\FileServer\ShareName
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_V4_0_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -235,7 +235,7 @@
 	Script will use the default SMPTP port 25 and will not use SSL.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE
-	PS C:\PSScript > .\NetScaler_Script_V4_0_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -254,34 +254,46 @@
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-    NAME: NetScaler_Script_v4_0.ps1
-	VERSION NetScaler Script: 4.0
+    NAME: Citrix_ADC_Script_v4_1.ps1
+	VERSION Citrix ADC Script: 4.1
 	VERSION Script Template: 2016
-	AUTHOR NetScaler script: Barry Schiffer & Andy McCullough
-    AUTHOR NetScaler script functions: Iain Brighton
+	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
+    AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: December 21th 2016 
+	LASTEDIT: June 13th 2018 
 #>
 
 #region changelog
 <#
 .COMMENT
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
-.NetScaler Documentation Script
-    NAME: NetScaler_Script_v4_0.ps1
-	VERSION NetScaler Script: 4.0
+.Citrix ADC Documentation Script
+    NAME: Citrix_ADC_Script_v4_1.ps1
+	VERSION Citrix ADC Script: 4.1
 	VERSION Script Template: 2016
-	AUTHOR NetScaler script: Barry Schiffer & Andy McCullough
-    AUTHOR NetScaler script functions: Iain Brighton
+	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
+    AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: July, 2017 
+	LASTEDIT: June, 2018 
+
+.Release Notes version 4.1
+
+    * Name change from NetScaler to Citrix ADC (R.I.P NetScaler)
+    * Official Citrix ADC 12.1 Support
+    * Updated features and modes to 12.1 levels
+    * NetScaler Gateway - Added RDP Client and Server Profiles
+    FIX: Service Group Monitors and Advanced Config missing - Thanks to Nico Stylemans
+    * Added Unified Gateway SaaS Application Templates (System and User Defined)
+    * Updated SSL Profiles with new options
+
+     
 
 .Release Notes version 4.0
     * Official NetScaler v12 support
     * Fixed NetScaler SSL connections
     * Added SAML Authentication policies
     * Updated GSLB Parameters to include late 11.1 build enhancements
-    * Added Support for NetScaler Clustering
+    * Added Support for Citrix ADC Clustering
     * Added AppExpert
      - Pattern Sets
      - HTTP Callouts
@@ -290,10 +302,10 @@
 
 .Release Notes version 3.6
     
-    The script is now fully compatible with NetScaler 11.1 released in July 2016.
+    The script is now fully compatible with Citrix ADC 11.1 released in July 2016.
 
-    * Added NetScaler functionality
-    * Added NetScaler Gateway reporting for Custom Themes
+    * Added Citrix ADC functionality
+    * Added Citrix ADC Gateway reporting for Custom Themes
     * Added HTTPS redirect for Load Balancing
     * Added Policy Based Routing
     * Added several items to advanced configuration for Load Balancer and Services
@@ -302,31 +314,31 @@
 
 .Release Notes version 3.5
     Most work on version 3.5 has been done by Andy McCullough!
-    After the release of version 3.0 in May 2016, which was a major overhaul of the NetScaler documentation script we found a few issues which have been fixed in the update.
+    After the release of version 3.0 in May 2016, which was a major overhaul of the Citrix ADC documentation script we found a few issues which have been fixed in the update.
 
-    The script is now fully compatible with NetScaler 11.1 released in July 2016.
+    The script is now fully compatible with Citrix ADC 11.1 released in July 2016.
 
-    * Added NetScaler functionality
-    * Added NetScaler 11.1 Features, LSN / RDP Proxy / REP
+    * Added Citrix ADC functionality
+    * Added Citrix ADC 11.1 Features, LSN / RDP Proxy / REP
     * Added Auditing Section
     * Added GSLB Section, vServer / Services / Sites
     * Added Locations Database section to support GSLB configuration using Static proximity.
-    * Added additional DNS Records to the NetScaler DNS Section
+    * Added additional DNS Records to the Citrix ADC DNS Section
     * Added RPC Nodes section
-    * Added NetScaler SSL Chapter, moved existing functionality and added detailed information
+    * Added Citrix ADC SSL Chapter, moved existing functionality and added detailed information
     * Added AppFW Profiles and Policies
     * Added AAA vServers
 
-    Added NetScaler Gateway functionality
+    Added Citrix ADC Gateway functionality
     * Updated NSGW Global Settings Client Experience to include new parameters
     * Updated NSGW Global Settings Published Applications to include new parameters
     * Added Section NSGW "Global Settings AAA Parameters"
     * Added SSL Parameters section for NSGW Virtual Servers
     * Added Rewrite Policies section for each NSGW vServer
     * Updated CAG vServer basic configuration section to include new parameters
-    * Updated NetScaler Gateway Session Action > Security to include new attributed
-    * Added Section NetScaler Gateway Session Action > Client Experience
-    * Added Section NetScaler Gateway Policies > NetScaler Gateway AlwaysON Policies
+    * Updated Citrix ADC Gateway Session Action > Security to include new attributed
+    * Added Section Citrix ADC Gateway Session Action > Client Experience
+    * Added Section Citrix ADC Gateway Policies > Citrix ADC Gateway AlwaysON Policies
     * Added NSGW Bookmarks
     * Added NSGW Intranet IP's
     * Added NSGW Intranet Applications
@@ -346,7 +358,7 @@
 .Release Notes version 3
     Overall
         The script has had a major overhaul and is now completely utilizing the Nitro API instead of the NS.Conf.
-        The Nitro API offers a lot more information and most important end result is much more predictable. Adding NetScaler functionality is also much easier.
+        The Nitro API offers a lot more information and most important end result is much more predictable. Adding Citrix ADC functionality is also much easier.
         Added functionality because of Nitro
         * Hardware and license information
         * Complete routing tables including default routes
@@ -360,20 +372,20 @@
         New table function that now utilizes native word tables. Looks a lot better and is way faster
         Performance improvements; over 500% faster
         Better support for multi language Word versions. Will now always utilize cover page and TOC
-    New NetScaler functionality:
-        NetScaler Gateway
+    New Citrix ADC functionality:
+        Citrix ADC Gateway
             Global Settings
             Virtual Servers settings and policies
             Policies Session/Traffic
-	    NetScaler administration users and groups
-        NetScaler Authentication
+	    Citrix ADC administration users and groups
+        Citrix ADC Authentication
 	        Policies LDAP / Radius
             Actions Local / RADIUS
             Action LDAP more configuration reported and changed table layout
-        NetScaler Networking
+        Citrix ADC Networking
             Channels
             ACL
-        NetScaler Cache redirection
+        Citrix ADC Cache redirection
     Bugfixes
         Naming of items with spaces and quotes fixed
         Expressions with spaces, quotes, dashes and slashed fixed
@@ -382,32 +394,32 @@
         Time zone not show correctly when in GMT+....
         A lot more small items
 .Release Notes version 1
-    Version 1.0 supports the following NetScaler functionality:
-	NetScaler System Information
+    Version 1.0 supports the following Citrix ADC functionality:
+	Citrix ADC System Information
 	Version / NSIP / vLAN
-	NetScaler Global Settings
-	NetScaler Feature and mode state
-	NetScaler Networking
+	Citrix ADC Global Settings
+	Citrix ADC Feature and mode state
+	Citrix ADC Networking
 	IP Address / vLAN / Routing Table / DNS
-	NetScaler Authentication
+	Citrix ADC Authentication
 	Local / LDAP
-	NetScaler Traffic Domain
+	Citrix ADC Traffic Domain
 	Assigned Content Switch / Load Balancer / Service  / Server
-	NetScaler Monitoring
-	NetScaler Certificate
-	NetScaler Content Switches
+	Citrix ADC Monitoring
+	Citrix ADC Certificate
+	Citrix ADC Content Switches
 	Assigned Load Balancer / Service  / Server
-	NetScaler Load Balancer
+	Citrix ADC Load Balancer
 	Assigned Service  / Server
-	NetScaler Service
+	Citrix ADC Service
 	Assigned Server / monitor
-	NetScaler Service Group
+	Citrix ADC Service Group
 	Assigned Server / monitor
-	NetScaler Server
-	NetScaler Custom Monitor
-	NetScaler Policy
-	NetScaler Action
-	NetScaler Profile
+	Citrix ADC Server
+	Citrix ADC Custom Monitor
+	Citrix ADC Policy
+	Citrix ADC Action
+	Citrix ADC Profile
 #>
 #endregion changelog
 
@@ -431,7 +443,7 @@ Param(
     [string] $NSIP,
     
     [parameter(Mandatory=$false ) ]
-    [PSCredential] $Credential = (Get-Credential -Message 'Enter NetScaler credentials'),
+    [PSCredential] $Credential = (Get-Credential -Message 'Enter Citrix ADC credentials'),
 	
 	## EXPERIMENTAL: Require SSL/TLS, e.g. https://. This requires the client to trust to the NetScaler's certificate.
     [parameter(Mandatory=$false )]
@@ -2632,12 +2644,12 @@ $script:startTime = Get-Date
 #region file name and title name
 #The function SetFileName1andFileName2 needs your script output filename
 #change title for your report
-[string]$Script:Title = "NetScaler Documentation $($Script:CoName)"
-SetFileName1andFileName2 "NetScaler Documentation"
+[string]$Script:Title = "Citrix ADC Documentation $($Script:CoName)"
+SetFileName1andFileName2 "Citrix ADC Documentation"
 
 #endregion file name and title name
 
-#region NetScaler Documentation Script Complete
+#region Citrix ADC Documentation Script Complete
 
 ## Barry Schiffer Use Stopwatch class to time script execution
 $sw = [Diagnostics.Stopwatch]::StartNew()
@@ -2649,11 +2661,11 @@ $selection.InsertNewPage()
 function Get-vNetScalerObjectList {
 <#
     .SYNOPSIS
-        Returns a list of objects available in a NetScaler Nitro API container.
+        Returns a list of objects available in a Citrix ADC Nitro API container.
 #>
     [CmdletBinding()]
     param (
-        # NetScaler Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
+        # Citrix ADC Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
         [Parameter(Mandatory)] [ValidateSet('Stat','Config')] [System.String] $Container
     )
     begin {
@@ -2672,17 +2684,17 @@ function Get-vNetScalerObjectList {
 function Get-vNetScalerObject {
 <#
     .SYNOPSIS
-        Returns a NetScaler Nitro API object(s) via its REST API.
+        Returns a Citrix ADC Nitro API object(s) via its REST API.
 #>
     [CmdletBinding()]
     param (
-        # NetScaler Nitro API resource type, e.g. /nitro/v1/config/LBVSERVER
+        # Citrix ADC Nitro API resource type, e.g. /nitro/v1/config/LBVSERVER
         [Parameter(Mandatory)] [Alias('Object','Type')] [System.String] $ResourceType,
-        # NetScaler Nitro API resource name, e.g. /nitro/v1/config/lbvserver/MYLBVSERVER
+        # Citrix ADC Nitro API resource name, e.g. /nitro/v1/config/lbvserver/MYLBVSERVER
         [Parameter()] [Alias('Name')] [System.String] $ResourceName,
-        # NetScaler Nitro API optional attributes, e.g. /nitro/v1/config/lbvserver/mylbvserver?ATTRS=<attrib1>,<attrib2>
+        # Citrix ADC Nitro API optional attributes, e.g. /nitro/v1/config/lbvserver/mylbvserver?ATTRS=<attrib1>,<attrib2>
         [Parameter()] [System.String[]] $Attribute,
-        # NetScaler Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
+        # Citrix ADC Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
         [Parameter()] [ValidateSet('Stat','Config')] [System.String] $Container = 'Config',
         # Retrieve Builk Bindings for an object
         [Parameter()] [Alias('Bulk')] [Bool] $BulkBindings = $false
@@ -2715,13 +2727,13 @@ function Get-vNetScalerFile {
 
 <#
     .SYNOPSIS
-        Returns a NetScaler Nitro API SystemFile object(s) via its REST API.
+        Returns a Citrix ADC Nitro API SystemFile object(s) via its REST API.
 #>
     [CmdletBinding()]
     param (
-        # NetScaler Nitro API resource name, e.g. /nitro/v1/config/SystemFile?args=filename:Filename,filelocation:FileLocation
+        # Citrix ADC Nitro API resource name, e.g. /nitro/v1/config/SystemFile?args=filename:Filename,filelocation:FileLocation
         [Parameter()] [Alias('Name')][System.String] $FileName,
-        # NetScaler Nitro API optional attributes, e.g. /nitro/v1/config/lbvserver/mylbvserver?ATTRS=<attrib1>,<attrib2>
+        # Citrix ADC Nitro API optional attributes, e.g. /nitro/v1/config/lbvserver/mylbvserver?ATTRS=<attrib1>,<attrib2>
         [Parameter()] [Alias('Location')] [System.String] $FileLocation
         
     )
@@ -2747,24 +2759,59 @@ function Get-vNetScalerFile {
     }
 } #end function Get-vNetScalerFile
 
+function Read-vNetScalerFile {
+
+    [CmdletBinding()]
+    param (
+        # Citrix ADC Nitro API resource name, e.g. /nitro/v1/config/SystemFile?args=filename:Filename,filelocation:FileLocation
+        [Parameter()] [Alias('Name')][System.String] $FileName,
+        # Citrix ADC Nitro API optional attributes, e.g. /nitro/v1/config/lbvserver/mylbvserver?ATTRS=<attrib1>,<attrib2>
+        [Parameter()] [Alias('Location')] [System.String] $FileLocation
+        
+    )
+        Write-Host "Running"
+
+
+        #Don't lower case these as they are case sensitive
+        #$FileName = $FileName.ToLower();
+        $FileLocation = $FileLocation.Replace("/","%2F");
+        Write-Host $FileLocation
+        $Container = "config"
+        
+    
+   # process {
+        if ($script:nsSession.UseSSL) { $protocol = 'https'; } else { $protocol = 'http'; }
+        $uri = '{0}://{1}/rapi/read_file?filter=path:{2}' -f $protocol, $script:nsSession.Address, $FileLocation;
+        write-host $uri
+        
+        #Don't URI encode as we've already replaced / with %2F as required - URL encoding after this, encodes the % which breaks the request
+        #$uri = [System.Uri]::EscapeUriString($uri);
+        #Write-Output $uri;
+        $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
+        $test = 1
+        if ($null -ne $restResponse.systemfile) { Write-Output $restResponse; }
+        else { Write-Output $restResponse }
+    #}
+} #end function Get-vNetScalerFile
+
 function InvokevNetScalerNitroMethod {
 <#
     .SYNOPSIS
-        Calls a fully qualified NetScaler Nitro API
+        Calls a fully qualified Citrix ADC Nitro API
     .NOTES
         This is an internal function and shouldn't be called directly
 #>
     [CmdletBinding()]
     param (
-        # NetScaler Nitro API uniform resource identifier
+        # Citrix ADC Nitro API uniform resource identifier
         [Parameter(Mandatory)] [string] $Uri,
-        # NetScaler Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
+        # Citrix ADC Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
         [Parameter(Mandatory)] [ValidateSet('Stat','Config')] [string] $Container
     )
     begin {
-        if ($script:nsSession -eq $null) { throw 'No valid NetScaler session configuration.'; }
-        if ($script:nsSession.Session -eq $null -or $script:nsSession.Expiry -eq $null) { throw 'Invalid NetScaler session cookie.'; }
-        if ($script:nsSession.Expiry -lt (Get-Date)) { throw 'NetScaler session has expired.'; }
+        if ($script:nsSession -eq $null) { throw 'No valid Citrix ADC session configuration.'; }
+        if ($script:nsSession.Session -eq $null -or $script:nsSession.Expiry -eq $null) { throw 'Invalid Citrix ADC session cookie.'; }
+        if ($script:nsSession.Expiry -lt (Get-Date)) { throw 'Citrix ADC session has expired.'; }
     }
     process {
         $irmParameters = @{
@@ -2781,24 +2828,25 @@ function InvokevNetScalerNitroMethod {
 function Connect-vNetScalerSession {
 <#
     .SYNOPSIS
-        Authenticates to the NetScaler and stores a session cookie.
+        Authenticates to the Citrix ADC and stores a session cookie.
 #>
     [CmdletBinding(DefaultParameterSetName='HTTP')]
     [OutputType([Microsoft.PowerShell.Commands.WebRequestSession])]
     param (
-        # NetScaler uniform resource identifier
+        # Citrix ADC uniform resource identifier
         [Parameter(Mandatory, ParameterSetName='HTTP')]
         [Parameter(Mandatory, ParameterSetName='HTTPS')]
         [System.String] $ComputerName,
-        # NetScaler session timeout (seconds)
+        # Citrix ADC session timeout (seconds)
         [Parameter(ParameterSetName='HTTP')]
         [Parameter(ParameterSetName='HTTPS')]
         [ValidateNotNull()]
         [System.Int32] $Timeout = 3600,
-        # NetScaler authentication credentials
+        # Citrix ADC authentication credentials
         [Parameter(ParameterSetName='HTTP')]
         [Parameter(ParameterSetName='HTTPS')]
-        [System.Management.Automation.PSCredential] $Credential = $(Get-Credential -Message "Provide NetScaler credentials for '$ComputerName'";),
+        [System.Management.Automation.PSCredential] $Credential = $(Get-Credential -Message "Provide Citrix ADC credentials for '$ComputerName'";),
+        ## EXPERIMENTAL: Require SSL/TLS, e.g. https://. This requires the client to trust to the NetScaler's certificate.
         [Parameter(ParameterSetName='HTTPS')] [System.Management.Automation.SwitchParameter] $UseNSSSL
     )
     process {
@@ -2828,19 +2876,19 @@ function Connect-vNetScalerSession {
 function Get-vNetScalerObjectCount {
 <#
 .Synopsis
-    Returns an individual NetScaler Nitro API object.
+    Returns an individual Citrix ADC Nitro API object.
 #>
     [CmdletBinding()]
     param (
-        # NetScaler Nitro API Object, e.g. /nitro/v1/config/NSVERSION
+        # Citrix ADC Nitro API Object, e.g. /nitro/v1/config/NSVERSION
         [Parameter(Mandatory)] [string] $Object,
-        # NetScaler Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
+        # Citrix ADC Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
         [Parameter(Mandatory)] [ValidateSet('Stat','Config')] [string] $Container
     )
 
     begin {
         ## Check session cookie
-        if ($script:nsSession.Session -eq $null) { throw 'Invalid NetScaler session cookie.'; }
+        if ($script:nsSession.Session -eq $null) { throw 'Invalid Citrix ADC session cookie.'; }
     }
 
     process {
@@ -2911,31 +2959,53 @@ function IsNull($objectToCheck) {
     return $false
 }
 
+function Get-NonEmptyString($String) {
+
+  Return "$String "
+
+}
+
+Function Get-StringFromBase64 {
+
+    [CmdletBinding()]
+    param (
+        # Base64 Encoded String
+        [Parameter(Mandatory)] [string] $Object,
+        # IS the file contents UTF8 or ASCII encoded
+        [Parameter(Mandatory)] [ValidateSet('UTF8','ASCII')] [string] $Encoding
+    )
+
+    Switch ($Encoding) 
+    {
+
+      "UTF8" {$output = [System.Text.Encoding]::UTF8.Getstring([System.convert]::FromBase64String($Object))}
+      "ASCII" {$output = [System.Text.Encoding]::ASCII.Getstring([System.convert]::FromBase64String($Object))}
+      Default {$output = [System.Text.Encoding]::UTF8.Getstring([System.convert]::FromBase64String($Object))}
+
+
+    }
+    Return $output
+
+}
+
 #endregion generic functions
 
-#region NetScaler Connect
+#region Citrix ADC Connect
 
-If ($USENSSSL){
-        Write-Warning "Forcing PowerShell to trust all certificates (including the self-signed netScaler certificate)"
-        # source: blogs.technet.microsoft.com/bshukla/2010/0… 
-        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
-    }
-
-## Ensure we can connect to the NetScaler appliance before we spin up Word!
+## Ensure we can connect to the Citrix ADC appliance before we spin up Word!
 ## Connect to the API if there is no session cookie
 ## Note: repeated logons will result in 'Connection limit to cfe exceeded' errors.
 if (-not (Get-Variable -Name nsSession -Scope Script -ErrorAction SilentlyContinue)) { 
     [ref] $null = Connect-vNetScalerSession -ComputerName $nsip -UseNSSSL:$UseNSSSL -Credential $Credential -ErrorAction Stop;
 }
+#endregion Citrix ADC Connect
 
-#endregion NetScaler Connect
-
-#region NetScaler chaptercounters
+#region Citrix ADC chaptercounters
 $Chapters = 36
 $Chapter = 0
-#endregion NetScaler chaptercounters
+#endregion Citrix ADC chaptercounters
 
-#region NetScaler feature state
+#region Citrix ADC feature state
 ##Getting Feature states for usage later on and performance enhancements by not running parts of the script when feature is disabled
 $NSFeatures = Get-vNetScalerObject -Container config -Object nsfeature -Verbose;
 If ($NSFEATURES.WL -eq "True") {$FEATWL = "Enabled"} Else {$FEATWL = "Disabled"}
@@ -2974,9 +3044,18 @@ If ($NSFEATURES.feo -eq "True") {$FEATfeo = "Enabled"} Else {$FEATfeo = "Disable
 If ($NSFEATURES.lsn -eq "True") {$FEATlsn = "Enabled"} Else {$FEATlsn = "Disabled"}
 If ($NSFEATURES.rdpproxy -eq "True") {$FEATrdpproxy = "Enabled"} Else {$FEATrdpproxy = "Disabled"}
 If ($NSFEATURES.rep -eq "True") {$FEATrep = "Enabled"} Else {$FEATrep = "Disabled"}
-#endregion NetScaler feature state
+If ($NSFEATURES.urlfiltering -eq "True") {$FEATurl = "Enabled"} Else {$FEATurl = "Disabled"}
+If ($NSFEATURES.videooptimization -eq "True") {$FEATvideo = "Enabled"} Else {$FEATvideo = "Disabled"}
+If ($NSFEATURES.forwardproxy -eq "True") {$FEATfp = "Enabled"} Else {$FEATfp = "Disabled"}
+If ($NSFEATURES.sslinterception -eq "True") {$FEATsslint = "Enabled"} Else {$FEATsslint = "Disabled"}
+If ($NSFEATURES.adaptivetcp -eq "True") {$FEATadaptivetcp = "Enabled"} Else {$FEATadaptivetcp = "Disabled"}
+If ($NSFEATURES.cqa -eq "True") {$FEATcqa = "Enabled"} Else {$FEATcqa = "Disabled"}
+If ($NSFEATURES.ci -eq "True") {$FEATci = "Enabled"} Else {$FEATci = "Disabled"}
 
-#region NetScaler Version
+#endregion Citrix ADC feature state
+
+
+#region Citrix ADC Version
 
 ## Get version and build
 $NSVersion = Get-vNetScalerObject -Container config -Object nsversion;
@@ -2988,12 +3067,12 @@ $Build = $($NSVersion1[5] + " " + $nsversion1[6] + " " + $nsversion1[7] -replace
 ## Set script test version
 ## WIP THIS WORKS ONLY WHEN REGIONAL SETTINGS DIGIT IS SET TO . :)
 $ScriptVersion = 12.
-#endregion NetScaler Version
+#endregion Citrix ADC Version
 
-#region NetScaler System Information
+#region Citrix ADC System Information
 
 #region Basics
-WriteWordLine 1 0 "NetScaler Configuration"
+WriteWordLine 1 0 "Citrix ADC Configuration"
 
 $nsconfig = Get-vNetScalerObject -Container config -Object nsconfig;
 $nshostname = Get-vNetScalerObject -Container config -Object nshostname;
@@ -3002,7 +3081,7 @@ if (IsNull($NSHOSTNAME)){
       $HOSTNAME = ""
     }
 
-WriteWordLine 2 0 "NetScaler Version and configuration"
+WriteWordLine 2 0 "Citrix ADC Version and configuration"
 WriteWordLine 0 0 " "
 
 $Params = $null
@@ -3023,7 +3102,7 @@ $Table = AddWordTable @Params;
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 
-WriteWordLine 2 0 "NetScaler Edition"
+WriteWordLine 2 0 "Citrix ADC Edition"
 WriteWordLine 0 0 " "
 $License = Get-vNetScalerObject -Container config -Object nslicense;
 If ($license.isstandardlic -eq $True){$LIC = "Standard"}
@@ -3037,7 +3116,7 @@ $Params = @{
         SSLVPN = $sslvpnlicenses;
     }
     Columns = "Edition","SSLVPN";
-    Headers = "NetScaler Edition","SSL VPN licenses";
+    Headers = "Citrix ADC Edition","SSL VPN licenses";
     Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
     AutoFit = $wdAutoFitContent;
 }
@@ -3046,9 +3125,9 @@ $Table = AddWordTable @Params;
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 
-#region NetScaler Status
+#region Citrix ADC Status
 
-WriteWordLine 2 0 "NetScaler Status"
+WriteWordLine 2 0 "Citrix ADC Status"
 WriteWordLine 0 0 " "
 $nsstatus = Get-vNetScalerObject -Container stat -Object ns;
 
@@ -3084,12 +3163,14 @@ $Table = $null
  
 WriteWordLine 0 0 " "
 
-#endregion NetScaler Status
+#endregion Citrix ADC Status
+#region Citrix ADC Hardware
 
-WriteWordLine 2 0 "NetScaler Hardware"
+WriteWordLine 2 0 "Citrix ADC Hardware"
 WriteWordLine 0 0 " "
 $nshardware = Get-vNetScalerObject -Container config -Object nshardware;
 $nsmgmtcpu = Get-vNetScalerObject -Container config -Object systemextramgmtcpu;
+$nscpucfg = Get-vNetScalerObject -Container config -Object nsvpxparam;
 
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $NSHARDWARETable = @(
@@ -3098,9 +3179,10 @@ $nsmgmtcpu = Get-vNetScalerObject -Container config -Object systemextramgmtcpu;
     @{ Description = "Model"; Value = $license.modelid }
     @{ Description = "Hardware System ID"; Value = $nshardware.sysid }
     @{ Description = "Host ID"; Value = $nshardware.hostid }
-    @{ Description = "Host (MAC)"; Value = $nshardware.host }
+    @{ Description = "Host (MAC Address)"; Value = $nshardware.host }
     @{ Description = "Extra Management CPU Status"; Value = $nsmgmtcpu.effectivestate }
     @{ Description = "Serial Number"; Value = $nshardware.serialno }
+    @{ Description = "Yield CPU Time (VPX Only)"; Value = $nscpucfg.cpuyield }
 );
 
 ## IB - Create the parameters to pass to the AddWordTable function
@@ -3120,17 +3202,59 @@ $TableRange = $null
 $Table = $null      
  
 WriteWordLine 0 0 " "
+
+#endregion Citrix ADC Hardware
+
+#region Citrix ADC Capacity
+
+WriteWordLine 2 0 "Citrix ADC Capacity"
+WriteWordLine 0 0 " "
+$nscapacity = Get-vNetScalerObject -Container config -Object nscapacity;
+
+## IB - Use an array of hashtable to store the rows
+[System.Collections.Hashtable[]] $NSCAPACITYTable = @(
+
+    @{ Description = "System Bandwidth Limit"; Value = $nscapacity.bandwidth }
+    @{ Description = "Bandwidth Limit Unit"; Value = $nscapacity.unit }
+    @{ Description = "System Using vCPU Licensing"; Value = $nscapacity.vcpu }
+    @{ Description = "Product Edition"; Value = $nscapacity.edition }
+    @{ Description = "Actual Bandwidth (Mbps)"; Value = $nscapacity.actualbandwidth }
+    @{ Description = "vCPU Count"; Value = $nscapacity.vcpucount }
+    @{ Description = "Maximum vCPU Count"; Value = $nscapacity.maxvcpucount }
+    @{ Description = "Maximum Bandwidth"; Value = $nscapacity.maxbandwidth }
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $NSCAPACITYTable;
+    Columns = "Description","Value";
+    Headers = "Description","Value";
+    AutoFit = $wdAutoFitContent
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+## IB - Add the table to the document, splatting the parameters
+$Table = AddWordTable @Params;
+
+FindWordDocumentEnd;
+$TableRange = $null
+$Table = $null      
+ 
+WriteWordLine 0 0 " "
+
+#endregion Citrix ADC Capacity
 #endregion Basics
 
-#region NetScaler IP
+#region Citrix ADC IP
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler IP"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC IP"
 
-WriteWordLine 2 0 "NetScaler Management IP Address"
+WriteWordLine 2 0 "Citrix ADC Management IP Address"
 WriteWordLine 0 0 " "
 
 $NSIP1 = Get-vNetScalerObject -Container config -Object nsip;
-Foreach ($IP in $NSIP1){ ##Lists all NetScaler IPs while we only need NSIP for this one
+Foreach ($IP in $NSIP1){ ##Lists all Citrix ADC IPs while we only need NSIP for this one
     If ($IP.Type -eq "NSIP")
         {
         $Params = $null
@@ -3140,7 +3264,7 @@ Foreach ($IP in $NSIP1){ ##Lists all NetScaler IPs while we only need NSIP for t
                 Subnet = $IP.netmask;
             }
             Columns = "NSIP","Subnet";
-            Headers = "NetScaler IP Address","Subnet";
+            Headers = "Citrix ADC IP Address","Subnet";
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
         }
@@ -3150,11 +3274,11 @@ Foreach ($IP in $NSIP1){ ##Lists all NetScaler IPs while we only need NSIP for t
         $Table = $null
     }
  }
-#endregion NetScaler IP
+#endregion Citrix ADC IP
 
-#region NetScaler High Availability
+#region Citrix ADC High Availability
 
-WriteWordLine 2 0 "NetScaler High Availability"
+WriteWordLine 2 0 "Citrix ADC High Availability"
 WriteWordLine 0 0 " "
 $HANodes = Get-vNetScalerObject -Container config -Object hanode;$
 
@@ -3181,7 +3305,7 @@ foreach ($HANODE in $HANodes) {
         $Params = @{
             Hashtable = $HAH;
             Columns = "HANAME","HAIP","HASTATUS","HASYNC";
-            Headers = "NetScaler Name","IP Address","HA Status","HA Synchronization";
+            Headers = "Citrix ADC Name","IP Address","HA Status","HA Synchronization";
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
             }
@@ -3191,13 +3315,13 @@ foreach ($HANODE in $HANodes) {
         $Table = $null
     }
 
-#endregion NetScaler High Availability
+#endregion Citrix ADC High Availability
 
-#region NetScaler Global HTTP Parameters
+#region Citrix ADC Global HTTP Parameters
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Global HTTP Parameters"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Global HTTP Parameters"
 
-WriteWordLine 2 0 "NetScaler Global HTTP Parameters"
+WriteWordLine 2 0 "Citrix ADC Global HTTP Parameters"
 WriteWordLine 0 0 " "
 $nshttpparam = Get-vNetScalerObject -Container config -Object nshttpparam;
 
@@ -3218,13 +3342,13 @@ FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 $Table = $null
 
-#endregion NetScaler Global HTTP Parameters
+#endregion Citrix ADC Global HTTP Parameters
 
-#region NetScaler Global TCP Parameters
+#region Citrix ADC Global TCP Parameters
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Global TCP Parameters"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Global TCP Parameters"
 
-WriteWordLine 2 0 "NetScaler Global TCP Parameters"
+WriteWordLine 2 0 "Citrix ADC Global TCP Parameters"
 WriteWordLine 0 0 " "
 $nstcpparam = Get-vNetScalerObject -Container config -Object nstcpparam;
 
@@ -3246,16 +3370,16 @@ FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 $Table = $null
     
-#endregion NetScaler Global TCP Parameters
+#endregion Citrix ADC Global TCP Parameters
 
-#region NetScaler Global Diameter Parameters
+#region Citrix ADC Global Diameter Parameters
 
 $nsdiameter = Get-vNetScalerObject -Container config -Object nsdiameter; 
 
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Global Diameter Parameter"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Global Diameter Parameter"
 
-WriteWordLine 2 0 "NetScaler Global Diameter Parameters"
+WriteWordLine 2 0 "Citrix ADC Global Diameter Parameters"
 WriteWordLine 0 0 " "
 $Params = $null
 $Params = @{
@@ -3276,12 +3400,12 @@ FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 $Table = $null
 
-#endregion NetScaler Global Diameter Parameters
+#endregion Citrix ADC Global Diameter Parameters
 
-#region NetScaler Time Zone
+#region Citrix ADC Time Zone
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Time zone"
-WriteWordLine 2 0 "NetScaler Time Zone"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Time zone"
+WriteWordLine 2 0 "Citrix ADC Time Zone"
 WriteWordLine 0 0 " "
 $Params = $null
 $Params = @{
@@ -3297,12 +3421,12 @@ $Table = AddWordTable @Params;
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 
-#endregion NetScaler Time Zone
+#endregion Citrix ADC Time Zone
 
-#region NetScaler Location Database
+#region Citrix ADC Location Database
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Location Database"
-WriteWordLine 2 0 "NetScaler Location Database"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Location Database"
+WriteWordLine 2 0 "Citrix ADC Location Database"
 WriteWordLine 0 0 " "
 $nslocdbs = Get-vNetScalerObject -Container config -Object locationfile;
 
@@ -3341,12 +3465,12 @@ if ($LOCDBSH.Length -gt 0) {
     }
 
 
-#endregion NetScaler Location Database
+#endregion Citrix ADC Location Database
 
-#region NetScaler Custom Location Entries
+#region Citrix ADC Custom Location Entries
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Custom Location Entries"
-WriteWordLine 3 0 "NetScaler Custom Location Entries"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Custom Location Entries"
+WriteWordLine 3 0 "Citrix ADC Custom Location Entries"
 WriteWordLine 0 0 " "
 $nslocs = Get-vNetScalerObject -Container config -Object location;
 
@@ -3393,17 +3517,17 @@ if ($LOCSH.Length -gt 0) {
     }
 
 
-#endregion NetScaler Custom Location Entries
+#endregion Citrix ADC Custom Location Entries
 
-#region NetScaler Administration
+#region Citrix ADC Administration
 $selection.InsertNewPage()
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters System Authentication"
-WriteWordLine 2 0 "NetScaler System Authentication"
+WriteWordLine 2 0 "Citrix ADC System Authentication"
 WriteWordLine 0 0 " "
 
 #region Local Administration Users
-WriteWordLine 3 0 "NetScaler System Users"
+WriteWordLine 3 0 "Citrix ADC System Users"
 WriteWordLine 0 0 " "
 $nssystemusers = Get-vNetScalerObject -Container config -Object systemuser;
 
@@ -3437,7 +3561,7 @@ WriteWordLine 0 0 " "
 #endregion Authentication Local Administration Users
 
 #region Authentication Local Administration Groups
-WriteWordLine 3 0 "NetScaler System Groups"
+WriteWordLine 3 0 "Citrix ADC System Groups"
 WriteWordLine 0 0 " "
 $nssystemgroups = Get-vNetScalerObject -Container config -Object systemgroup;
     
@@ -3472,7 +3596,7 @@ WriteWordLine 0 0 " "
 
 #region RPC Nodes
 
-WriteWordLine 2 0 "NetScaler RPC Nodes"
+WriteWordLine 2 0 "Citrix ADC RPC Nodes"
 WriteWordLine 0 0 " "
 $rpcnodecounter = Get-vNetScalerObjectCount -Container config -Object nsrpcnode; 
 $rpcnodecount = $rpcnodecounter.__count
@@ -3508,23 +3632,23 @@ if($rpcnodecounter.__count -le 0) { WriteWordLine 0 0 "No RPC Nodes have been co
 
 #endregion RPC Nodes
 
-#endregion NetScaler Administration
+#endregion Citrix ADC Administration
 
-#region NetScaler Features
+#region Citrix ADC Features
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Features"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Features"
 
 $selection.InsertNewPage()
 
-WriteWordLine 1 0 "NetScaler Features"
+WriteWordLine 1 0 "Citrix ADC Features"
 WriteWordLine 0 0 " "
 If ($Version -gt $ScriptVersion) {
     WriteWordLine 0 0 ""
-    WriteWordLine 0 0 "Warning: You are using Citrix NetScaler version $Version, features added since version $ScriptVersion will not be shown."
+    WriteWordLine 0 0 "Warning: You are using Citrix ADC version $Version, features added since version $ScriptVersion will not be shown."
     WriteWordLine 0 0 ""
     }
-#region NetScaler Basic Features
-WriteWordLine 2 0 "NetScaler Basic Features"
+#region Citrix ADC Basic Features
+WriteWordLine 2 0 "Citrix ADC Basic Features"
 WriteWordLine 0 0 " "
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $AdvancedConfiguration = @(
@@ -3536,7 +3660,7 @@ WriteWordLine 0 0 " "
     @{ Description = "HTTP Compression"; Value = $FEATCMP }
     @{ Description = "Integrated Caching"; Value = $FEATIC }
     @{ Description = "Load Balancing"; Value = $FEATLB }
-    @{ Description = "NetScaler Gateway"; Value = $FEATSSLVPN }
+    @{ Description = "Citrix ADC Gateway"; Value = $FEATSSLVPN }
     @{ Description = "Rewrite"; Value = $FEATRewrite }
     @{ Description = "SSL Offloading"; Value = $FEATSSL }
 );
@@ -3558,13 +3682,13 @@ $Table = $Null
  
 WriteWordLine 0 0 " "
 
-#endregion NetScaler Basic Features
+#endregion Citrix ADC Basic Features
 
-#region NetScaler Advanced Features
+#region Citrix ADC Advanced Features
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Advanced Features"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Advanced Features"
 
-WriteWordLine 2 0 "NetScaler Advanced Features"
+WriteWordLine 2 0 "Citrix ADC Advanced Features"
 WriteWordLine 0 0 " "
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $AdvancedFeatures = @(
@@ -3585,7 +3709,7 @@ WriteWordLine 0 0 " "
     @{ Description = "Responder"; Value = $FEATRESPONDER }
     @{ Description = "Edgesight Monitoring HTML Injection"; Value = $FEATHTMLInjection }
     @{ Description = "OSPF Routing"; Value = $FEATOSPF }
-    @{ Description = "NetScaler Push"; Value = $FEATPUSH }
+    @{ Description = "Citrix ADC Push"; Value = $FEATPUSH }
     @{ Description = "AppFlow"; Value = $FEATAppFlow }
     @{ Description = "CloudBridge"; Value = $FEATCloudBridge }
     @{ Description = "ISIS Routing"; Value = $FEATISIS }
@@ -3595,6 +3719,15 @@ WriteWordLine 0 0 " "
     @{ Description = "Large Scale NAT"; Value = $FEATlsn }
     @{ Description = "RDP Proxy"; Value = $FEATrdpproxy }
     @{ Description = "Reputation"; Value = $FEATrep }
+    @{ Description = "URL Filtering"; Value = $FEATurl }
+    @{ Description = "Video Optimization"; Value = $FEATvideo }
+    @{ Description = "Forward Proxy"; Value = $FEATfp }
+    @{ Description = "SSL Interception"; Value = $FEATsslint }
+    @{ Description = "Adaptive TCP"; Value = $FEATadaptivetcp }
+    @{ Description = "Connection Quality Analytics"; Value = $FEATcqa }
+    @{ Description = "Content Inspection"; Value = $FEATci }
+
+
 );
 
 ## IB - Create the parameters to pass to the AddWordTable function
@@ -3614,16 +3747,16 @@ $Table = $Null
  
 WriteWordLine 0 0 " "
 
-#endregion NetScaler Advanced Features
+#endregion Citrix ADC Advanced Features
 
-#endregion NetScaler Features
+#endregion Citrix ADC Features
 
-#region NetScaler Modes
+#region Citrix ADC Modes
 $selection.InsertNewPage()
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Modes"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Modes"
 
-WriteWordLine 1 0 "NetScaler Modes"
+WriteWordLine 1 0 "Citrix ADC Modes"
 WriteWordLine 0 0 " "
 $nsmode = Get-vNetScalerObject -Container config -Object nsmode; 
 
@@ -3669,13 +3802,13 @@ WriteWordLine 0 0 " "
 
 $selection.InsertNewPage()
 
-#endregion NetScaler Modes
+#endregion Citrix ADC Modes
 
-#region NetScaler Monitoring
+#region Citrix ADC Monitoring
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Monitoring"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Monitoring"
 
-WriteWordLine 1 0 "NetScaler Monitoring"
+WriteWordLine 1 0 "Citrix ADC Monitoring"
 WriteWordLine 0 0 " "
 WriteWordLine 2 0 "SNMP Community"
 WriteWordLine 0 0 " "
@@ -3775,7 +3908,7 @@ foreach ($snmpalarm in $snmpalarms) {
         $Params = @{
             Hashtable = $SNMPALERTSH;
             Columns = "Alarm","State","Time","TimeOut","Severity","Logging";
-            Headers = "NetScaler Alarm","State","Time","Time-Out","Severity","Logging";
+            Headers = "Citrix ADC Alarm","State","Time","Time-Out","Severity","Logging";
             Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
             AutoFit = $wdAutoFitContent;
             }
@@ -3828,14 +3961,14 @@ WriteWordLine 0 0 " "
 
 $selection.InsertNewPage()
 
-#endregion NetScaler Monitoring
+#endregion Citrix ADC Monitoring
 
-#region NetScaler Auditing
+#region Citrix ADC Auditing
 
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Auditing"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Auditing"
 
-WriteWordLine 1 0 "NetScaler Auditing"
+WriteWordLine 1 0 "Citrix ADC Auditing"
 WriteWordLine 0 0 " "
 
 #region Syslog Parameters
@@ -4005,21 +4138,21 @@ $Table = $null
 }
 #endregion Syslog Actions
 
-#endregion NetScaler Auditing
+#endregion Citrix ADC Auditing
 
-#region NetScaler Clustering
+#region Citrix ADC Clustering
 
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Clustering"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Clustering"
 
-WriteWordLine 1 0 "NetScaler Cluster"
+WriteWordLine 1 0 "Citrix ADC Cluster"
 WriteWordLine 0 0 " "
 $clusternodecounter = Get-vNetScalerObjectCount -Container config -Object clusternode; 
 $clusternodecount = $clusternodecounter.__count
 
 If ($clusternodecount -le 0) {
 WriteWordLine 0 0 " "
-WriteWordLine 0 0 "The NetScaler is not a member of a cluster."
+WriteWordLine 0 0 "The Citrix ADC is not a member of a cluster."
 WriteWordLine 0 0 " "
 } Else {
 
@@ -4120,20 +4253,20 @@ $Table = $null
 #endregion Cluster Nodes
 } #end if
 
-#endregion NetScaler Clustering
+#endregion Citrix ADC Clustering
 
-#endregion NetScaler System Information
+#endregion Citrix ADC System Information
 
-#region NetScaler Networking
+#region Citrix ADC Networking
 
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Networking"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Networking"
 
-WriteWordLine 1 0 "NetScaler Networking"
+WriteWordLine 1 0 "Citrix ADC Networking"
 WriteWordLine 0 0 " "
-#region NetScaler Interfaces
+#region Citrix ADC Interfaces
 
-WriteWordLine 2 0 "NetScaler Interfaces"
+WriteWordLine 2 0 "Citrix ADC Interfaces"
 WriteWordLine 0 0 " "
 $InterfaceCounter = Get-vNetScalerObjectCount -Container config -Object interface; 
 $InterfaceCount = $InterfaceCounter.__count
@@ -4177,11 +4310,11 @@ if($InterfaceCounter.__count -le 0) { WriteWordLine 0 0 "No Interface has been c
             }
         }
 
-#endregion NetScaler Interfaces
+#endregion Citrix ADC Interfaces
 
-#region NetScaler Channels
+#region Citrix ADC Channels
 
-WriteWordLine 2 0 "NetScaler Channels"
+WriteWordLine 2 0 "Citrix ADC Channels"
 WriteWordLine 0 0 " "
 $ChannelCounter = Get-vNetScalerObjectCount -Container config -Object channel; 
 $ChannelCount = $ChannelCounter.__count
@@ -4223,11 +4356,11 @@ if($ChannelCounter.__count -le 0) {
             }
         }
 
-#endregion NetScaler Channels
+#endregion Citrix ADC Channels
 
-#region NetScaler IP addresses
+#region Citrix ADC IP addresses
 
-WriteWordLine 2 0 "NetScaler IP addresses"
+WriteWordLine 2 0 "Citrix ADC IP addresses"
 WriteWordLine 0 0 " "
 $IPs = Get-vNetScalerObject -Container config -Object nsip;
 
@@ -4261,11 +4394,11 @@ $Table = AddWordTable @Params;
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 $Table = $null
-#endregion NetScaler IP addresses
+#endregion Citrix ADC IP addresses
 
-#region NetScaler vLAN
+#region Citrix ADC vLAN
 
-WriteWordLine 2 0 "NetScaler vLANs"
+WriteWordLine 2 0 "Citrix ADC vLANs"
 WriteWordLine 0 0 " "
 $VLANCounter = Get-vNetScalerObjectCount -Container config -Object vlan; 
 $VLANCount = $VLANCounter.__count
@@ -4310,11 +4443,11 @@ if($VLANCounter.__count -le 0) { WriteWordLine 0 0 "No vLAN has been configured"
         }
     }
 
-#endregion NetScaler vLAN
+#endregion Citrix ADC vLAN
 
-#region NetScaler VXLAN
+#region Citrix ADC VXLAN
 
-WriteWordLine 2 0 "NetScaler VXLANs"
+WriteWordLine 2 0 "Citrix ADC VXLANs"
 WriteWordLine 0 0 " "
 $VXLANCounter = Get-vNetScalerObjectCount -Container config -Object vxlan; 
 $VXLANCount = $VXLANCounter.__count
@@ -4354,11 +4487,11 @@ if($VXLANCounter.__count -le 0) { WriteWordLine 0 0 "No VXLANs have been configu
         }
 	}
 
-#endregion NetScaler VXLAN
+#endregion Citrix ADC VXLAN
 
 #region routing table
 
-WriteWordLine 2 0 "NetScaler Routing Table"
+WriteWordLine 2 0 "Citrix ADC Routing Table"
 WriteWordLine 0 0 " "
 
 $nsroute = Get-vNetScalerObject -Container config -Object route;
@@ -4398,9 +4531,9 @@ foreach ($ROUTE in $nsroute) {
 
 #endregion routing table
 
-#region NetScaler PBRs
+#region Citrix ADC PBRs
 
-WriteWordLine 2 0 "NetScaler Policy Based Routes"
+WriteWordLine 2 0 "Citrix ADC Policy Based Routes"
 WriteWordLine 0 0 " "
 $NSPBRCounter = Get-vNetScalerObjectCount -Container config -Object nspbr; 
 $NSPBRCount = $NSPBRCounter.__count
@@ -4518,11 +4651,11 @@ if($NSPBR6Counter.__count -le 0) { WriteWordLine 0 0 "No IPv6 Policy Based Route
         
 }
 
-#endregion NetScaler PBRs
+#endregion Citrix ADC PBRs
 
 #region Linksets
 
-WriteWordLine 2 0 "NetScaler LinkSets"
+WriteWordLine 2 0 "Citrix ADC LinkSets"
 WriteWordLine 0 0 " "
 
 $NSLSCounter = Get-vNetScalerObjectCount -Container config -Object linkset; 
@@ -4570,11 +4703,11 @@ $NSLSS = Get-vNetScalerObject -Container config -Object linkset;
 
 #endregion Linksets
 
-#region NetScaler Traffic Domains
+#region Citrix ADC Traffic Domains
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Traffic Domains"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Traffic Domains"
 
-WriteWordLine 2 0 "NetScaler Traffic Domains"
+WriteWordLine 2 0 "Citrix ADC Traffic Domains"
 WriteWordLine 0 0 " "
 
 $TDcounter = Get-vNetScalerObjectCount -Container config -Object nstrafficdomain; 
@@ -4612,16 +4745,16 @@ if($TDcounter.__count -le 0) { WriteWordLine 0 0 "No Traffic Domains have been c
     }
 }
     
-#endregion NetScaler Traffic Domains
+#endregion Citrix ADC Traffic Domains
 
-#region NetScaler DNS Configuration
+#region Citrix ADC DNS Configuration
 $selection.InsertNewPage()
-WriteWordLine 1 0 "NetScaler DNS Configuration"
+WriteWordLine 1 0 "Citrix ADC DNS Configuration"
 WriteWordLine 0 0 " "
 
 #region dns name servers
 
-WriteWordLine 2 0 "NetScaler DNS Name Servers"
+WriteWordLine 2 0 "Citrix ADC DNS Name Servers"
 WriteWordLine 0 0 " "
 
 $dnsnameservercounter = Get-vNetScalerObjectCount -Container config -Object dnsnameserver; 
@@ -4661,7 +4794,7 @@ if($dnsnameservercounter.__count -le 0) { WriteWordLine 0 0 "No DNS Name Server 
 
 #region DNS Address Records
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler DNS Address Records"
+WriteWordLine 2 0 "Citrix ADC DNS Address Records"
 WriteWordLine 0 0 " "
 $dnsaddreccounter = Get-vNetScalerObjectCount -Container config -Object dnsaddrec; 
 $dnsaddreccount = $dnsaddreccounter.__count
@@ -4700,7 +4833,7 @@ if($dnsaddreccounter.__count -le 0) { WriteWordLine 0 0 "No DNS Name Server has 
 
 #region DNS AAA Records
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler DNS AAA Records"
+WriteWordLine 2 0 "Citrix ADC DNS AAA Records"
 WriteWordLine 0 0 " "
 $dnsaaaareccounter = Get-vNetScalerObjectCount -Container config -Object dnsaaaarec; 
 $dnsaaaareccount = $dnsaaaareccounter.__count
@@ -4739,7 +4872,7 @@ if($dnsaaaareccounter.__count -le 0) { WriteWordLine 0 0 "No DNS AAA records hav
 
 #region DNS CNAME Records
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler DNS CNAME Records"
+WriteWordLine 2 0 "Citrix ADC DNS CNAME Records"
 WriteWordLine 0 0 " "
 $dnscnamereccounter = Get-vNetScalerObjectCount -Container config -Object dnscnamerec; 
 $dnscnamereccount = $dnscnamereccounter.__count
@@ -4778,7 +4911,7 @@ if($dnscnamereccounter.__count -le 0) { WriteWordLine 0 0 "No DNS CNAME records 
 
 #region DNS MX Records
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler DNS MX Records"
+WriteWordLine 2 0 "Citrix ADC DNS MX Records"
 WriteWordLine 0 0 " "
 $dnsmxreccounter = Get-vNetScalerObjectCount -Container config -Object dnsmxrec; 
 $dnsmxreccount = $dnsmxreccounter.__count
@@ -4817,7 +4950,7 @@ if($dnsmxreccounter.__count -le 0) { WriteWordLine 0 0 "No DNS MX records have b
 
 #region DNS NS Records
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler DNS NS Records"
+WriteWordLine 2 0 "Citrix ADC DNS NS Records"
 WriteWordLine 0 0 " "
 $dnsnsreccounter = Get-vNetScalerObjectCount -Container config -Object dnsnsrec; 
 $dnsnsreccount = $dnsnsreccounter.__count
@@ -4856,7 +4989,7 @@ if($dnsnsreccounter.__count -le 0) { WriteWordLine 0 0 "No DNS NS records have b
 
 #region DNS SOA Records
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler DNS SOA Records"
+WriteWordLine 2 0 "Citrix ADC DNS SOA Records"
 WriteWordLine 0 0 " "
 $dnssoareccounter = Get-vNetScalerObjectCount -Container config -Object dnssoarec; 
 $dnssoareccount = $dnsnsreccounter.__count
@@ -4895,15 +5028,15 @@ if($dnssoareccounter.__count -le 0) { WriteWordLine 0 0 "No DNS SOA records have
 
 #endregion DNS SOA Records
 
-#endregion NetScaler DNS Configuration
+#endregion Citrix ADC DNS Configuration
 
-#region NetScaler ACL
+#region Citrix ADC ACL
 $selection.InsertNewPage()
-WriteWordLine 1 0 "NetScaler ACL Configuration"
+WriteWordLine 1 0 "Citrix ADC ACL Configuration"
 WriteWordLine 0 0 " "
-#region NetScaler Simple ACL
+#region Citrix ADC Simple ACL
 
-WriteWordLine 2 0 "NetScaler Simple ACL"
+WriteWordLine 2 0 "Citrix ADC Simple ACL"
 WriteWordLine 0 0 " "
 $nssimpleaclCounter = Get-vNetScalerObjectCount -Container config -Object nssimpleacl; 
 $nssimpleaclCount = $nssimpleaclCounter.__count
@@ -4940,11 +5073,11 @@ if($nssimpleaclCounter.__count -le 0) { WriteWordLine 0 0 "No Simple ACL has bee
         }
 
 
-#endregion NetScaler Simple ACL IPv4
+#endregion Citrix ADC Simple ACL IPv4
 
-#region NetScaler Extended ACL
+#region Citrix ADC Extended ACL
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler Extended ACL"
+WriteWordLine 2 0 "Citrix ADC Extended ACL"
 WriteWordLine 0 0 " "
 $nsaclCounter = Get-vNetScalerObjectCount -Container config -Object nsacl; 
 $nsaclCount = $nsaclCounter.__count
@@ -4979,24 +5112,23 @@ if($nsaclCounter.__count -le 0) { WriteWordLine 0 0 "No Extended ACL has been co
         }
 
 
-#endregion NetScaler Extended ACL IPv4
-#endregion NetScaler ACL
+#endregion Citrix ADC Extended ACL IPv4
+#endregion Citrix ADC ACL
 
-#endregion NetScaler Networking
+#endregion Citrix ADC Networking
 
-#region NetScaler Authentication
+#region Citrix ADC Authentication
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Authentication"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Authentication"
 
 $selection.InsertNewPage()
 
-WriteWordLine 1 0 "NetScaler Authentication"
+WriteWordLine 1 0 "Citrix ADC Authentication"
 WriteWordLine 0 0 " "
-
 #region Authentication LDAP Policies
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler LDAP Authentication"
-WriteWordLine 2 0 "NetScaler LDAP Policies"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC LDAP Authentication"
+WriteWordLine 2 0 "Citrix ADC LDAP Policies"
 WriteWordLine 0 0 " "
 $authpolsldap = Get-vNetScalerObject -Container config -Object authenticationldappolicy;
 
@@ -5037,8 +5169,8 @@ $Table = $null
 
 #endregion Authentication LDAP Policies
 
-#region Authentication LDAP Actions
-WriteWordLine 2 0 "NetScaler LDAP authentication Servers"
+#region Authentication LDAP
+WriteWordLine 2 0 "Citrix ADC LDAP authentication Servers"
 WriteWordLine 0 0 " "
 $authactsldap = Get-vNetScalerObject -Container config -Object authenticationldapaction;
 If (!$authactsldap) {
@@ -5090,12 +5222,12 @@ foreach ($authactldap in $authactsldap) {
 }
 
 WriteWordLine 0 0 " "
-#endregion Authentication LDAP Actions
+#endregion Authentication LDAP
 
 #region Authentication Radius Policies
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Radius Authentication"
-WriteWordLine 2 0 "NetScaler Radius Policies"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Radius Authentication"
+WriteWordLine 2 0 "Citrix ADC Radius Policies"
 WriteWordLine 0 0 " "
 $authpolsradius = Get-vNetScalerObject -Container config -Object authenticationradiuspolicy;
 
@@ -5134,16 +5266,16 @@ $Table = $null
 
 #endregion Authentication Radius Policies
 
-#region Authentication RADIUS Actions
-WriteWordLine 2 0 "NetScaler Radius authentication Servers"
+#region Authentication RADIUS
+WriteWordLine 2 0 "Citrix ADC Radius authentication Servers"
 WriteWordLine 0 0 " "
 $authactsradius = Get-vNetScalerObject -Container config -Object authenticationradiusaction;
 If (!$authactsradius) {
-  WriteWordLine 0 0 "There are no RADIUS authentication servers configured."
+  WriteWordLine 0 0 "There are no RADIUS authentication Servers configured."
 }
 foreach ($authactradius in $authactsradius) {
     $ACTNAMERADIUS = $authactradius.name
-    WriteWordLine 3 0 "Radius Authentication server $ACTNAMERADIUS";
+    WriteWordLine 3 0 "Radius Authentication Server $ACTNAMERADIUS";
     WriteWordLine 0 0 " "
     ## IB - Use an array of hashtable to store the rows
     [System.Collections.Hashtable[]] $RADUIUSCONFIG = @(
@@ -5175,7 +5307,7 @@ foreach ($authactradius in $authactsradius) {
 }
 
 WriteWordLine 0 0 " "
-#endregion Authentication RADIUS Actions
+#endregion Authentication RADIUS
 
 #region Authentication SAML Policies
 $Chapter++
@@ -5283,12 +5415,12 @@ WriteWordLine 0 0 " "
 #region traffic management
 
 
-#region NetScaler Content Switches
+#region Citrix ADC Content Switches
 $Chapter++
 $selection.InsertNewPage()
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Content Switching"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Content Switching"
 
-WriteWordLine 1 0 "NetScaler Content Switching"
+WriteWordLine 1 0 "Citrix ADC Content Switching"
 WriteWordLine 0 0 " "
 $csvservers = Get-vNetScalerObject -Object csvserver;
 
@@ -5400,13 +5532,13 @@ foreach ($ContentSwitch in $csvservers) {
 
 } # end if
 
-#endregion NetScaler Content Switches
+#endregion Citrix ADC Content Switches
 
-#region NetScaler Load Balancers
+#region Citrix ADC Load Balancers
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Load Balancing"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Load Balancing"
 
-WriteWordLine 1 0 "NetScaler Load Balancing"
+WriteWordLine 1 0 "Citrix ADC Load Balancing"
 WriteWordLine 0 0 " "
 $lbvserverscount = Get-vNetScalerObjectCount -Container config -Object lbvserver;
 $lbcount = $lbvserverscount.__count
@@ -5636,10 +5768,12 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
         @{ Description = "Use SureConnect"; Value = $LoadBalancer.sc; }
         @{ Description = "Use network address translation"; Value = $LoadBalancer.rtspnat; }
         @{ Description = "Use Layer 2 parameter"; Value = $LoadBalancer.l2conn; }
-        @{ Description = "How the NetScaler appliance responds to ping requests"; Value = $LoadBalancer.icmpvsrresponse; }
+        @{ Description = "How the Citrix ADC appliance responds to ping requests"; Value = $LoadBalancer.icmpvsrresponse; }
         @{ Description = "Route cacheable requests to a cache redirection server"; Value = $LoadBalancer.cacheable; }
         @{ Description = "Redirect Non-SSL Connections from port"; Value = $LoadBalancer.redirectfromport; }
         @{ Description = "Redirect Non-SSL Connections to URL"; Value = $LoadBalancer.httpsredirecturl; }
+        @{ Description = "Listen Policy Expression"; Value = $LoadBalancer.listenpolicy; }
+        @{ Description = "Listen Policy Priority"; Value = $LoadBalancer.listenpriority; }
     );
 
     ## IB - Create the parameters to pass to the AddWordTable function
@@ -5662,13 +5796,13 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
     $selection.InsertNewPage()
     }
 }
-#endregion NetScaler Load Balancers
+#endregion Citrix ADC Load Balancers
 
-#region NetScaler Cache Redirection
+#region Citrix ADC Cache Redirection
 $Chapter++
 
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Cache Redirection"
-WriteWordLine 1 0 "NetScaler Cache Redirection"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Cache Redirection"
+WriteWordLine 1 0 "Citrix ADC Cache Redirection"
 WriteWordLine 0 0 " "
 $crservercounter = Get-vNetScalerObjectCount -Container config -Object crvserver; 
 $crservercount = $crservercounter.__count
@@ -5710,15 +5844,15 @@ if($crservercounter.__count -le 0) { WriteWordLine 0 0 "No Cache Redirection has
     }
 $selection.InsertNewPage()
 
-#endregion NetScaler Cache Redirection
+#endregion Citrix ADC Cache Redirection
 
-#region NetScaler Services
+#region Citrix ADC Services
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Services"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Services"
 
 FindWordDocumentEnd;
 
-WriteWordLine 1 0 "NetScaler Services"
+WriteWordLine 1 0 "Citrix ADC Services"
 WriteWordLine 0 0 " "
 $servicescounter = Get-vNetScalerObjectCount -Container config -Object service; 
 $servicescount = $servicescounter.__count
@@ -5849,15 +5983,15 @@ if($servicescounter.__count -le 0) { WriteWordLine 0 0 "No Services have been co
         }
    }
 
-#endregion NetScaler Services
+#endregion Citrix ADC Services
 
-#region NetScaler Service Groups
+#region Citrix ADC Service Groups
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Service Groups"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Service Groups"
 
 FindWordDocumentEnd;
 
-WriteWordLine 1 0 "NetScaler Service Groups"
+WriteWordLine 1 0 "Citrix ADC Service Groups"
 WriteWordLine 0 0 " "
 $servicegroupscounter = Get-vNetScalerObjectCount -Container config -Object servicegroup; 
 $servicegroupscount = $servicegroupscounter.__count
@@ -5930,7 +6064,7 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
 
         WriteWordLine 3 0 "Monitor"
         WriteWordLine 0 0 " "
-        $svcmonitorbinds = Get-vNetScalerObject -ResourceType servicegroup_lbmonitor_binding -Name $Service.servicegroupname;
+        $svcmonitorbinds = Get-vNetScalerObject -ResourceType servicegroup_lbmonitor_binding -Name $Servicegroup.servicegroupname;
 
         ## IB - Use an array of hashtable to store the rows
         [System.Collections.Hashtable[]] $ServiceMonitors = @();
@@ -5964,34 +6098,34 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
         ## IB - Use an array of hashtable to store the rows
         [System.Collections.Hashtable[]] $AdvancedConfiguration = @(
             @{ Description = "Description"; Value = "Configuration"; }
-			@{ Description = "Cache Type"; Value = $service.cachetype; }
-			@{ Description = "Maximum Client Requests"; Value = $service.maxclient ; }
-			@{ Description = "Monitor health of this service"; Value = $service.healthmonitor ; }
-			@{ Description = "Maximum Requests"; Value = $service.maxreq; }
-			@{ Description = "Use Transparent Cache"; Value = $service.cacheable ; }
-			@{ Description = "Insert the Client IP header"; Value = $service.cip  ; }
-			@{ Description = "Name for the HTTP header"; Value = $service.cipheader ; }
-			@{ Description = "Use Source IP"; Value = $service.usip; }
-            @{ Description = "Path Monitoring"; Value = $service.pathmonitor ; }
-			@{ Description = "Individual Path monitoring"; Value = $service.pathmonitorindv ; }
-			@{ Description = "Use the proxy port"; Value = $service.useproxyport ; }
-			@{ Description = "SureConnect"; Value = $service.sc ; }
-			@{ Description = "Surge protection"; Value = $service.sp ; }
-			@{ Description = "RTSP session ID mapping"; Value = $service.rtspsessionidremap ; }
-			@{ Description = "Client Time-Out"; Value = $service.clttimeout ; }
-			@{ Description = "Server Time-Out"; Value = $service.svrtimeout; }
-			@{ Description = "Unique identifier for the service"; Value = $service.customserverid; }
-			@{ Description = "Enable client keep-alive"; Value = $service.cka; }
-			@{ Description = "Enable TCP buffering"; Value = $service.tcpb ; }
-            @{ Description = "Enable compression"; Value = $service.cmp }
-			@{ Description = "Maximum bandwidth, in Kbps"; Value = $service.maxbandwidth; }
-			@{ Description = "Monitor Threshold"; Value = $service.monthreshold ; }
-			@{ Description = "Initial state of the service"; Value = $service.servicegroupeffectivestate ; }
-			@{ Description = "Perform delayed clean-up"; Value = $service.downstateflush ; }
-			@{ Description = "Logging of AppFlow information"; Value = $service.appflowlog; }
-            @{ Description = "HTTP Profile Name"; Value = $service.httpprofilename ; }
-            @{ Description = "TCP Profile Name"; Value = $service.tcpprofilename ; }
-            @{ Description = "Network Profile Name"; Value = $service.netprofilename ; }
+			@{ Description = "Cache Type"; Value = $servicegroup.cachetype; }
+			@{ Description = "Maximum Client Requests"; Value = $servicegroup.maxclient ; }
+			@{ Description = "Monitor health of this service"; Value = $servicegroup.healthmonitor ; }
+			@{ Description = "Maximum Requests"; Value = $servicegroup.maxreq; }
+			@{ Description = "Use Transparent Cache"; Value = $servicegroup.cacheable ; }
+			@{ Description = "Insert the Client IP header"; Value = $servicegroup.cip  ; }
+			@{ Description = "Name for the HTTP header"; Value = $servicegroup.cipheader ; }
+			@{ Description = "Use Source IP"; Value = $servicegroup.usip; }
+            @{ Description = "Path Monitoring"; Value = $servicegroup.pathmonitor ; }
+			@{ Description = "Individual Path monitoring"; Value = $servicegroup.pathmonitorindv ; }
+			@{ Description = "Use the proxy port"; Value = $servicegroup.useproxyport ; }
+			@{ Description = "SureConnect"; Value = $servicegroup.sc ; }
+			@{ Description = "Surge protection"; Value = $servicegroup.sp ; }
+			@{ Description = "RTSP session ID mapping"; Value = $servicegroup.rtspsessionidremap ; }
+			@{ Description = "Client Time-Out"; Value = $servicegroup.clttimeout ; }
+			@{ Description = "Server Time-Out"; Value = $servicegroup.svrtimeout; }
+			@{ Description = "Unique identifier for the service"; Value = $servicegroup.customserverid; }
+			@{ Description = "Enable client keep-alive"; Value = $servicegroup.cka; }
+			@{ Description = "Enable TCP buffering"; Value = $servicegroup.tcpb ; }
+            @{ Description = "Enable compression"; Value = $servicegroup.cmp }
+			@{ Description = "Maximum bandwidth, in Kbps"; Value = $servicegroup.maxbandwidth; }
+			@{ Description = "Monitor Threshold"; Value = $servicegroup.monthreshold ; }
+			@{ Description = "Initial state of the service"; Value = $servicegroup.servicegroupeffectivestate ; }
+			@{ Description = "Perform delayed clean-up"; Value = $servicegroup.downstateflush ; }
+			@{ Description = "Logging of AppFlow information"; Value = $servicegroup.appflowlog; }
+            @{ Description = "HTTP Profile Name"; Value = $servicegroup.httpprofilename ; }
+            @{ Description = "TCP Profile Name"; Value = $servicegroup.tcpprofilename ; }
+            @{ Description = "Network Profile Name"; Value = $servicegroup.netprofilename ; }
         );
 
         ## IB - Create the parameters to pass to the AddWordTable function
@@ -6014,12 +6148,12 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
         }
    }
 
-#endregion NetScaler Service Groups
+#endregion Citrix ADC Service Groups
 
-#region NetScaler Servers
+#region Citrix ADC Servers
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Servers"
-WriteWordLine 1 0 "NetScaler Servers"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Servers"
+WriteWordLine 1 0 "Citrix ADC Servers"
 WriteWordLine 0 0 " "
 $servercounter = Get-vNetScalerObjectCount -Container config -Object service; 
 $servercount = $servercounter.__count
@@ -6058,13 +6192,13 @@ if($servercounter.__count -le 0) { WriteWordLine 0 0 "No Server has been configu
         }
 
 $selection.InsertNewPage()    
-#endregion NetScaler Servers
+#endregion Citrix ADC Servers
 
 #region Global Server Load Balancing
 
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Global Server Load Balancing"
-WriteWordLine 1 0 "NetScaler Global Server Load Balancing"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Global Server Load Balancing"
+WriteWordLine 1 0 "Citrix ADC Global Server Load Balancing"
 WriteWordLine 0 0 " "
 #region GSLB Parameters
 
@@ -6289,7 +6423,7 @@ foreach ($gslbservice in $gslbservicesall) {
 
 $gslbservicename = $gslbservice.servicename
 
-WriteWordLine 3 0 "NetScaler GSLB Service: $gslbservicename"
+WriteWordLine 3 0 "Citrix ADC GSLB Service: $gslbservicename"
 WriteWordLine 0 0 " "
 
 ## IB - Create an array of hashtables to store our columns.
@@ -6457,7 +6591,7 @@ foreach ($gslbsite in $gslbsitesall) {
 $gslbsitename = $gslbsite.sitename
 
 
-WriteWordLine 3 0 "NetScaler GSLB Site: $gslbsitename"
+WriteWordLine 3 0 "Citrix ADC GSLB Site: $gslbsitename"
 WriteWordLine 0 0 " "
 
 ## IB - Create an array of hashtables to store our columns.
@@ -6504,10 +6638,10 @@ $selection.InsertNewPage()
 
 #endregion Global Server Load Balancing
 
-#region NetScaler SSL
-WriteWordLine 1 0 "NetScaler SSL"
+#region Citrix ADC SSL
+WriteWordLine 1 0 "Citrix ADC SSL"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tNetScaler SSL"
+Write-Verbose "$(Get-Date): `tCitrix ADC SSL"
 
 #region SSL Certificates
 $Chapter++
@@ -6815,7 +6949,18 @@ WriteWordLine 0 0 " "
     @{ Column1 = "Strict CA Checks"; Column2 = $SSLProfile.strictcachecks; }
     @{ Column1 = "Drop Requests with no Host Header"; Column2 = $SSLProfile.dropreqwithnohostheader; }
     @{ Column1 = "Use bound CA chain for Client Authentication"; Column2 = $SSLProfile.clientauthuseboundcachain; }
-    @{ Column1 = "Send Close Notify"; Column2 = $SSLProfile.sendclosenotify; }
+    @{ Column1 = "Enable SSL Interceptions"; Column2 = $SSLProfile.sendclosenotify; }
+    @{ Column1 = "Enable Origin Server Renegotiation"; Column2 = $SSLProfile.sslireneg; }
+    @{ Column1 = "Enable OCSP for Origin Server Certificate"; Column2 = $SSLProfile.ssliocspcheck; }
+    @{ Column1 = "Enable Session Tickets (RFC 5077)"; Column2 = $SSLProfile.sessionticket; }
+    @{ Column1 = "Session Ticket Lifetime"; Column2 = $SSLProfile.sessionticketlifetime; }
+    @{ Column1 = "Session Ticket Key Refresh"; Column2 = $SSLProfile.sessionticketkeyrefresh; }
+    @{ Column1 = "Enable Stricy Transport Security (HSTS)"; Column2 = $SSLProfile.hsts; }
+    @{ Column1 = "HSTS: Maximum Age"; Column2 = $SSLProfile.maxage; }
+    @{ Column1 = "HSTS: Include Sub Domains"; Column2 = $SSLProfile.includesubdomains; }
+    @{ Column1 = "Skip Client Certificate Policy Check"; Column2 = $SSLProfile.skipclientcertpolicycheck; }
+    @{ Column1 = "Enable Zero RTT Early Data"; Column2 = $SSLProfile.zerorttearlydata; }
+
 
 );
 
@@ -6843,15 +6988,15 @@ WriteWordLine 0 0 "No SSL Profiles have been configured."
 
 $selection.InsertNewPage()
 
-#endregion NetScaler SSL
+#endregion Citrix ADC SSL
 
 #endregion traffic management
 
 #region AppExpert
 
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler AppExpert"
-WriteWordLine 1 0 "NetScaler AppExpert"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC AppExpert"
+WriteWordLine 1 0 "Citrix ADC AppExpert"
 WriteWordLine 0 0 " "
 
 #region HTTP Callouts
@@ -6937,11 +7082,15 @@ foreach ($patternsetentry in $patternset.policypatset_pattern_binding) {
 
 $CharSet = $patternsetentry.charset
 $strCharSet = "$CharSet "
+$psString = $patternsetentry.string
+$strString = "$psString "
+$psIndex = $patternsetentry.index
+$strIndex = "$psIndex "
     
     $PATSETS += @{
-        STRING = $patternsetentry.string; 
+        STRING = $strString; 
         CHARSET = $strCharSet;
-        INDEX = $patternsetentry.index;
+        INDEX = $strIndex;
     }
 } #end foreach
 
@@ -7721,14 +7870,14 @@ $Table = $null
 
 #endregion AppExpert
 
-#region NetScaler Security
+#region Citrix ADC Security
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Security"
-WriteWordLine 1 0 "NetScaler Security"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Security"
+WriteWordLine 1 0 "Citrix ADC Security"
 WriteWordLine 0 0 " "
 
 #region AAA
-WriteWordLine 2 0 "NetScaler AAA - Application Traffic"
+WriteWordLine 2 0 "Citrix ADC AAA - Application Traffic"
 WriteWordLine 0 0 " "
 
 $aaavserverscount = Get-vNetScalerObjectCount -Container config -Object authenticationvserver;
@@ -7744,7 +7893,7 @@ WriteWordLine 0 0 " "
 foreach ($aaavserver in $aaavservers) {
         $aaavservername = $aaavserver.name
 
-        WriteWordLine 3 0 "NetScaler AAA Virtual Server: $aaavservername";
+        WriteWordLine 3 0 "Citrix ADC AAA Virtual Server: $aaavservername";
 
 #region AAA vServer Basic Config
 
@@ -7788,7 +7937,7 @@ foreach ($aaavserver in $aaavservers) {
     @{ Column1 = "Comment"; Column2 = $aaavserver.comment; }
     @{ Column1 = "Enable AppFlow"; Column2 = $aaavserver.appflowlog; }
     @{ Column1 = "Virtual Server Type"; Column2 = $aaavserver.vstype; }
-    @{ Column1 = "NetScaler Gateway Name"; Column2 = $aaavserver.ngname; }
+    @{ Column1 = "Citrix ADC Gateway Name"; Column2 = $aaavserver.ngname; }
     @{ Column1 = "Max Login Attempts"; Column2 = $aaavserver.maxloginattempts; }
     @{ Column1 = "Failed Login Timeout"; Column2 = $aaavserver.failedlogintimeout; }
     @{ Column1 = "Secondary"; Column2 = $aaavserver.secondary; }
@@ -8607,19 +8756,19 @@ WriteWordLine 0 0 " "
 #endregion AppFW
 
 
-#endregion NetScaler Security
+#endregion Citrix ADC Security
 
-#region Citrix NetScaler Gateway
+#region Citrix ADC Gateway
 
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix NetScaler (Access) Gateway"
-WriteWordLine 1 0 "Citrix NetScaler (Access) Gateway"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC (Access) Gateway"
+WriteWordLine 1 0 "Citrix ADC (Access) Gateway"
 WriteWordLine 0 0 " "
 
-#region Citrix NetScaler Gateway CAG Global
+#region Citrix ADC Gateway CAG Global
 
-WriteWordLine 2 0 "NetScaler Gateway Global Settings"
-Write-Verbose "$(Get-Date): `tNetScaler Gateway Global Settings"
+WriteWordLine 2 0 "Citrix ADC Gateway Global Settings"
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Global Settings"
 WriteWordLine 0 0 " "
 #region GlobalNetwork
 <#
@@ -8888,9 +9037,9 @@ WriteWordLine 0 0 " "
 $Table = $null
 #endregion GlobalAAAParams
 
-#region NetScaler Gateway Intranet Applications
-WriteWordLine 2 0 "NetScaler Gateway Intranet Applications";
-Write-Verbose "$(Get-Date): `tNetScaler Gateway Intranet Applications"
+#region Citrix ADC Gateway Intranet Applications
+WriteWordLine 2 0 "Citrix ADC Gateway Intranet Applications";
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Intranet Applications"
 WriteWordLine 0 0 " ";
 $vpnintappscount = Get-vNetScalerObjectCount -Container config -Object vpnintranetapplication;
 $vpnintapps = Get-vNetScalerObject -Container config -Object vpnintranetapplication;
@@ -8900,7 +9049,7 @@ if($vpnintappscount.__count -le 0) { WriteWordLine 0 0 "No Intranet Applications
     foreach ($vpnintapp in $vpnintapps) {
         $vpnintappname = $vpnintapp.intranetapplication
 
-        WriteWordLine 3 0 "NetScaler Gateway Intranet Application: $vpnintappname";
+        WriteWordLine 3 0 "Citrix ADC Gateway Intranet Application: $vpnintappname";
         WriteWordLine 0 0 " "
 
 
@@ -8945,12 +9094,12 @@ $Table = $null
 
 }
 }
-#endregion NetScaler Gateway Intranet Applications
+#endregion Citrix ADC Gateway Intranet Applications
 
-#region NetScaler Gateway Bookmarks
+#region Citrix ADC Gateway Bookmarks
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler Gateway Bookmarks";
-Write-Verbose "$(Get-Date): `tNetScaler Gateway Bookmarks"
+WriteWordLine 2 0 "Citrix ADC Gateway Bookmarks";
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Bookmarks"
 WriteWordLine 0 0 " ";
 $vpnurlscount = Get-vNetScalerObjectCount -Container config -Object vpnurl;
 $vpnurls = Get-vNetScalerObject -Container config -Object vpnurl;
@@ -8960,7 +9109,7 @@ if($vpnurlscount.__count -le 0) { WriteWordLine 0 0 "No Bookmarks have been conf
     foreach ($vpnurl in $vpnurls) {
         $vpnurlname = $vpnurl.urlname
 
-        WriteWordLine 3 0 "NetScaler Gateway Bookmark: $vpnurlname";
+        WriteWordLine 3 0 "Citrix ADC Gateway Bookmark: $vpnurlname";
         WriteWordLine 0 0 " "
 
 
@@ -9002,18 +9151,18 @@ $Table = $null
 
 }
 }
-#endregion NetScaler Gateway Bookmarks
+#endregion Citrix ADC Gateway Bookmarks
 
-#region NetScaler Gateway PCOIP
+#region Citrix ADC Gateway PCOIP
 
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler Gateway PCoIP";
+WriteWordLine 2 0 "Citrix ADC Gateway PCoIP";
 WriteWordLine 0 0 " "
 
-#region NetScaler Gateway PCoIP vServer Profiles
+#region Citrix ADC Gateway PCoIP vServer Profiles
 WriteWordLine 0 0 " "
-WriteWordLine 3 0 "NetScaler Gateway PCoIP vServer Profiles";
-Write-Verbose "$(Get-Date): `tNetScaler Gateway PCoIP vServer Profiles"
+WriteWordLine 3 0 "Citrix ADC Gateway PCoIP vServer Profiles";
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway PCoIP vServer Profiles"
 WriteWordLine 0 0 " ";
 $pcoipvprofilescount = Get-vNetScalerObjectCount -Container config -Object vpnpcoipvserverprofile;
 $pcoipvprofiles = Get-vNetScalerObject -Container config -Object vpnpcoipvserverprofile;
@@ -9045,14 +9194,19 @@ WriteWordLine 0 0 " "
     }
             ## IB - Add the table to the document, splatting the parameters
             $Table = AddWordTable @Params;
+
+            FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
   
 }
-#endregion NetScaler Gateway PCOIP vServer Profiles
+#endregion Citrix ADC Gateway PCOIP vServer Profiles
 
-#region NetScaler Gateway PCOIP Profiles
+#region Citrix ADC Gateway PCOIP Profiles
 WriteWordLine 0 0 " "
-WriteWordLine 3 0 "NetScaler Gateway PCoIP Profiles";
-Write-Verbose "$(Get-Date): `tNetScaler Gateway PCoIP Profiles"
+WriteWordLine 3 0 "Citrix ADC Gateway PCoIP Profiles";
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway PCoIP Profiles"
 WriteWordLine 0 0 " ";
 $pcoipprofilescount = Get-vNetScalerObjectCount -Container config -Object vpnpcoipprofile;
 
@@ -9085,16 +9239,157 @@ $pcoipprofiles = Get-vNetScalerObject -Container config -Object vpnpcoipprofile;
     }
             ## IB - Add the table to the document, splatting the parameters
             $Table = AddWordTable @Params;
+
+            FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
   
 }
-#endregion NetScaler Gateway PCOIP Profiles
+#endregion Citrix ADC Gateway PCOIP Profiles
 
-#endregion NetScaler Gateway PCOIP
+#endregion Citrix ADC Gateway PCOIP
 
-#region NetScaler Gateway Portal Themes
+#region Citrix ADC Gateway RDP
+
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler Gateway Portal Themes";
-Write-Verbose "$(Get-Date): `tNetScaler Gateway Portal Themes"
+WriteWordLine 2 0 "Citrix ADC Gateway RDP";
+WriteWordLine 0 0 " "
+
+#region Citrix ADC Gateway RDP Server Profiles
+WriteWordLine 0 0 " "
+WriteWordLine 3 0 "Citrix ADC Gateway RDP Server Profiles";
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway RDP Server Profiles"
+WriteWordLine 0 0 " ";
+$rdpsrvprofilescount = Get-vNetScalerObjectCount -Container config -Object rdpserverprofile;
+
+
+if($rdpsrvprofilescount.__count -le 0) { 
+
+WriteWordLine 0 0 "No RDP Server Profiles have been configured"
+WriteWordLine 0 0 " "
+
+} else {
+$rdpsrvprofiles = Get-vNetScalerObject -Container config -Object rdpserverprofile;
+ ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $RDPSRVPROFH = @();
+
+    foreach ($rdpsrvprofile in $rdpsrvprofiles) {
+
+       $PSK = Get-NonEmptyString $rdpsrvprofile.psk
+       
+        $RDPSRVPROFH += @{ 
+            NAME = $rdpsrvprofile.name; 
+            IP = $rdpsrvprofile.rdpip;
+            PORT = $rdpsrvprofile.rdpport;
+            REDIR = $rdpsrvprofile.rdpredirection;
+
+        }
+    } 
+    $Params = $null
+    $Params = @{
+        Hashtable = $RDPSRVPROFH;
+        Columns = "NAME","IP","PORT", "REDIR";
+        Headers = "Name","RDP Listener IP","RDP Port", "RDP Redirection Support (Broker)";
+        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+        AutoFit = $wdAutoFitContent;
+    }
+            ## IB - Add the table to the document, splatting the parameters
+            $Table = AddWordTable @Params;
+
+            FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+  
+}
+#endregion Citrix ADC Gateway RDP Server Profiles
+
+#region Citrix ADC Gateway RDP Client Profiles
+WriteWordLine 0 0 " "
+WriteWordLine 3 0 "Citrix ADC Gateway RDP Client Profiles";
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway RDP Client Profiles"
+WriteWordLine 0 0 " ";
+$rdpcltprofilescount = Get-vNetScalerObjectCount -Container config -Object rdpclientprofile;
+
+
+if($rdpcltprofilescount.__count -le 0) { 
+
+WriteWordLine 0 0 "No RDP Client Profiles have been configured"
+WriteWordLine 0 0 " "
+
+} else {
+$rdpcltprofiles = Get-vNetScalerObject -Container config -Object rdpclientprofile;
+
+    foreach ($rdpcltprofile in $rdpcltprofiles) {
+
+            $rdpcltname = $rdpcltprofile.name
+
+        WriteWordLine 4 0 "RDP Client Profile: $rdpcltname";
+        WriteWordLine 0 0 " "
+
+
+
+
+## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $RDPCLTH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Override RDP URL"; Column2 = $rdpcltprofile.rdpurloverride; }
+    @{ Column1 = "Clipboard Redirection"; Column2 = $rdpcltprofile.redirectclipboard; }
+    @{ Column1 = "Clipboard Redirection"; Column2 = $rdpcltprofile.redirectclipboard; }
+    @{ Column1 = "Drive Redirection"; Column2 = $rdpcltprofile.redirectdrives; }
+    @{ Column1 = "Printer Redirection"; Column2 = $rdpcltprofile.redirectprinters; }
+    @{ Column1 = "COM Port Redirection"; Column2 = $rdpcltprofile.redirectcomports; }
+    @{ Column1 = "PnP Device Redirection"; Column2 = $rdpcltprofile.redirectpnpdevices; }
+    @{ Column1 = "Redirect Keyboard"; Column2 = $rdpcltprofile.keyboardhook; }
+    @{ Column1 = "Audio Redirection"; Column2 = $rdpcltprofile.audiocapturemode; }
+    @{ Column1 = "Multimedia Streaming"; Column2 = $rdpcltprofile.videoplaybackmode; }
+    @{ Column1 = "Multi-Monitor Support"; Column2 = $rdpcltprofile.multimonitorsupport; }
+    @{ Column1 = "RDP Cookie Validity"; Column2 = $rdpcltprofile.rdpcookievalidity; }
+    @{ Column1 = "Include Username in RDP File"; Column2 = $rdpcltprofile.addusernameinrdpfile; }
+    @{ Column1 = "RDP File Name"; Column2 = $rdpcltprofile.rdpfilename; }
+    @{ Column1 = "RDP Host"; Column2 = $rdpcltprofile.rdphost; }
+    @{ Column1 = "RDP Listener"; Column2 = $rdpcltprofile.rdplistener; }
+    @{ Column1 = "RDP Custom Parameters"; Column2 = $rdpcltprofile.rdpcustomparams; }
+    @{ Column1 = "Pre-Shared Key"; Column2 = $rdpcltprofile.psk; }
+    @{ Column1 = "Randomize RDP File Name"; Column2 = $rdpcltprofile.randomizerdpfilename; }
+    @{ Column1 = "RDP Link Attribute (fetch from AD)"; Column2 = $rdpcltprofile.rdplinkattribute; }
+
+      
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $RDPCLTH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+
+}
+  
+}
+#endregion Citrix ADC Gateway RDP Server Profiles
+
+
+
+#endregion Citrix ADC Gateway RDP
+
+#region Citrix ADC Gateway Portal Themes
+WriteWordLine 0 0 " "
+WriteWordLine 2 0 "Citrix ADC Gateway Portal Themes";
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Portal Themes"
 WriteWordLine 0 0 " ";
 
 $vpnportalthemes = Get-vNetScalerObject -Container config -Object vpnportaltheme;
@@ -9132,12 +9427,15 @@ FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 $Table = $null
 
+
+
 #Iterate through each portal theme to extract details
 
 foreach ($vpnportaltheme in $vpnportalthemes) {
   $portalthemename = $vpnportaltheme.name
+
   
-if ($vpnportaltheme.basetheme -ne $vpnportaltheme.name) {
+
   Write-Verbose "$(Get-Date): `tPortal Theme: $portalthemename"
   WriteWordLine 3 0 "Portal Theme: $portalthemename";
   WriteWordLine 0 0 " ";
@@ -10628,27 +10926,151 @@ $Table = $null
 
 
 #endregion Japanese
-}
+
 
 } #End Foreach portal theme
 
-#endregion NetScaler Gateway Portal Themes
+#endregion Citrix ADC Gateway Portal Themes
+
+#region Unified Gateway SaaS Templates
+
+Write-Verbose "$(Get-Date): `tCitrix ADC Unified Gateway SaaS Templates"
+WriteWordLine 2 0 "Citrix ADC Unified Gateway SaaS Templates"
+WriteWordLine 0 0 " "
+WriteWordLine 3 0 "System Templates"
+WriteWordLine 0 0 " "
+
+$SystemContent = Get-vNetScalerFile -FileName system.json -FileLocation "/var/app_catalog" | Select -ExpandProperty filecontent
+$SystemTemplates = $null
+$SystemTemplates = Get-StringFromBase64 -Object $SystemContent -Encoding UTF8 | ConvertFrom-Json
+
+If (!($systemTemplates)) { writewordline 0 0 "No System SaaS Templates were found on the appliance" } Else {
+
+
+foreach ($app in $SystemTemplates.apps) {
+
+## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $SYSAPPH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Setting"; Column2 = "Value"; }
+    @{ Column1 = "Display Name"; Column2 = $app.displayname; }
+    @{ Column1 = "Description"; Column2 = $app.description; }
+    @{ Column1 = "URL"; Column2 = $app.url; }
+    @{ Column1 = "Related URL"; Column2 = $app.relatedURLs; }    
+    @{ Column1 = "SAML Type"; Column2 = $app.SAMLType.value; }
+    @{ Column1 = "Assertion Consumer Service (ACS) URL"; Column2 = $app.sso.saml.assertionConsumerServiceURL.value; }
+    @{ Column1 = "Name ID Format"; Column2 = $app.sso.saml.nameID.format; }
+    @{ Column1 = "Name ID Value"; Column2 = $app.sso.saml.nameID.value; }
+    @{ Column1 = "Signature Algorithm"; Column2 = $app.sso.saml.signatureAlg.value; }
+    @{ Column1 = "Digest Method"; Column2 = $app.sso.saml.digestMethod.value }
+    @{ Column1 = "Sign Assertion"; Column2 = $app.sso.saml.signAssertion.value; }
+    @{ Column1 = "Reject Unsigned Requests"; Column2 = $app.sso.saml.rejectUnsignedRequests.value; }
+    @{ Column1 = "SAML SP Certificate Name"; Column2 = $app.sso.saml.samlSpCertName.value; }
+    $samlattrcount = 0
+    foreach ($attribute in $app.sso.saml.attributes) {
+      $samlattrcount++
+      @{ Column1 = "SAML Attribute $samlattrcount"; Column2 = " "; }
+      @{ Column1 = "$($attribute.name)"; Column2 = "$($attribute.value)"; }
+    }
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $SYSAPPH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+}
+}
+
+WriteWordLine 3 0 "User Templates"
+WriteWordLine 0 0 " "
+
+$UserContent = Get-vNetScalerFile -FileName user.json -FileLocation "/var/app_catalog" | Select -ExpandProperty filecontent
+$UserTemplates = $null
+$UserTemplates = Get-StringFromBase64 -Object $UserContent -Encoding UTF8 | ConvertFrom-Json
+
+If (!($UserTemplates)) { writewordline 0 0 "No User SaaS Templates were found on the appliance" } Else {
+
+
+foreach ($app in $UserTemplates.apps) {
+
+## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $USERAPPH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    @{ Column1 = "Setting"; Column2 = "Value"; }
+    @{ Column1 = "Display Name"; Column2 = $app.displayname; }
+    @{ Column1 = "Description"; Column2 = $app.description; }
+    @{ Column1 = "URL"; Column2 = $app.url; }
+    @{ Column1 = "Related URL"; Column2 = $app.relatedURLs; }    
+    @{ Column1 = "SAML Type"; Column2 = $app.SAMLType.value; }
+    @{ Column1 = "Assertion Consumer Service (ACS) URL"; Column2 = $app.sso.saml.assertionConsumerServiceURL.value; }
+    @{ Column1 = "Name ID Format"; Column2 = $app.sso.saml.nameID.format; }
+    @{ Column1 = "Name ID Value"; Column2 = $app.sso.saml.nameID.value; }
+    @{ Column1 = "Signature Algorithm"; Column2 = $app.sso.saml.signatureAlg.value; }
+    @{ Column1 = "Digest Method"; Column2 = $app.sso.saml.digestMethod.value }
+    @{ Column1 = "Sign Assertion"; Column2 = $app.sso.saml.signAssertion.value; }
+    @{ Column1 = "Reject Unsigned Requests"; Column2 = $app.sso.saml.rejectUnsignedRequests.value; }
+    @{ Column1 = "SAML SP Certificate Name"; Column2 = $app.sso.saml.samlSpCertName.value; }
+    $samlattrcount = 0
+    foreach ($attribute in $app.sso.saml.attributes) {
+      $samlattrcount++
+      @{ Column1 = "SAML Attribute $samlattrcount"; Column2 = " "; }
+      @{ Column1 = "$($attribute.name)"; Column2 = "$($attribute.value)"; }
+    }
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $USERAPPH;
+    Columns = "Column1","Column2";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params -List;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+}
+}
+
+
+
+
+#endregion Unified Gateway SaaS Templates
 
 $selection.InsertNewPage()
 
-#endregion Citrix NetScaler Gateway CAG Global
+#endregion Citrix ADC Gateway CAG Global
 
 #region CAG vServers
 
 $vpnvserverscount = Get-vNetScalerObjectCount -Container config -Object vpnvserver;
 $vpnvservers = Get-vNetScalerObject -Container config -Object vpnvserver;
 
-if($vpnvserverscount.__count -le 0) { WriteWordLine 0 0 "No Citrix NetScaler Gateway has been configured"} else {
+if($vpnvserverscount.__count -le 0) { WriteWordLine 0 0 "No Citrix ADC Gateway has been configured"} else {
 
     foreach ($vpnvserver in $vpnvservers) {
         $vpnvservername = $vpnvserver.name
 
-        WriteWordLine 2 0 "NetScaler Gateway Virtual Server: $vpnvservername";
+        WriteWordLine 2 0 "Citrix ADC Gateway Virtual Server: $vpnvservername";
 #region CAG vServer basic configuration
 
 
@@ -11277,19 +11699,19 @@ WriteWordLine 0 0 " "
 
 #region CAG Session Policies
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix NetScaler (Access) Gateway Policies"
-##WriteWordLine 2 0 "NetScaler Gateway Policies"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC (Access) Gateway Policies"
+##WriteWordLine 2 0 "Citrix ADC Gateway Policies"
 
 ##WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler Gateway Session Policies"
+WriteWordLine 2 0 "Citrix ADC Gateway Session Policies"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tNetScaler Gateway Session Policies"
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Session Policies"
 
 $vpnsessionpolicies = Get-vNetScalerObject -Container config -Object vpnsessionpolicy;
 
 foreach ($vpnsessionpolicy in $vpnsessionpolicies) {
     $sesspolname = $vpnsessionpolicy.name
-    WriteWordLine 3 0 "NetScaler Gateway Session Policy: $sesspolname";
+    WriteWordLine 3 0 "Citrix ADC Gateway Session Policy: $sesspolname";
     WriteWordLine 0 0 " "
 
     ## IB - Create an array of hashtables to store our columns. Note: If we need the
@@ -11318,9 +11740,9 @@ foreach ($vpnsessionpolicy in $vpnsessionpolicies) {
 
 #region alwayson policies
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler Gateway AlwaysON Policies"
+WriteWordLine 2 0 "Citrix ADC Gateway AlwaysON Policies"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tNetScaler Gateway AlwaysON Policies"
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway AlwaysON Policies"
 
 $vpnalwaysonpolicies = Get-vNetScalerObject -Container config -Object vpnalwaysonprofile;
 
@@ -11330,7 +11752,7 @@ If (!$vpnalwaysonpolicies) {
 
 foreach ($vpnalwaysonpolicy in $vpnalwaysonpolicies) {
 $policynameAO = $vpnalwaysonpolicy.name
-    WriteWordLine 3 0 "NetScaler Gateway AlwaysON Policy: $policynameAO";
+    WriteWordLine 3 0 "Citrix ADC Gateway AlwaysON Policy: $policynameAO";
 
     ## IB - Use an array of hashtable to store the rows
     [System.Collections.Hashtable[]] $AOPOLCONFH = @(
@@ -11366,22 +11788,22 @@ WriteWordLine 0 0 " "
 
 #region CAG Session Actions
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "NetScaler Gateway Session Actions"
+WriteWordLine 2 0 "Citrix ADC Gateway Session Actions"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tNetScaler Gateway Session Actions"
+Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Session Actions"
 
 $vpnsessionactions = Get-vNetScalerObject -Container config -Object vpnsessionaction;
 
 If (!$vpnsessionactions) {
 
-WordWriteLine 0 0 "There are no Netscaler Gateway Session Actions configured."
-WordWriteLine 0 0 " "
+WriteWordLine 0 0 "There are no Citrix ADC Gateway Session Actions configured."
+WriteWordLine 0 0 " "
 
 }
 
 foreach ($vpnsessionaction in $vpnsessionactions) {
     $sessactname = $vpnsessionaction.name
-    WriteWordLine 3 0 "NetScaler Gateway Session Action: $sessactname";
+    WriteWordLine 3 0 "Citrix ADC Gateway Session Action: $sessactname";
     WriteWordLine 0 0 " "
 #region ClientExperience
 
@@ -11573,15 +11995,15 @@ $Table = $null
 
 #endregion CAG Actions
 
-#endregion Citrix NetScaler Gateway
+#endregion Citrix ADC Gateway
 
-#region NetScaler Monitors
+#region Citrix ADC Monitors
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Monitors"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Monitors"
 
-WriteWordLine 1 0 "NetScaler Monitors"
+WriteWordLine 1 0 "Citrix ADC Monitors"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `t`tTable: Write NetScaler Monitors Table"
+Write-Verbose "$(Get-Date): `t`tTable: Write Citrix ADC Monitors Table"
 
 $monitorcounter = Get-vNetScalerObjectCount -Container config -Object lbmonitor; 
 $monitorcount = $monitorcounter.__count
@@ -11620,18 +12042,18 @@ foreach ($MONITOR in $MONITORS) {
 
 $selection.InsertNewPage()
 
-#endregion NetScaler Monitors
+#endregion Citrix ADC Monitors
 
-#region NetScaler Policies
+#region Citrix ADC Policies
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Policies"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Policies"
 
-WriteWordLine 1 0 "NetScaler Policies"
+WriteWordLine 1 0 "Citrix ADC Policies"
 WriteWordLine 0 0 " "
 #region Pattern Set Policies
-WriteWordLine 2 0 "NetScaler Pattern Set Policies"
+WriteWordLine 2 0 "Citrix ADC Pattern Set Policies"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tTable: NetScaler Pattern Set Policies"
+Write-Verbose "$(Get-Date): `tTable: Citrix ADC Pattern Set Policies"
 
 $pattsetpolicies = Get-vNetScalerObject -Container config -Object policypatset;
 
@@ -11660,9 +12082,9 @@ WriteWordLine 0 0 " "
 #endregion Pattern Set Policies
 
 #region Responder Policies
-WriteWordLine 2 0 "NetScaler Responder Policies"
+WriteWordLine 2 0 "Citrix ADC Responder Policies"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tTable: NetScaler Responder Policies"
+Write-Verbose "$(Get-Date): `tTable: Citrix ADC Responder Policies"
 
 $responderpolicies = Get-vNetScalerObject -Container config -Object responderpolicy;
 
@@ -11693,9 +12115,9 @@ WriteWordLine 0 0 " "
 #endregion Responder Policies
 
 #region Rewrite Policies
-WriteWordLine 2 0 "NetScaler Rewrite Policies"
+WriteWordLine 2 0 "Citrix ADC Rewrite Policies"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tTable: NetScaler Rewrite Policies"
+Write-Verbose "$(Get-Date): `tTable: Citrix ADC Rewrite Policies"
 
 $rewritepolicies = Get-vNetScalerObject -Container config -Object rewritepolicy;
 
@@ -11725,20 +12147,20 @@ FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 #endregion Rewrite Policies
 
-#Endregion NetScaler Policies
+#Endregion Citrix ADC Policies
 
 #endregion New functionality here
 
-#region NetScaler Actions
+#region Citrix ADC Actions
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Actions"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Actions"
 
-WriteWordLine 1 0 "NetScaler Actions"
+WriteWordLine 1 0 "Citrix ADC Actions"
 WriteWordLine 0 0 " "
 #region Responder Action
-WriteWordLine 2 0 "NetScaler Responder Action"
+WriteWordLine 2 0 "Citrix ADC Responder Action"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tTable: NetScaler Responder Action"
+Write-Verbose "$(Get-Date): `tTable: Citrix ADC Responder Action"
 $responderactions = Get-vNetScalerObject -Container config -Object responderaction;
 
 ## IB - Use an array of hashtable to store the rows
@@ -11772,9 +12194,9 @@ WriteWordLine 0 0 " "
 #endregion Responder Action
 
 #region Rewrite Action
-WriteWordLine 2 0 "NetScaler Rewrite Action"
+WriteWordLine 2 0 "Citrix ADC Rewrite Action"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tTable: NetScaler Rewrite Action"
+Write-Verbose "$(Get-Date): `tTable: Citrix ADC Rewrite Action"
 
 $rewriteactions = Get-vNetScalerObject -Container config -Object rewriteaction;
 
@@ -11809,19 +12231,19 @@ $selection.InsertNewPage()
 
 #endregion Rewrite Action
 
-#endregion NetScaler Actions
+#endregion Citrix ADC Actions
 
-#region NetScaler Profiles
+#region Citrix ADC Profiles
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler Profiles"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Profiles"
 
-WriteWordLine 1 0 "NetScaler Profiles"
+WriteWordLine 1 0 "Citrix ADC Profiles"
 WriteWordLine 0 0 " "
-#region NetScaler TCP Profiles
+#region Citrix ADC TCP Profiles
 
-WriteWordLine 2 0 "NetScaler TCP Profiles"
+WriteWordLine 2 0 "Citrix ADC TCP Profiles"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `t`tTable: Write NetScaler TCP Profiles Table"
+Write-Verbose "$(Get-Date): `t`tTable: Write Citrix ADC TCP Profiles Table"
 
 $tcpprofiles = Get-vNetScalerObject -Container config -Object nstcpprofile;
 
@@ -11858,14 +12280,14 @@ if ($TCPPROFILESH.Length -gt 0) {
 $selection.InsertNewPage()
 
 
-#endregion NetScaler TCP Profiles
+#endregion Citrix ADC TCP Profiles
 
-#region NetScaler HTTP Profiles
+#region Citrix ADC HTTP Profiles
 
-WriteWordLine 2 0 "NetScaler HTTP Profiles"
+WriteWordLine 2 0 "Citrix ADC HTTP Profiles"
 WriteWordLine 0 0 " "
 
-Write-Verbose "$(Get-Date): `t`tTable: Write NetScaler HTTP Profiles Table"
+Write-Verbose "$(Get-Date): `t`tTable: Write Citrix ADC HTTP Profiles Table"
 
 $httprofiles = Get-vNetScalerObject -Container config -Object nshttpprofile;
 
@@ -11900,14 +12322,14 @@ if ($HTTPPROFILESH.Length -gt 0) {
 $selection.InsertNewPage()
 
 
-#endregion NetScaler HTTP Profiles
+#endregion Citrix ADC HTTP Profiles
 
-#region NetScaler HTTP Profiles
+#region Citrix ADC HTTP Profiles
 
-WriteWordLine 2 0 "NetScaler Network Profiles"
+WriteWordLine 2 0 "Citrix ADC Network Profiles"
 WriteWordLine 0 0 " "
 
-Write-Verbose "$(Get-Date): `t`tTable: Write NetScaler Network Profiles Table"
+Write-Verbose "$(Get-Date): `t`tTable: Write Citrix ADC Network Profiles Table"
 
 $httprofiles = Get-vNetScalerObject -Container config -Object nshttpprofile;
 
@@ -11944,11 +12366,11 @@ if ($NETPROFILESH.Length -gt 0) {
 $selection.InsertNewPage()
 
 
-#endregion NetScaler HTTP Profiles
+#endregion Citrix ADC HTTP Profiles
 
-#endregion NetScaler Profiles
+#endregion Citrix ADC Profiles
 
-#endregion NetScaler Documentation Script Complete
+#endregion Citrix ADC Documentation Script Complete
 
 # region restore SSL validation to normal behavior
 # Many thanks go out to Esther Barthel for fixing this!
@@ -11965,8 +12387,8 @@ Write-Verbose "$(Get-Date): Finishing up document"
 #end of document processing
 
 ###Change the two lines below for your script
-$AbstractTitle = "NetScaler Documentation Report"
-$SubjectTitle = "NetScaler Documentation Report"
+$AbstractTitle = "Citrix ADC Documentation Report"
+$SubjectTitle = "Citrix ADC Documentation Report"
 UpdateDocumentProperties $AbstractTitle $SubjectTitle
 
 ProcessDocumentOutput
@@ -11977,177 +12399,3 @@ ProcessScriptEnd
 #endregion script template 2
 
 
-
-# SIG # Begin signature block
-# MIIgCgYJKoZIhvcNAQcCoIIf+zCCH/cCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
-# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUn1zz8dku3yc+P7x2vPZGKaFT
-# dRmgghtxMIIDtzCCAp+gAwIBAgIQDOfg5RfYRv6P5WD8G/AwOTANBgkqhkiG9w0B
-# AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
-# VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
-# IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMzExMTEwMDAwMDAwWjBlMQsw
-# CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cu
-# ZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVkIElEIFJvb3Qg
-# Q0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCtDhXO5EOAXLGH87dg
-# +XESpa7cJpSIqvTO9SA5KFhgDPiA2qkVlTJhPLWxKISKityfCgyDF3qPkKyK53lT
-# XDGEKvYPmDI2dsze3Tyoou9q+yHyUmHfnyDXH+Kx2f4YZNISW1/5WBg1vEfNoTb5
-# a3/UsDg+wRvDjDPZ2C8Y/igPs6eD1sNuRMBhNZYW/lmci3Zt1/GiSw0r/wty2p5g
-# 0I6QNcZ4VYcgoc/lbQrISXwxmDNsIumH0DJaoroTghHtORedmTpyoeb6pNnVFzF1
-# roV9Iq4/AUaG9ih5yLHa5FcXxH4cDrC0kqZWs72yl+2qp/C3xag/lRbQ/6GW6whf
-# GHdPAgMBAAGjYzBhMA4GA1UdDwEB/wQEAwIBhjAPBgNVHRMBAf8EBTADAQH/MB0G
-# A1UdDgQWBBRF66Kv9JLLgjEtUYunpyGd823IDzAfBgNVHSMEGDAWgBRF66Kv9JLL
-# gjEtUYunpyGd823IDzANBgkqhkiG9w0BAQUFAAOCAQEAog683+Lt8ONyc3pklL/3
-# cmbYMuRCdWKuh+vy1dneVrOfzM4UKLkNl2BcEkxY5NM9g0lFWJc1aRqoR+pWxnmr
-# EthngYTffwk8lOa4JiwgvT2zKIn3X/8i4peEH+ll74fg38FnSbNd67IJKusm7Xi+
-# fT8r87cmNW1fiQG2SVufAQWbqz0lwcy2f8Lxb4bG+mRo64EtlOtCt/qMHt1i8b5Q
-# Z7dsvfPxH2sMNgcWfzd8qVttevESRmCD1ycEvkvOl77DZypoEd+A5wwzZr8TDRRu
-# 838fYxAe+o0bJW1sj6W3YQGx0qMmoRBxna3iw/nDmVG3KwcIzi7mULKn+gpFL6Lw
-# 8jCCBTAwggQYoAMCAQICEAQJGBtf1btmdVNDtW+VUAgwDQYJKoZIhvcNAQELBQAw
-# ZTELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQ
-# d3d3LmRpZ2ljZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgQXNzdXJlZCBJRCBS
-# b290IENBMB4XDTEzMTAyMjEyMDAwMFoXDTI4MTAyMjEyMDAwMFowcjELMAkGA1UE
-# BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2lj
-# ZXJ0LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUg
-# U2lnbmluZyBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAPjTsxx/
-# DhGvZ3cH0wsxSRnP0PtFmbE620T1f+Wondsy13Hqdp0FLreP+pJDwKX5idQ3Gde2
-# qvCchqXYJawOeSg6funRZ9PG+yknx9N7I5TkkSOWkHeC+aGEI2YSVDNQdLEoJrsk
-# acLCUvIUZ4qJRdQtoaPpiCwgla4cSocI3wz14k1gGL6qxLKucDFmM3E+rHCiq85/
-# 6XzLkqHlOzEcz+ryCuRXu0q16XTmK/5sy350OTYNkO/ktU6kqepqCquE86xnTrXE
-# 94zRICUj6whkPlKWwfIPEvTFjg/BougsUfdzvL2FsWKDc0GCB+Q4i2pzINAPZHM8
-# np+mM6n9Gd8lk9ECAwEAAaOCAc0wggHJMBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYD
-# VR0PAQH/BAQDAgGGMBMGA1UdJQQMMAoGCCsGAQUFBwMDMHkGCCsGAQUFBwEBBG0w
-# azAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEMGCCsGAQUF
-# BzAChjdodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVk
-# SURSb290Q0EuY3J0MIGBBgNVHR8EejB4MDqgOKA2hjRodHRwOi8vY3JsNC5kaWdp
-# Y2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3JsMDqgOKA2hjRodHRw
-# Oi8vY3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0EuY3Js
-# ME8GA1UdIARIMEYwOAYKYIZIAYb9bAACBDAqMCgGCCsGAQUFBwIBFhxodHRwczov
-# L3d3dy5kaWdpY2VydC5jb20vQ1BTMAoGCGCGSAGG/WwDMB0GA1UdDgQWBBRaxLl7
-# KgqjpepxA8Bg+S32ZXUOWDAfBgNVHSMEGDAWgBRF66Kv9JLLgjEtUYunpyGd823I
-# DzANBgkqhkiG9w0BAQsFAAOCAQEAPuwNWiSz8yLRFcgsfCUpdqgdXRwtOhrE7zBh
-# 134LYP3DPQ/Er4v97yrfIFU3sOH20ZJ1D1G0bqWOWuJeJIFOEKTuP3GOYw4TS63X
-# X0R58zYUBor3nEZOXP+QsRsHDpEV+7qvtVHCjSSuJMbHJyqhKSgaOnEoAjwukaPA
-# JRHinBRHoXpoaK+bp1wgXNlxsQyPu6j4xRJon89Ay0BEpRPw5mQMJQhCMrI2iiQC
-# /i9yfhzXSUWW6Fkd6fp0ZGuy62ZD2rOwjNXpDd32ASDOmTFjPQgaGLOBm0/GkxAG
-# /AeB+ova+YJJ92JuoVP6EpQYhS6SkepobEQysmah5xikmmRR7zCCBT8wggQnoAMC
-# AQICEALKvIFdDaFKh3T2QAUcJiIwDQYJKoZIhvcNAQELBQAwcjELMAkGA1UEBhMC
-# VVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0
-# LmNvbTExMC8GA1UEAxMoRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENvZGUgU2ln
-# bmluZyBDQTAeFw0xNjEwMTgwMDAwMDBaFw0xNzEwMjMxMjAwMDBaMHwxCzAJBgNV
-# BAYTAlVTMQswCQYDVQQIEwJUTjESMBAGA1UEBxMJVHVsbGFob21hMSUwIwYDVQQK
-# ExxDYXJsIFdlYnN0ZXIgQ29uc3VsdGluZywgTExDMSUwIwYDVQQDExxDYXJsIFdl
-# YnN0ZXIgQ29uc3VsdGluZywgTExDMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
-# CgKCAQEAqGo3KHWZmWVSao7Ur+ldBIwwM7v4tM7NQ3X3A9H7DqfGXSVvWvVj5zbc
-# zX1yns9Qot1bnrTRLlnimIPJa+GieuEz7ON7jpzQjErmuzJz4HBEfbfAqoVuVmpy
-# dsPpxfNqWMQt+0YqeEgYZqoF5mIXK2ACugsQz5e9SMWEsR9Z0s9FQyjEnIKuhQYq
-# cLY7y85/CNsH4qgKNoHPfZ+LlPaWFfHCI7XIleLC2QHcLlEe760NDv163eXq6rkC
-# tJroHqT4WKeXEEj14nhFNxSp/UUuk004/ju5Pb1gsgOYxkQ94BrixMW9zYghXX2H
-# K3JzL8O56djKJuD8em8whmpXAmR6FQIDAQABo4IBxTCCAcEwHwYDVR0jBBgwFoAU
-# WsS5eyoKo6XqcQPAYPkt9mV1DlgwHQYDVR0OBBYEFPC0K6tjLci4jiul81bZG+CS
-# MocaMA4GA1UdDwEB/wQEAwIHgDATBgNVHSUEDDAKBggrBgEFBQcDAzB3BgNVHR8E
-# cDBuMDWgM6Axhi9odHRwOi8vY3JsMy5kaWdpY2VydC5jb20vc2hhMi1hc3N1cmVk
-# LWNzLWcxLmNybDA1oDOgMYYvaHR0cDovL2NybDQuZGlnaWNlcnQuY29tL3NoYTIt
-# YXNzdXJlZC1jcy1nMS5jcmwwTAYDVR0gBEUwQzA3BglghkgBhv1sAwEwKjAoBggr
-# BgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzAIBgZngQwBBAEw
-# gYQGCCsGAQUFBwEBBHgwdjAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNl
-# cnQuY29tME4GCCsGAQUFBzAChkJodHRwOi8vY2FjZXJ0cy5kaWdpY2VydC5jb20v
-# RGlnaUNlcnRTSEEyQXNzdXJlZElEQ29kZVNpZ25pbmdDQS5jcnQwDAYDVR0TAQH/
-# BAIwADANBgkqhkiG9w0BAQsFAAOCAQEAAwIwqMrUHX/2xnjs13V3ikCzJ+LkAMXu
-# z4daOhkO5EdCkE8Cl9nnKtVGEVnC8v2xkUSgDWb9yAoGJfOx8oamS6IA3J1C+lND
-# 8cKJwb70FAHzQV+Tyzmwm38VavUC0kc27iE5kfziUOU+UH/bZYwmeo1Z54SiooEB
-# atp1RYmvbwE8ATyme/KmYkfbUkYlbfpP0aWGey33sKGiI8ZmWUC4PSDWQ+aXiAWv
-# YZQXUiGQTWleWvmhlpSVATho62Db2KuE3hsR8v1wLY3s/WPs0OyhrBD80ExWiX/q
-# HoQGTmaBGz0SczPU0sfro1gKghTUr96046UFQQjeybpebrrlMLwcGDCCBmowggVS
-# oAMCAQICEAMBmgI6/1ixa9bV6uYX8GYwDQYJKoZIhvcNAQEFBQAwYjELMAkGA1UE
-# BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2lj
-# ZXJ0LmNvbTEhMB8GA1UEAxMYRGlnaUNlcnQgQXNzdXJlZCBJRCBDQS0xMB4XDTE0
-# MTAyMjAwMDAwMFoXDTI0MTAyMjAwMDAwMFowRzELMAkGA1UEBhMCVVMxETAPBgNV
-# BAoTCERpZ2lDZXJ0MSUwIwYDVQQDExxEaWdpQ2VydCBUaW1lc3RhbXAgUmVzcG9u
-# ZGVyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo2Rd/Hyz4II14OD2
-# xirmSXU7zG7gU6mfH2RZ5nxrf2uMnVX4kuOe1VpjWwJJUNmDzm9m7t3LhelfpfnU
-# h3SIRDsZyeX1kZ/GFDmsJOqoSyyRicxeKPRktlC39RKzc5YKZ6O+YZ+u8/0SeHUO
-# plsU/UUjjoZEVX0YhgWMVYd5SEb3yg6Np95OX+Koti1ZAmGIYXIYaLm4fO7m5zQv
-# MXeBMB+7NgGN7yfj95rwTDFkjePr+hmHqH7P7IwMNlt6wXq4eMfJBi5GEMiN6ARg
-# 27xzdPpO2P6qQPGyznBGg+naQKFZOtkVCVeZVjCT88lhzNAIzGvsYkKRrALA76Tw
-# iRGPdwIDAQABo4IDNTCCAzEwDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAw
-# FgYDVR0lAQH/BAwwCgYIKwYBBQUHAwgwggG/BgNVHSAEggG2MIIBsjCCAaEGCWCG
-# SAGG/WwHATCCAZIwKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNv
-# bS9DUFMwggFkBggrBgEFBQcCAjCCAVYeggFSAEEAbgB5ACAAdQBzAGUAIABvAGYA
-# IAB0AGgAaQBzACAAQwBlAHIAdABpAGYAaQBjAGEAdABlACAAYwBvAG4AcwB0AGkA
-# dAB1AHQAZQBzACAAYQBjAGMAZQBwAHQAYQBuAGMAZQAgAG8AZgAgAHQAaABlACAA
-# RABpAGcAaQBDAGUAcgB0ACAAQwBQAC8AQwBQAFMAIABhAG4AZAAgAHQAaABlACAA
-# UgBlAGwAeQBpAG4AZwAgAFAAYQByAHQAeQAgAEEAZwByAGUAZQBtAGUAbgB0ACAA
-# dwBoAGkAYwBoACAAbABpAG0AaQB0ACAAbABpAGEAYgBpAGwAaQB0AHkAIABhAG4A
-# ZAAgAGEAcgBlACAAaQBuAGMAbwByAHAAbwByAGEAdABlAGQAIABoAGUAcgBlAGkA
-# bgAgAGIAeQAgAHIAZQBmAGUAcgBlAG4AYwBlAC4wCwYJYIZIAYb9bAMVMB8GA1Ud
-# IwQYMBaAFBUAEisTmLKZB+0e36K+Vw0rZwLNMB0GA1UdDgQWBBRhWk0ktkkynUoq
-# eRqDS/QeicHKfTB9BgNVHR8EdjB0MDigNqA0hjJodHRwOi8vY3JsMy5kaWdpY2Vy
-# dC5jb20vRGlnaUNlcnRBc3N1cmVkSURDQS0xLmNybDA4oDagNIYyaHR0cDovL2Ny
-# bDQuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEQ0EtMS5jcmwwdwYIKwYB
-# BQUHAQEEazBpMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20w
-# QQYIKwYBBQUHMAKGNWh0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2Vy
-# dEFzc3VyZWRJRENBLTEuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQCdJX4bM02yJoFc
-# m4bOIyAPgIfliP//sdRqLDHtOhcZcRfNqRu8WhY5AJ3jbITkWkD73gYBjDf6m7Gd
-# JH7+IKRXrVu3mrBgJuppVyFdNC8fcbCDlBkFazWQEKB7l8f2P+fiEUGmvWLZ8Cc9
-# OB0obzpSCfDscGLTYkuw4HOmksDTjjHYL+NtFxMG7uQDthSr849Dp3GdId0UyhVd
-# kkHa+Q+B0Zl0DSbEDn8btfWg8cZ3BigV6diT5VUW8LsKqxzbXEgnZsijiwoc5ZXa
-# rsQuWaBh3drzbaJh6YoLbewSGL33VVRAA5Ira8JRwgpIr7DUbuD0FAo6G+OPPcqv
-# ao173NhEMIIGzTCCBbWgAwIBAgIQBv35A5YDreoACus/J7u6GzANBgkqhkiG9w0B
-# AQUFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYD
-# VQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBBc3N1cmVk
-# IElEIFJvb3QgQ0EwHhcNMDYxMTEwMDAwMDAwWhcNMjExMTEwMDAwMDAwWjBiMQsw
-# CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cu
-# ZGlnaWNlcnQuY29tMSEwHwYDVQQDExhEaWdpQ2VydCBBc3N1cmVkIElEIENBLTEw
-# ggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDogi2Z+crCQpWlgHNAcNKe
-# VlRcqcTSQQaPyTP8TUWRXIGf7Syc+BZZ3561JBXCmLm0d0ncicQK2q/LXmvtrbBx
-# MevPOkAMRk2T7It6NggDqww0/hhJgv7HxzFIgHweog+SDlDJxofrNj/YMMP/pvf7
-# os1vcyP+rFYFkPAyIRaJxnCI+QWXfaPHQ90C6Ds97bFBo+0/vtuVSMTuHrPyvAwr
-# mdDGXRJCgeGDboJzPyZLFJCuWWYKxI2+0s4Grq2Eb0iEm09AufFM8q+Y+/bOQF1c
-# 9qjxL6/siSLyaxhlscFzrdfx2M8eCnRcQrhofrfVdwonVnwPYqQ/MhRglf0HBKIJ
-# AgMBAAGjggN6MIIDdjAOBgNVHQ8BAf8EBAMCAYYwOwYDVR0lBDQwMgYIKwYBBQUH
-# AwEGCCsGAQUFBwMCBggrBgEFBQcDAwYIKwYBBQUHAwQGCCsGAQUFBwMIMIIB0gYD
-# VR0gBIIByTCCAcUwggG0BgpghkgBhv1sAAEEMIIBpDA6BggrBgEFBQcCARYuaHR0
-# cDovL3d3dy5kaWdpY2VydC5jb20vc3NsLWNwcy1yZXBvc2l0b3J5Lmh0bTCCAWQG
-# CCsGAQUFBwICMIIBVh6CAVIAQQBuAHkAIAB1AHMAZQAgAG8AZgAgAHQAaABpAHMA
-# IABDAGUAcgB0AGkAZgBpAGMAYQB0AGUAIABjAG8AbgBzAHQAaQB0AHUAdABlAHMA
-# IABhAGMAYwBlAHAAdABhAG4AYwBlACAAbwBmACAAdABoAGUAIABEAGkAZwBpAEMA
-# ZQByAHQAIABDAFAALwBDAFAAUwAgAGEAbgBkACAAdABoAGUAIABSAGUAbAB5AGkA
-# bgBnACAAUABhAHIAdAB5ACAAQQBnAHIAZQBlAG0AZQBuAHQAIAB3AGgAaQBjAGgA
-# IABsAGkAbQBpAHQAIABsAGkAYQBiAGkAbABpAHQAeQAgAGEAbgBkACAAYQByAGUA
-# IABpAG4AYwBvAHIAcABvAHIAYQB0AGUAZAAgAGgAZQByAGUAaQBuACAAYgB5ACAA
-# cgBlAGYAZQByAGUAbgBjAGUALjALBglghkgBhv1sAxUwEgYDVR0TAQH/BAgwBgEB
-# /wIBADB5BggrBgEFBQcBAQRtMGswJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRp
-# Z2ljZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2NhY2VydHMuZGlnaWNlcnQu
-# Y29tL0RpZ2lDZXJ0QXNzdXJlZElEUm9vdENBLmNydDCBgQYDVR0fBHoweDA6oDig
-# NoY0aHR0cDovL2NybDMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0QXNzdXJlZElEUm9v
-# dENBLmNybDA6oDigNoY0aHR0cDovL2NybDQuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0
-# QXNzdXJlZElEUm9vdENBLmNybDAdBgNVHQ4EFgQUFQASKxOYspkH7R7for5XDStn
-# As0wHwYDVR0jBBgwFoAUReuir/SSy4IxLVGLp6chnfNtyA8wDQYJKoZIhvcNAQEF
-# BQADggEBAEZQPsm3KCSnOB22WymvUs9S6TFHq1Zce9UNC0Gz7+x1H3Q48rJcYaKc
-# lcNQ5IK5I9G6OoZyrTh4rHVdFxc0ckeFlFbR67s2hHfMJKXzBBlVqefj56tizfuL
-# LZDCwNK1lL1eT7EF0g49GqkUW6aGMWKoqDPkmzmnxPXOHXh2lCVz5Cqrz5x2S+1f
-# wksW5EtwTACJHvzFebxMElf+X+EevAJdqP77BzhPDcZdkbkPZ0XN1oPt55INjbFp
-# jE/7WeAjD9KqrgB87pxCDs+R1ye3Fu4Pw718CqDuLAhVhSK46xgaTfwqIa1JMYNH
-# lXdx3LEbS0scEJx3FMGdTy9alQgpECYxggQDMIID/wIBATCBhjByMQswCQYDVQQG
-# EwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNl
-# cnQuY29tMTEwLwYDVQQDEyhEaWdpQ2VydCBTSEEyIEFzc3VyZWQgSUQgQ29kZSBT
-# aWduaW5nIENBAhACyryBXQ2hSod09kAFHCYiMAkGBSsOAwIaBQCgQDAZBgkqhkiG
-# 9w0BCQMxDAYKKwYBBAGCNwIBBDAjBgkqhkiG9w0BCQQxFgQUN7gO4oEtp9mQeW2B
-# LjSqbQPg5L8wDQYJKoZIhvcNAQEBBQAEggEANBZ3VhWRkqmnvh+AhqNkMIF3jPh3
-# SvwV4LmpKdWRVc9Rh+gZNakYU46GWCwK/n2ObdRU22qf2Hzc2DVqi7fy+9NebUOh
-# e6N2bF413rcQgI2hLvvdDvbmxHmiwqNK0Msep3awtrmo0JutHtHtCJXN21GYFXT8
-# EePYv8QgVeKUz+N2w1CxEVntF95rDC6phN41UiI4nXW6UsDCMsRt9hnMpxk6BS43
-# lzZ1ZCLeJje+vwoYOKenEXXbvyM2p+4BPC3C9mDRwO869NexDQGI4pHy4AVZTg+K
-# Qpd+Zt8mSMCm1r3at1OZz71839DZ04ihGFpnuBO102t8T9es7aGVvXuezqGCAg8w
-# ggILBgkqhkiG9w0BCQYxggH8MIIB+AIBATB2MGIxCzAJBgNVBAYTAlVTMRUwEwYD
-# VQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xITAf
-# BgNVBAMTGERpZ2lDZXJ0IEFzc3VyZWQgSUQgQ0EtMQIQAwGaAjr/WLFr1tXq5hfw
-# ZjAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG
-# 9w0BCQUxDxcNMTcwOTA0MjE0MTEyWjAjBgkqhkiG9w0BCQQxFgQUgLZtzKnu1Ll0
-# dkLgOZlbvUf4oqYwDQYJKoZIhvcNAQEBBQAEggEAVABdvV8h9a3O/cl+KuPk3yyD
-# rOTbVaSkzdOfBxwu5VFMauOt6m6KnBf+bJU/BMbnjT1L2QC61saz5nsCrXb+C/c0
-# 9affNyBcOgawLDXzn1Lb49iW4l3wZR1Igdzpl9BwDwV7nS/UdAQquJ1bWDaxoxqb
-# 8cIq1t2B7Se5AdQHvxtfryVJ5HTnAwmHhq+tn0Tmqi2QBTJgwZ+QAKbLxoa4qGJx
-# STaIV1QesFLXnrQlKYSRvj70x/RRWNt6OiYpf2Zlf0mNFOPEsKwkepLRg8SE6xdO
-# lwk1cTuPHq5AO2jgM049Dqr4E6ry4SoZch+EWtChhPMSg+f+y/TKcdK3KwwPTQ==
-# SIG # End signature block

@@ -2,6 +2,22 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #To contact, please use e-mail address info@barryschiffer.com
 
+#Version 4.1 13-June-2018
+	* Name change from NetScaler to Citrix ADC (R.I.P NetScaler)
+    
+	* Official Citrix ADC 12.1 Support
+    
+	* Updated features and modes to 12.1 levels
+    
+	* NetScaler Gateway - Added RDP Client and Server Profiles
+    
+  	FIX: Service Group Monitors and Advanced Config missing (Thanks to Nico Stylemans
+    )
+	* Added Unified Gateway SaaS Application Templates (System and User Defined)
+    
+	* Updated SSL Profiles with new options
+
+
 #Version 4.0 31-Aug-2017
 #	The script is now fully compatible with NetScaler 12.0 released in july 2017
 #	Fixed NetScaler SSL connections
