@@ -2873,6 +2873,32 @@ function Connect-vNetScalerSession {
     }
 } #end function Connect-vNetScalerSession
 
+function Logout-vNetScalerSession {
+<#
+    .SYNOPSIS
+        Authenticates to the Citrix ADC and stores a session cookie.
+#>
+    process {
+        if ($UseNSSSL) { $protocol = 'https'; }
+        else { $protocol = 'http'; }
+        $json = '{{ "logout": {}}';
+        $irmParameters = @{
+            Uri = ('{0}://{1}/nitro/v1/config/logout' -f $protocol, $script:nsSession.Address);;
+            Method = 'Post';
+            Body = $json;
+            ContentType = 'application/vnd.com.citrix.netscaler.logout+json';
+            WebSession = $script:nsSession.Session;
+            ErrorAction = 'Stop';
+            Verbose = ($PSBoundParameters['Debug'] -eq $true);
+        }
+        $restResponse = Invoke-RestMethod @irmParameters;
+        #Remove the Session Variable
+
+        Write-Output $restResponse;
+        Remove-Variable -Name nsSession -Scope Script
+    }
+} #end function Connect-vNetScalerSession
+
 function Get-vNetScalerObjectCount {
 <#
 .Synopsis
@@ -2882,6 +2908,8 @@ function Get-vNetScalerObjectCount {
     param (
         # Citrix ADC Nitro API Object, e.g. /nitro/v1/config/NSVERSION
         [Parameter(Mandatory)] [string] $Object,
+        # Citrix ADC Nitro API resource name, e.g. /nitro/v1/config/lbvserver/MYLBVSERVER
+        [Parameter()] [Alias('Name')] [System.String] $ResourceName,
         # Citrix ADC Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
         [Parameter(Mandatory)] [ValidateSet('Stat','Config')] [string] $Container
     )
@@ -2894,7 +2922,12 @@ function Get-vNetScalerObjectCount {
     }
 
     process {
-        $uri = '{0}://{1}/nitro/v1/{2}/{3}?count=yes' -f $protocol,$script:nsSession.Address, $Container.ToLower(), $Object.ToLower();
+        If ($ResourceName) {
+          $uri = '{0}://{1}/nitro/v1/{2}/{3}/{4}?count=yes' -f $protocol,$script:nsSession.Address, $Container.ToLower(), $Object.ToLower(), $ResourceName;
+        } Else {
+          $uri = '{0}://{1}/nitro/v1/{2}/{3}?count=yes' -f $protocol,$script:nsSession.Address, $Container.ToLower(), $Object.ToLower();
+        }
+        
         $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
         # $objectResponse = '{0}objects' -f $Container.ToLower();
         Write-Output $restResponse.($Object.ToLower());
@@ -12845,7 +12878,7 @@ WriteWordLine 0 0 " "
 
 Write-Verbose "$(Get-Date): `t`tTable: Write Citrix ADC Network Profiles Table"
 
-$httprofiles = Get-vNetScalerObject -Container config -Object nshttpprofile;
+$netrofiles = Get-vNetScalerObject -Container config -Object netprofile;
 
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $NETPROFILESH = @();
@@ -12883,6 +12916,14 @@ $selection.InsertNewPage()
 #endregion Citrix ADC HTTP Profiles
 
 #endregion Citrix ADC Profiles
+
+#region Logout
+
+Logout-vNetScalerSession
+
+#endregion Logout
+
+
 
 #endregion Citrix ADC Documentation Script Complete
 
