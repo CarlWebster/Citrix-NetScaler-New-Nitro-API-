@@ -1,6 +1,11 @@
 ﻿#Original Script created by Barry Schiffer and optimized by Iain Brighton. 
 #All Word related PowerShell functionality has been provided by Carl Webster
-#To contact, please use e-mail address info@barryschiffer.com
+#Please provide feedback or feature requests to amccullough84@gmail.com
+
+#Version 4.2 TBC
+	* FIX: Get-vNetScalerObjectCount always connects using non-SSL - thanks to Eglan Kurek for reporting
+	* Added User Administration > Database Users, SMPP Users and Command Policies
+	* Added Appflow Policies, Actions, Policy Labels and Analytics Profiles
 
 #Version 4.1 13-June-2018
 	* Name change from NetScaler to Citrix ADC (R.I.P NetScaler)
