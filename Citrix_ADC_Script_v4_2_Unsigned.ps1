@@ -2654,6 +2654,8 @@ SetFileName1andFileName2 "Citrix ADC Documentation"
 ## Barry Schiffer Use Stopwatch class to time script execution
 $sw = [Diagnostics.Stopwatch]::StartNew()
 
+##Disable Strict Mode to handle missing parameters
+Set-StrictMode -Off
 $selection.InsertNewPage()
 
 #region Nitro Functions
@@ -2996,7 +2998,11 @@ function IsNull($objectToCheck) {
 
 function Get-NonEmptyString($String) {
 
+  If (-not $String) {
+    Return "N/A"
+  } Else {
   Return "$String "
+  }
 
 }
 
@@ -3608,7 +3614,7 @@ $DBUserH = $null
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $DBUserH = @();
 
-foreach ($dbuser in $dbusers) {
+foreach ($dbuser in $nsdbusers) {
 
     ## IB - Create parameters for the hashtable so that we can splat them otherwise the
     ## IB - command will be about 400 characters wide!
@@ -3638,7 +3644,10 @@ WriteWordLine 0 0 " "
 WriteWordLine 3 0 "Citrix ADC System Groups"
 WriteWordLine 0 0 " "
 $nssystemgroups = Get-vNetScalerObject -Container config -Object systemgroup;
-    
+$nssystemgroupscounter = Get-vNetScalerObjectCount -Container config -Object systemgroup; 
+$nssystemgroupscount = $nssystemgroupscounter.__count
+
+if($nssystemgroupscount -le 0) { WriteWordLine 0 0 "No System Groups have been configured"} else {
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $AUTHGRPH = @();
 
@@ -3663,7 +3672,7 @@ if ($AUTHGRPH.Length -gt 0) {
     FindWordDocumentEnd;
     $Table = $null
     }
-else { WriteWordLine 0 0 "No Local Groups have been configured"}
+}
 WriteWordLine 0 0 " "
 
 #endregion Authentication Local Administration Groups
@@ -3681,7 +3690,7 @@ $SMPPUserH = $null
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $SMPPUserH = @();
 
-foreach ($smppuser in $smppusers) {
+foreach ($smppuser in $nssmppusers) {
 
     ## IB - Create parameters for the hashtable so that we can splat them otherwise the
     ## IB - command will be about 400 characters wide!
@@ -4128,7 +4137,7 @@ WriteWordLine 0 0 " "
 WriteWordLine 2 0 "AppFlow Parameters"
 WriteWordLine 0 0 " "
 
-$afarams = Get-vNetScalerObject -Object appflowparams;
+$afparams = Get-vNetScalerObject -Object appflowparam;
 
 ## IB - Create an array of hashtables to store our columns.
 ## IB - about column names as we'll utilise a -List(view)!
@@ -4216,8 +4225,8 @@ if($afcolscount -le 0) { WriteWordLine 0 0 "No AppFlow Collectors have been conf
                 Name = $afcol.name;
                 IP = $afcol.ipaddress;
                 Port = $afcol.port;
-                NetProfile = Get-NonEmptyString $afcol.netprofile;
-                Transport = Get-NonEmptyString $afcol.transport;
+                NetProfile = (Get-NonEmptyString $afcol.netprofile);
+                Transport = (Get-NonEmptyString $afcol.transport);
                 
             }
         }
@@ -4241,9 +4250,9 @@ WriteWordLine 0 0 " "
 
 #region AppFlow Policies
 
-WriteWordLine 2 0 "AppFlow Collectors"
+WriteWordLine 2 0 "AppFlow Policies"
 WriteWordLine 0 0 " "
-$afpolcounter = Get-vNetScalerObjectCount -Container config -Object appflowcollector; 
+$afpolcounter = Get-vNetScalerObjectCount -Container config -Object appflowpolicy; 
 $afpolscount = $afpolcounter.__count
 
 $afpols = Get-vNetScalerObject -Container config -Object appflowpolicy; 
@@ -4306,7 +4315,7 @@ WriteWordLine 0 0 " "
 [System.Collections.Hashtable[]] $AFACTH = @(
     ## IB - Each hashtable is a separate row in the table!
     
-    @{ Column1 = "Collectors"; Column2 = $afact.collectors; }
+    @{ Column1 = "Collectors"; Column2 = $afact.collectors -join ","; }
     @{ Column1 = "Enable Client Side Measurement"; Column2 = $afact.clientsidemeasurements; }
     @{ Column1 = "Page Tracking"; Column2 = $afact.pagetracking; }
     @{ Column1 = "Web Insight"; Column2 = $afact.webinsight; }
@@ -4390,7 +4399,7 @@ WriteWordLine 0 0 " "
 $Table = $null
 
     $afpollblbindscounter = Get-vNetScalerObjectCount -Container config -Object appflowpolicylabel_appflowpolicy_binding -ResourceName $afpollbl.labelname; 
-    $afpollblbindscount = $afpollblbindcounter.__count
+    $afpollblbindscount = $afpollblbindscounter.__count
 
     if($afpollblbindscount -le 0) { WriteWordLine 0 0 "No AppFlow Policies have been bound."} else {
 
@@ -4458,7 +4467,7 @@ WriteWordLine 0 0 " "
 [System.Collections.Hashtable[]] $APROFH = @(
     ## IB - Each hashtable is a separate row in the table!
     
-    @{ Column1 = "Collectors"; Column2 = $aprof.collectors; }
+    @{ Column1 = "Collectors"; Column2 = $aprof.collectors -join ","; }
     @{ Column1 = "Type"; Column2 = $aprof.type; }
     @{ Column1 = "HTTP Client Side Measurement"; Column2 = $aprof.httpclientsidemeasurements; }
     @{ Column1 = "HTTP Page Tracking"; Column2 = $aprof.httppagetracking; }
