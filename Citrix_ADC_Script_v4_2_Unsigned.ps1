@@ -2909,7 +2909,7 @@ function Get-vNetScalerObjectCount {
     [CmdletBinding()]
     param (
         # Citrix ADC Nitro API Object, e.g. /nitro/v1/config/NSVERSION
-        [Parameter(Mandatory)] [string] $Object,
+        [Parameter(Mandatory)] [Alias('ResourceType')] [string] $Object,
         # Citrix ADC Nitro API resource name, e.g. /nitro/v1/config/lbvserver/MYLBVSERVER
         [Parameter()] [Alias('Name')] [System.String] $ResourceName,
         # Citrix ADC Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
@@ -5968,6 +5968,8 @@ WriteWordLine 0 0 " "
 
 #endregion NetScaler Authentication
 
+#endregion Citrix ADC System Information
+
 #region traffic management
 
 
@@ -6014,6 +6016,7 @@ foreach ($ContentSwitch in $csvservers) {
     $Table = $null
     $csvserverbindings = Get-vNetScalerObject -ResourceType csvserver_cspolicy_binding -Name $ContentSwitch.Name;
 
+    #region CS Policies
     WriteWordLine 3 0 "Policies"
     WriteWordLine 0 0 " "
     [System.Collections.Hashtable[]] $ContentSwitchPolicies = @();
@@ -6055,6 +6058,9 @@ foreach ($ContentSwitch in $csvservers) {
     }
     FindWordDocumentEnd;
 
+    #endregion CS Policies
+
+    #region CS Advanced Config
     WriteWordLine 0 0 " "
     WriteWordLine 3 0 "Advanced Configuration"
 
@@ -6084,7 +6090,63 @@ foreach ($ContentSwitch in $csvservers) {
 	$Table = $Null     
     
     FindWordDocumentEnd;
-    $selection.InsertNewPage()
+
+    WriteWordLine 0 0 " "
+
+    #endregion CS Advanced Config
+    #Don't process SSL unless we are using an SSL based Service Type
+    If ($ContentSwitch.ServiceType -match "SSL" ) {
+    #region Cert Bindings
+    $cscertbindingscount = Get-vNetScalerObjectCount -Container Config -ResourceType sslvserver_sslcertkey_binding -Name $ContentSwitch.Name;
+    $cscertcount = $cscertbindingscount.__count
+    $cscertbindings = Get-vNetScalerObject -ResourceType sslvserver_sslcertkey_binding -Name $ContentSwitch.Name;
+    WriteWordLine 3 0 "Certificates"
+    WriteWordLine 0 0 " "
+
+   
+    if($cscertcount -le 0) { WriteWordLine 0 0 "No SSL Certificates are bound to the vServer."} else {
+      
+          ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $CERTSH = @();
+
+    foreach($cscert in $cscertbindings) {
+        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+        ## IB - command will be about 400 characters wide!
+        $CERTSH += @{
+                NAME = $cscert.certkeyname;
+                CA = $cscert.ca;
+                CRL = $cscert.crlcheck;
+                SNI = $cscert.snicert;
+                OCSP = $cscert.ocspcheck;
+                CLEAR = $cscert.cleartextport;
+                
+            }
+        }
+        if ($CERTSH.Length -gt 0) {
+            $Params = $null
+            $Params = @{
+                Hashtable = $CERTSH;
+                Columns = "NAME","CA","CRL","SNI","OCSP","CLEAR";
+                Headers = "Certificate Name","CA Certificate","CRL Checks Enabled","SNI Enabled","OCSP Enabled","Clear Text Port";
+                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                AutoFit = $wdAutoFitContent;
+                }
+            $Table = AddWordTable @Params;
+            FindWordDocumentEnd;
+            WriteWordLine 0 0 " "
+            $Table = $null
+            }
+
+
+
+    }
+
+
+
+    #endregion Cert Bindings
+
+    } #End If ($ContentSwitch.ServiceType -contains "SSL" )
+
 
 } # end if
 
@@ -6145,7 +6207,7 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 	$Table = $Null
     $LBSRVH = $Null
     WriteWordLine 0 0 " "
- 
+    #region services and groups
         ##Services Table
         WriteWordLine 3 0 "Service and Service Group"
         WriteWordLine 0 0 " "
@@ -6217,6 +6279,9 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
             WriteWordLine 0 0 " "
             }
     WriteWordLine 0 0 " "
+    #endregion services and groups
+
+    #region policies
     WriteWordLine 3 0 "Policies"
     WriteWordLine 0 0 " "
         If ($lbvserverbindings.lbvserver_responderpolicy_binding.count -gt 0){
@@ -6277,6 +6342,10 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
+    #endregion policies
+
+    #region redirect
+
     WriteWordLine 3 0 "Redirect URL"
     WriteWordLine 0 0 " "
     ## IB - Use an array of hashtable to store the rows
@@ -6304,7 +6373,9 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 
     FindWordDocumentEnd;
     } else {WriteWordLine 0 0 "No Redirection URL Configured"}
-   
+
+    #endregion redirect
+    #region Advanced
     ##Advanced Configuration   
     WriteWordLine 0 0 " "
     WriteWordLine 3 0 "Advanced Configuration"
@@ -6350,6 +6421,60 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 	$Table = $Null
 
     $selection.InsertNewPage()
+
+    #endregion advanced
+
+        If ($LoadBalancer.ServiceType -match "SSL" ) {
+    #region Cert Bindings
+    $lbcertbindingscount = Get-vNetScalerObjectCount -Container Config -ResourceType sslvserver_sslcertkey_binding -Name $LoadBalancer.Name;
+    $lbcertcount = $lbcertbindingscount.__count
+    $lbcertbindings = Get-vNetScalerObject -ResourceType sslvserver_sslcertkey_binding -Name $LoadBalancer.Name;
+    WriteWordLine 3 0 "Certificates"
+    WriteWordLine 0 0 " "
+
+   
+    if($lbcertcount -le 0) { WriteWordLine 0 0 "No SSL Certificates are bound to the vServer."} else {
+      
+          ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $CERTSH = @();
+
+    foreach($lbcert in $lbcertbindings) {
+        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+        ## IB - command will be about 400 characters wide!
+        $CERTSH += @{
+                NAME = $lbcert.certkeyname;
+                CA = $lbcert.ca;
+                CRL = $lbcert.crlcheck;
+                SNI = $lbcert.snicert;
+                OCSP = $lbcert.ocspcheck;
+                CLEAR = $lbcert.cleartextport;
+                
+            }
+        }
+        if ($CERTSH.Length -gt 0) {
+            $Params = $null
+            $Params = @{
+                Hashtable = $CERTSH;
+                Columns = "NAME","CA","CRL","SNI","OCSP","CLEAR";
+                Headers = "Certificate Name","CA Certificate","CRL Checks Enabled","SNI Enabled","OCSP Enabled","Clear Text Port";
+                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                AutoFit = $wdAutoFitContent;
+                }
+            $Table = AddWordTable @Params;
+            FindWordDocumentEnd;
+            WriteWordLine 0 0 " "
+            $Table = $null
+            }
+
+
+
+    }
+
+
+
+    #endregion Cert Bindings
+
+    } #End If ($ContentSwitch.ServiceType -contains "SSL" )
     }
 }
 #endregion Citrix ADC Load Balancers
@@ -7347,6 +7472,7 @@ WriteWordLine 0 0 " "
     @{ Column1 = "TLS 1"; Column2 = $SSLService.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $SSLService.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $SSLService.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $SSLService.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $SSLService.snienable; }
     @{ Column1 = "Enable Server Authentication"; Column2 = $SSLService.serverauth; }
     @{ Column1 = "Common Name"; Column2 = $SSLService.commonname; }
@@ -7418,6 +7544,7 @@ WriteWordLine 0 0 " "
     @{ Column1 = "TLS 1"; Column2 = $SSLServiceGrp.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $SSLServiceGrp.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $SSLServiceGrp.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $SSLServiceGrp.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $SSLServiceGrp.snienable; }
     @{ Column1 = "Enable Server Authentication"; Column2 = $SSLServiceGrp.serverauth; }
     @{ Column1 = "Common Name"; Column2 = $SSLServiceGrp.commonname; }
@@ -7495,6 +7622,7 @@ WriteWordLine 0 0 " "
     @{ Column1 = "TLS 1"; Column2 = $SSLProfile.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $SSLProfile.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $SSLProfile.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $SSLProfile.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $SSLProfile.snienable; }
     @{ Column1 = "Enable Server Authentication"; Column2 = $SSLProfile.serverauth; }
     @{ Column1 = "Common Name"; Column2 = $SSLProfile.commonname; }
@@ -8976,6 +9104,7 @@ $Table = $null
     @{ Column1 = "TLS 1"; Column2 = $aaasslparameters.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $aaasslparameters.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $aaasslparameters.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $aaasslparameters.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $aaasslparameters.snienable; }
     @{ Column1 = "PUSH Encryption Trigger"; Column2 = $aaasslparameters.pushenctrigger; }
     @{ Column1 = "Send Close-Notify"; Column2 = $aaasslparameters.sendclosenotify; }
@@ -11621,7 +11750,7 @@ $selection.InsertNewPage()
 $vpnvserverscount = Get-vNetScalerObjectCount -Container config -Object vpnvserver;
 $vpnvservers = Get-vNetScalerObject -Container config -Object vpnvserver;
 
-if($vpnvserverscount.__count -le 0) { WriteWordLine 0 0 "No Citrix ADC Gateway has been configured"} else {
+if($vpnvserverscount.__count -le 0) { WriteWordLine 0 0 "No Citrix ADC Gateways have been configured"} else {
 
     foreach ($vpnvserver in $vpnvservers) {
         $vpnvservername = $vpnvserver.name
@@ -12019,6 +12148,55 @@ WriteWordLine 0 0 " "
 $Table = $null
     #endregion CAG Rewrite Policies 
 
+        #region Cert Bindings
+    $vpncertbindingscount = Get-vNetScalerObjectCount -Container Config -ResourceType sslvserver_sslcertkey_binding -Name $vpnvserver.Name;
+    $vpncertcount = $vpncertbindingscount.__count
+    $vpncertbindings = Get-vNetScalerObject -ResourceType sslvserver_sslcertkey_binding -Name $vpnvserver.Name;
+    WriteWordLine 3 0 "Certificates"
+    WriteWordLine 0 0 " "
+
+   
+    if($vpncertcount -le 0) { WriteWordLine 0 0 "No SSL Certificates are bound to the vServer."} else {
+      
+          ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $CERTSH = @();
+
+    foreach($vpncert in $vpncertbindings) {
+        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+        ## IB - command will be about 400 characters wide!
+        $CERTSH += @{
+                NAME = $vpncert.certkeyname;
+                CA = $vpncert.ca;
+                CRL = $vpncert.crlcheck;
+                SNI = $vpncert.snicert;
+                OCSP = $vpncert.ocspcheck;
+                CLEAR = $vpncert.cleartextport;
+                
+            }
+        }
+        if ($CERTSH.Length -gt 0) {
+            $Params = $null
+            $Params = @{
+                Hashtable = $CERTSH;
+                Columns = "NAME","CA","CRL","SNI","OCSP","CLEAR";
+                Headers = "Certificate Name","CA Certificate","CRL Checks Enabled","SNI Enabled","OCSP Enabled","Clear Text Port";
+                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                AutoFit = $wdAutoFitContent;
+                }
+            $Table = AddWordTable @Params;
+            FindWordDocumentEnd;
+            WriteWordLine 0 0 " "
+            $Table = $null
+            }
+
+
+
+    }
+
+
+
+    #endregion Cert Bindings
+
     #region CAG SSL Configuration        
        
         WriteWordLine 3 0 "SSL Parameters"
@@ -12052,6 +12230,7 @@ $Table = $null
     @{ Column1 = "TLS 1"; Column2 = $cagsslparameters.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $cagsslparameters.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $cagsslparameters.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $cagsslparameters.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $cagsslparameters.snienable; }
     @{ Column1 = "PUSH Encryption Trigger"; Column2 = $cagsslparameters.pushenctrigger; }
     @{ Column1 = "Send Close-Notify"; Column2 = $cagsslparameters.sendclosenotify; }

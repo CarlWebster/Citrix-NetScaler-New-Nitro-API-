@@ -6,6 +6,8 @@
 	* FIX: Get-vNetScalerObjectCount always connects using non-SSL - thanks to Eglan Kurek for reporting
 	* Added User Administration > Database Users, SMPP Users and Command Policies
 	* Added Appflow Policies, Actions, Policy Labels and Analytics Profiles
+	* Added Logout of API session on script completion to clean up old connections
+	* Fixed issue where logon session to the NetScaler can time-out causing null values to be returned
 
 #Version 4.1 13-June-2018
 	* Name change from NetScaler to Citrix ADC (R.I.P NetScaler)
