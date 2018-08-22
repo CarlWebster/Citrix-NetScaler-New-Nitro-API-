@@ -139,7 +139,7 @@
 	This parameter is disabled by default.
 	This parameter has an alias of SI.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -150,7 +150,7 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -PDF
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -PDF
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -161,21 +161,21 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_1_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_2_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name.
 		Mod for the Cover Page format.
 		Carl Webster for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_1_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_2_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name (alias CN).
 		Mod for the Cover Page format (alias CP).
 		Carl Webster for the User Name (alias UN).
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -AddDateTime
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -191,7 +191,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.docx
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -PDF -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -PDF -AddDateTime
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -207,7 +207,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.PDF
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -Folder \\FileServer\ShareName
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -Folder \\FileServer\ShareName
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -220,7 +220,7 @@
 
 	Output file will be saved in the path \\FileServer\ShareName
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -235,7 +235,7 @@
 	Script will use the default SMPTP port 25 and will not use SSL.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_1_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -254,8 +254,8 @@
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-    NAME: Citrix_ADC_Script_v4_1.ps1
-	VERSION Citrix ADC Script: 4.1
+    NAME: Citrix_ADC_Script_v4_2.ps1
+	VERSION Citrix ADC Script: 4.2
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
@@ -268,13 +268,23 @@
 .COMMENT
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .Citrix ADC Documentation Script
-    NAME: Citrix_ADC_Script_v4_1.ps1
-	VERSION Citrix ADC Script: 4.1
+    NAME: Citrix_ADC_Script_v4_2.ps1
+	VERSION Citrix ADC Script: 4.2
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: June, 2018 
+	LASTEDIT: August, 2018 
+
+.Release Notes version 4.2
+
+	* FIX: Get-vNetScalerObjectCount always connects using non-SSL - thanks to Eglan Kurek for reporting
+	* Added User Administration > Database Users, SMPP Users and Command Policies
+	* Added Appflow Policies, Actions, Policy Labels and Analytics Profiles
+	* Added Logout of API session on script completion to clean up old connections
+	* Fixed issue where logon session to the NetScaler can time-out causing null values to be returned
+	* Added SSL Certificate bindings for Load Balancing and Content Switching vServers and Gateway
+	* Added TLS 1.3 to SSL Parameters
 
 .Release Notes version 4.1
 
@@ -2654,6 +2664,8 @@ SetFileName1andFileName2 "Citrix ADC Documentation"
 ## Barry Schiffer Use Stopwatch class to time script execution
 $sw = [Diagnostics.Stopwatch]::StartNew()
 
+##Disable Strict Mode to handle missing parameters
+Set-StrictMode -Off
 $selection.InsertNewPage()
 
 #region Nitro Functions
@@ -2873,6 +2885,32 @@ function Connect-vNetScalerSession {
     }
 } #end function Connect-vNetScalerSession
 
+function Logout-vNetScalerSession {
+<#
+    .SYNOPSIS
+        Authenticates to the Citrix ADC and stores a session cookie.
+#>
+    process {
+        if ($UseNSSSL) { $protocol = 'https'; }
+        else { $protocol = 'http'; }
+        $json = '{{ "logout": {}}';
+        $irmParameters = @{
+            Uri = ('{0}://{1}/nitro/v1/config/logout' -f $protocol, $script:nsSession.Address);;
+            Method = 'Post';
+            Body = $json;
+            ContentType = 'application/vnd.com.citrix.netscaler.logout+json';
+            WebSession = $script:nsSession.Session;
+            ErrorAction = 'Stop';
+            Verbose = ($PSBoundParameters['Debug'] -eq $true);
+        }
+        $restResponse = Invoke-RestMethod @irmParameters;
+        #Remove the Session Variable
+
+        Write-Output $restResponse;
+        Remove-Variable -Name nsSession -Scope Script
+    }
+} #end function Connect-vNetScalerSession
+
 function Get-vNetScalerObjectCount {
 <#
 .Synopsis
@@ -2881,7 +2919,9 @@ function Get-vNetScalerObjectCount {
     [CmdletBinding()]
     param (
         # Citrix ADC Nitro API Object, e.g. /nitro/v1/config/NSVERSION
-        [Parameter(Mandatory)] [string] $Object,
+        [Parameter(Mandatory)] [Alias('ResourceType')] [string] $Object,
+        # Citrix ADC Nitro API resource name, e.g. /nitro/v1/config/lbvserver/MYLBVSERVER
+        [Parameter()] [Alias('Name')] [System.String] $ResourceName,
         # Citrix ADC Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
         [Parameter(Mandatory)] [ValidateSet('Stat','Config')] [string] $Container
     )
@@ -2889,10 +2929,17 @@ function Get-vNetScalerObjectCount {
     begin {
         ## Check session cookie
         if ($script:nsSession.Session -eq $null) { throw 'Invalid Citrix ADC session cookie.'; }
+        if ($script:nsSession.UseNSSSL) { $protocol = 'https'; }
+        else { $protocol = 'http'; }
     }
 
     process {
-        $uri = 'http://{0}/nitro/v1/{1}/{2}?count=yes' -f $script:nsSession.Address, $Container.ToLower(), $Object.ToLower();
+        If ($ResourceName) {
+          $uri = '{0}://{1}/nitro/v1/{2}/{3}/{4}?count=yes' -f $protocol,$script:nsSession.Address, $Container.ToLower(), $Object.ToLower(), $ResourceName;
+        } Else {
+          $uri = '{0}://{1}/nitro/v1/{2}/{3}?count=yes' -f $protocol,$script:nsSession.Address, $Container.ToLower(), $Object.ToLower();
+        }
+        
         $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
         # $objectResponse = '{0}objects' -f $Container.ToLower();
         Write-Output $restResponse.($Object.ToLower());
@@ -2961,7 +3008,11 @@ function IsNull($objectToCheck) {
 
 function Get-NonEmptyString($String) {
 
+  If (-not $String) {
+    Return "N/A"
+  } Else {
   Return "$String "
+  }
 
 }
 
@@ -3560,11 +3611,53 @@ if ($AUTHLOCH.Length -gt 0) {
 WriteWordLine 0 0 " "
 #endregion Authentication Local Administration Users
 
+#region Database Users
+WriteWordLine 3 0 "Citrix ADC Database Users"
+WriteWordLine 0 0 " "
+$nsdbusercounter = Get-vNetScalerObjectCount -Container config -Object dbuser; 
+$nsbdusercount = $nsdbusercounter.__count
+
+if($nsdbusercounter.__count -le 0) { WriteWordLine 0 0 "No Database Users have been configured"} else {
+$nsdbusers = Get-vNetScalerObject -Container config -Object dbuser;
+
+$DBUserH = $null    
+## IB - Use an array of hashtable to store the rows
+[System.Collections.Hashtable[]] $DBUserH = @();
+
+foreach ($dbuser in $nsdbusers) {
+
+    ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+    ## IB - command will be about 400 characters wide!
+    $DBUserH += @{
+            DBUser = $dbuser.username;
+        }
+    }
+
+if ($DBUserH.Length -gt 0) {
+    $Params = $null
+    $Params = @{
+        Hashtable = $DBUserH;
+        Columns = "DBUser";
+        Headers = "Database User";
+        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+        AutoFit = $wdAutoFitContent;
+        }
+    $Table = AddWordTable @Params;
+    FindWordDocumentEnd;
+    $Table = $null
+    }
+}
+WriteWordLine 0 0 " "
+#endregion Database Users
+
 #region Authentication Local Administration Groups
 WriteWordLine 3 0 "Citrix ADC System Groups"
 WriteWordLine 0 0 " "
 $nssystemgroups = Get-vNetScalerObject -Container config -Object systemgroup;
-    
+$nssystemgroupscounter = Get-vNetScalerObjectCount -Container config -Object systemgroup; 
+$nssystemgroupscount = $nssystemgroupscounter.__count
+
+if($nssystemgroupscount -le 0) { WriteWordLine 0 0 "No System Groups have been configured"} else {
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $AUTHGRPH = @();
 
@@ -3589,10 +3682,90 @@ if ($AUTHGRPH.Length -gt 0) {
     FindWordDocumentEnd;
     $Table = $null
     }
-else { WriteWordLine 0 0 "No Local Groups have been configured"}
+}
 WriteWordLine 0 0 " "
 
 #endregion Authentication Local Administration Groups
+
+#region SMPP Users
+WriteWordLine 3 0 "Citrix ADC SMPP Users"
+WriteWordLine 0 0 " "
+$nssmppusercounter = Get-vNetScalerObjectCount -Container config -Object smppuser; 
+$nssmppusercount = $nssmppusercounter.__count
+
+if($nssmppusercounter.__count -le 0) { WriteWordLine 0 0 "No SMPP Users have been configured"} else {
+$nssmppusers = Get-vNetScalerObject -Container config -Object smppuser;
+
+$SMPPUserH = $null    
+## IB - Use an array of hashtable to store the rows
+[System.Collections.Hashtable[]] $SMPPUserH = @();
+
+foreach ($smppuser in $nssmppusers) {
+
+    ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+    ## IB - command will be about 400 characters wide!
+    $SMPPUserH += @{
+            SMPPUser = $smppuser.username;
+        }
+    }
+
+if ($SMPPUserH.Length -gt 0) {
+    $Params = $null
+    $Params = @{
+        Hashtable = $SMPPUserH;
+        Columns = "SMPPUser";
+        Headers = "SMPP User";
+        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+        AutoFit = $wdAutoFitContent;
+        }
+    $Table = AddWordTable @Params;
+    FindWordDocumentEnd;
+    $Table = $null
+    }
+}
+WriteWordLine 0 0 " "
+#endregion SMPP Users
+
+#region Command Policies
+WriteWordLine 3 0 "Citrix ADC Command Policies"
+WriteWordLine 0 0 " "
+$nscmdpolcounter = Get-vNetScalerObjectCount -Container config -Object systemcmdpolicy; 
+$nscmdpolcount = $nscmdpolcounter.__count
+
+if($nscmdpolcounter.__count -le 0) { WriteWordLine 0 0 "No Command Policies have been configured"} else {
+$nscmdpols = Get-vNetScalerObject -Container config -Object systemcmdpolicy;
+
+$CMDPOLH = $null    
+## IB - Use an array of hashtable to store the rows
+[System.Collections.Hashtable[]] $CMDPOLH = @();
+
+foreach ($nscmdpol in $nscmdpols) {
+
+    ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+    ## IB - command will be about 400 characters wide!
+    $CMDPOLH += @{
+            NAME = $nscmdpol.policyname;
+            ACTION = $nscmdpol.action;
+            CMDSPEC = $nscmdpol.cmdspec;
+        }
+    }
+
+if ($CMDPOLH.Length -gt 0) {
+    $Params = $null
+    $Params = @{
+        Hashtable = $CMDPOLH;
+        Columns = "NAME","ACTION","CMDSPEC";
+        Headers = "Policy Name", "Action", "Command Policy";
+        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+        AutoFit = $wdAutoFitContent;
+        }
+    $Table = AddWordTable @Params;
+    FindWordDocumentEnd;
+    $Table = $null
+    }
+}
+WriteWordLine 0 0 " "
+#endregion SMPP Users
 
 #region RPC Nodes
 
@@ -3962,6 +4135,399 @@ WriteWordLine 0 0 " "
 $selection.InsertNewPage()
 
 #endregion Citrix ADC Monitoring
+
+#region Citrix ADC AppFlow
+
+$Chapter++
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC AppFlow"
+
+WriteWordLine 1 0 "Citrix ADC AppFlow"
+WriteWordLine 0 0 " "
+#region AppFlow Parameters
+WriteWordLine 2 0 "AppFlow Parameters"
+WriteWordLine 0 0 " "
+
+$afparams = Get-vNetScalerObject -Object appflowparam;
+
+## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $AFPARAMH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    
+    @{ Column1 = "HTTP URL"; Column2 = $afparams.httpurl; }
+    @{ Column1 = "HTTP Cookie"; Column2 = $afparams.httocookie; }
+    @{ Column1 = "HTTP Method"; Column2 = $afparams.httpmethod; }
+    @{ Column1 = "HTTP User-Agent"; Column2 = $afparams.httpuseragent; }
+    @{ Column1 = "HTTP Authorization"; Column2 = $afparams.httpauthorization; }
+    @{ Column1 = "HTTP Via"; Column2 = $afparams.httpvia; }
+    @{ Column1 = "HTTP Setcookie"; Column2 = $afparams.httpsetcookie; }
+    @{ Column1 = "HTTP Client Traffic Only"; Column2 = $afparams.clienttrafficonly; }
+    @{ Column1 = "HTTP Domain"; Column2 = $afparams.httpdomain; }
+    @{ Column1 = "Stream Identifier Name Logging"; Column2 = $afparams.identifiername; }
+    @{ Column1 = "Cache Insight"; Column2 = $afparams.cacheinsight; }
+    @{ Column1 = "Subscriber Awareness"; Column2 = $afparams.subscriberawareness; }
+    @{ Column1 = "Security Insight Traffic"; Column2 = $afparams.securityinsighttraffic; }
+    @{ Column1 = "URL Category"; Column2 = $afparams.urlcategory; }
+    @{ Column1 = "CQA Reporting"; Column2 = $afparams.cqareporting; }
+    @{ Column1 = "AAA Username"; Column2 = $afparams.aaausername; }
+    @{ Column1 = "HTTP Referrer"; Column2 = $afparams.httpreferer; }
+    @{ Column1 = "HTTP Host"; Column2 = $afparams.httphost; }
+    @{ Column1 = "HTTP Content-Type"; Column2 = $afparams.httpcontenttype; }
+    @{ Column1 = "HTTP X-Forwarded-For"; Column2 = $afparams.httpxforwardedfor; }
+    @{ Column1 = "HTTP Location"; Column2 = $afparams.httplocation; }
+    @{ Column1 = "HTTP Setcookie2"; Column2 = $afparams.httpsetcookie2; }
+    @{ Column1 = "Connection Chaining"; Column2 = $afparams.connectionchaining; }
+    @{ Column1 = "Skip Cache Redirection HTTP Transaction"; Column2 = $afparams.skipcacheredirectionhttptransaction; }
+    @{ Column1 = "Stream Identifier Session Name Logging"; Column2 = $afparams.identifiersessionname; }
+    @{ Column1 = "Video Insight"; Column2 = $afparams.videoinsight; }
+    @{ Column1 = "Subscriber ID Obfuscation"; Column2 = $afparams.subscriberidobfuscation; }
+    @{ Column1 = "HTTP Query Segment Along With the URL"; Column2 = $afparams.httpquerywithurl; }
+    @{ Column1 = "LSN Logging"; Column2 = $afparams.lsnlogging; }
+    @{ Column1 = "User Email-ID Logging"; Column2 = $afparams.emailaddress; }
+    @{ Column1 = "Observation Domain ID"; Column2 = $afparams.observationdomainid; }
+    @{ Column1 = "Observation Domain Name"; Column2 = $afparams.observationdomainname; }
+    @{ Column1 = "Template Refresh Interval"; Column2 = $afparams.templaterefresh; }
+    @{ Column1 = "Appname Refresh Interval"; Column2 = $afparams.appnamerefresh; }
+    @{ Column1 = "Flow Record Export Interval"; Column2 = $afparams.flowrecordinterval; }
+    @{ Column1 = "UDP Max Transmission Unit"; Column2 = $afparams.udppmtu; }
+    @{ Column1 = "Security Insight Record Interval"; Column2 = $afparams.securityinsightrecordinterval; }
+
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $AFPARAMH;
+    Columns = "Column1","Column2";
+    Headers = "Description","Value";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+#endregion AppFlow Parameters
+
+#region AppFlow Collectors
+
+WriteWordLine 2 0 "AppFlow Collectors"
+WriteWordLine 0 0 " "
+$afcolcounter = Get-vNetScalerObjectCount -Container config -Object appflowcollector; 
+$afcolscount = $afcolcounter.__count
+
+$afcols = Get-vNetScalerObject -Container config -Object appflowcollector; 
+
+if($afcolscount -le 0) { WriteWordLine 0 0 "No AppFlow Collectors have been configured"} else {
+    ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $AFCOLSH = @();
+
+    foreach ($afcol in $afcols) {
+
+        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+        ## IB - command will be about 400 characters wide!
+        $AFCOLSH += @{
+                Name = $afcol.name;
+                IP = $afcol.ipaddress;
+                Port = $afcol.port;
+                NetProfile = (Get-NonEmptyString $afcol.netprofile);
+                Transport = (Get-NonEmptyString $afcol.transport);
+                
+            }
+        }
+        if ($AFCOLSH.Length -gt 0) {
+            $Params = $null
+            $Params = @{
+                Hashtable = $AFCOLSH;
+                Columns = "Name","IP","Port","NetProfile","Transport";
+                Headers = "Name","IP Address","Port","Net Profile","Transport";
+                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                AutoFit = $wdAutoFitContent;
+                }
+            $Table = AddWordTable @Params;
+            FindWordDocumentEnd;
+            $Table = $null
+        }
+    }
+WriteWordLine 0 0 " "
+
+#endregion AppFlow Collectors
+
+#region AppFlow Policies
+
+WriteWordLine 2 0 "AppFlow Policies"
+WriteWordLine 0 0 " "
+$afpolcounter = Get-vNetScalerObjectCount -Container config -Object appflowpolicy; 
+$afpolscount = $afpolcounter.__count
+
+$afpols = Get-vNetScalerObject -Container config -Object appflowpolicy; 
+
+if($afpolscount -le 0) { WriteWordLine 0 0 "No AppFlow Policies have been configured"} else {
+    ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $AFPOLSH = @();
+
+    foreach ($afpol in $afpols) {
+
+        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+        ## IB - command will be about 400 characters wide!
+        $AFPOLSH += @{
+                Name = $afpol.name;
+                Rule = $afpol.rule;
+                Action = $afpol.action;
+                UNDEFaction = Get-NonEmptyString $afpol.undefaction;
+                Comment = Get-NonEmptyString $afpol.comment;
+                
+            }
+        }
+        if ($AFPOLSH.Length -gt 0) {
+            $Params = $null
+            $Params = @{
+                Hashtable = $AFPOLSH;
+                Columns = "Name","Rule","Action","UNDEFaction","Comment";
+                Headers = "Name","Rule","Action","UNDEF Action","Comments";
+                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                AutoFit = $wdAutoFitContent;
+                }
+            $Table = AddWordTable @Params;
+            FindWordDocumentEnd;
+            $Table = $null
+        }
+    }
+WriteWordLine 0 0 " "
+
+#endregion AppFlow Policies
+
+#region AppFlow Actions
+
+WriteWordLine 2 0 "AppFlow Actions"
+WriteWordLine 0 0 " "
+
+$afactcounter = Get-vNetScalerObjectCount -Container config -Object appflowaction; 
+$afactscount = $afactcounter.__count
+
+$afacts = Get-vNetScalerObject -Container config -Object appflowaction; 
+
+if($afactscount -le 0) { WriteWordLine 0 0 "No AppFlow Actions have been configured"} else {
+
+ForEach ($afact in $afacts) {
+
+WriteWordLine 3 0 "Actions: $($afact.name)"
+WriteWordLine 0 0 " "
+
+
+## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $AFACTH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    
+    @{ Column1 = "Collectors"; Column2 = $afact.collectors -join ","; }
+    @{ Column1 = "Enable Client Side Measurement"; Column2 = $afact.clientsidemeasurements; }
+    @{ Column1 = "Page Tracking"; Column2 = $afact.pagetracking; }
+    @{ Column1 = "Web Insight"; Column2 = $afact.webinsight; }
+    @{ Column1 = "Security Insight"; Column2 = $afact.securityinsight; }
+    @{ Column1 = "Distribution Algorithm"; Column2 = $afact.distributionalgorithm; }
+    @{ Column1 = "Video Analytics"; Column2 = $afact.videoanalytics; }
+    @{ Column1 = "Comments"; Column2 = $afact.comment; }
+ 
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $AFACTH;
+    Columns = "Column1","Column2";
+    Headers = "Description","Value";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+}
+
+}
+
+#endregion AppFlow Actions
+
+#region AppFlow Policy Labels
+
+WriteWordLine 2 0 "AppFlow Policy Labels"
+WriteWordLine 0 0 " "
+
+$afpollblcounter = Get-vNetScalerObjectCount -Container config -Object appflowpolicylabel; 
+$afpollblscount = $afpollblcounter.__count
+
+$afpollbls = Get-vNetScalerObject -Container config -Object appflowpolicylabel; 
+
+if($afpollblscount -le 0) { WriteWordLine 0 0 "No AppFlow Policy Labels have been configured."} else {
+
+ForEach ($afpollbl in $afpollbls) {
+
+WriteWordLine 3 0 "Policy Label: $($afpollbl.labelname)"
+WriteWordLine 0 0 " "
+
+
+## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $AFPOLLBLH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    
+    @{ Column1 = "Label Type"; Column2 = $afpollbl.policylabeltype; }
+    @{ Column1 = "Number of Bound Policies"; Column2 = $afpollbl.numpols; }
+
+ 
+ 
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $AFPOLLBLH;
+    Columns = "Column1","Column2";
+    Headers = "Description","Value";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+    $afpollblbindscounter = Get-vNetScalerObjectCount -Container config -Object appflowpolicylabel_appflowpolicy_binding -ResourceName $afpollbl.labelname; 
+    $afpollblbindscount = $afpollblbindscounter.__count
+
+    if($afpollblbindscount -le 0) { WriteWordLine 0 0 "No AppFlow Policies have been bound."} else {
+
+    $afpolbinds = Get-vNetScalerObject -Container config -Object appflowpolicylabel_appflowpolicy_binding -ResourceName $afpollbl.labelname; 
+        ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $AFPOLBINDSH = @();
+
+      foreach ($afpolbind in $afpolbinds) {
+
+        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+        ## IB - command will be about 400 characters wide!
+        $AFPOLBINDSH += @{
+                Priority = $afpolbind.priority;
+                Name = $afpolbind.policyname;
+                GoToExpression = Get-NonEmptyString $afpolbind.gotopriorityexpression;
+                Invoke = Get-NonEmptyString $afpolbind.invoke;
+
+                
+            }
+        }
+        if ($AFPOLBINDSH.Length -gt 0) {
+            $Params = $null
+            $Params = @{
+                Hashtable = $AFPOLBINDSH;
+                Columns = "Priority","Name","GoToExpression","Invoke";
+                Headers = "Priority","Policy Name","GoTo Expression","Invoke";
+                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                AutoFit = $wdAutoFitContent;
+                }
+            $Table = AddWordTable @Params;
+            FindWordDocumentEnd;
+            $Table = $null
+        }
+
+    }
+
+}
+
+}
+
+
+
+#end region AppFlow Policy Labels
+
+#region AppFlow Analytics Profiles
+
+WriteWordLine 2 0 "AppFlow Analytics Profiles"
+WriteWordLine 0 0 " "
+
+$aprcounter = Get-vNetScalerObjectCount -Container config -Object analyticsprofile; 
+$aprscount = $aprcounter.__count
+
+$aprofs = Get-vNetScalerObject -Container config -Object analyticsprofile; 
+
+if($aprscount -le 0) { WriteWordLine 0 0 "No AppFlow Analytics Profiles have been configured."} else {
+
+ForEach ($aprof in $aprofs) {
+
+WriteWordLine 3 0 "Analytics Profile: $($aprof.name)"
+WriteWordLine 0 0 " "
+
+
+## IB - Create an array of hashtables to store our columns.
+## IB - about column names as we'll utilise a -List(view)!
+[System.Collections.Hashtable[]] $APROFH = @(
+    ## IB - Each hashtable is a separate row in the table!
+    
+    @{ Column1 = "Collectors"; Column2 = $aprof.collectors -join ","; }
+    @{ Column1 = "Type"; Column2 = $aprof.type; }
+    @{ Column1 = "HTTP Client Side Measurement"; Column2 = $aprof.httpclientsidemeasurements; }
+    @{ Column1 = "HTTP Page Tracking"; Column2 = $aprof.httppagetracking; }
+    @{ Column1 = "HTTP URL"; Column2 = $aprof.httpurl; }
+    @{ Column1 = "HTTP Host"; Column2 = $aprof.httphost; }
+    @{ Column1 = "HTP Method"; Column2 = $aprof.httpmethod; }
+    @{ Column1 = "HTTP Referrer"; Column2 = $aprof.httpreferer; }
+    @{ Column1 = "HTTP User Agent"; Column2 = $aprof.httpuseragent; }
+    @{ Column1 = "HTTP Cookie"; Column2 = $aprof.httpcookie; }
+    @{ Column1 = "HTTP Location"; Column2 = $aprof.httplocation; }
+    @{ Column1 = "URL Category"; Column2 = $aprof.urlcategory; }
+    @{ Column1 = "HTTP Content Type"; Column2 = $aprof.httpcontenttype; }
+    @{ Column1 = "HTTP Authentication"; Column2 = $aprof.httpauthentication; }
+    @{ Column1 = "HTTP Via"; Column2 = $aprof.httpvia; }
+    @{ Column1 = "HTTP X Forwarded For Header"; Column2 = $aprof.httpxforwardedforheader; }
+    @{ Column1 = "HTTP Set Cookie"; Column2 = $aprof.httpsetcookie; }
+    @{ Column1 = "HTTP Set Cookie2"; Column2 = $aprof.httpsetcookie2; }
+    @{ Column1 = "HTTP Domain Name"; Column2 = $aprof.httpdomainname; }
+    @{ Column1 = "HTTP URL Query"; Column2 = $aprof.httpurlquery; }
+    @{ Column1 = "Integrated Cache"; Column2 = $aprof.integratedcache; }
+    @{ Column1 = "TCP Burst Reporting"; Column2 = $aprof.tcpburstreporting; }
+
+    
+);
+
+## IB - Create the parameters to pass to the AddWordTable function
+$Params = $null
+$Params = @{
+    Hashtable = $APROFH;
+    Columns = "Column1","Column2";
+    Headers = "Description","Value";
+    AutoFit = $wdAutoFitContent;
+    Format = -235; ## IB - Word constant for Light List Accent 5
+}
+
+$Table = AddWordTable @Params;
+
+FindWordDocumentEnd;
+
+WriteWordLine 0 0 " "
+$Table = $null
+
+}
+
+}
+
+
+#endregion AppFlow Analytics Profiles
+
+#endregion Citrix ADC AppFlow
 
 #region Citrix ADC Auditing
 
@@ -5412,6 +5978,8 @@ WriteWordLine 0 0 " "
 
 #endregion NetScaler Authentication
 
+#endregion Citrix ADC System Information
+
 #region traffic management
 
 
@@ -5458,6 +6026,7 @@ foreach ($ContentSwitch in $csvservers) {
     $Table = $null
     $csvserverbindings = Get-vNetScalerObject -ResourceType csvserver_cspolicy_binding -Name $ContentSwitch.Name;
 
+    #region CS Policies
     WriteWordLine 3 0 "Policies"
     WriteWordLine 0 0 " "
     [System.Collections.Hashtable[]] $ContentSwitchPolicies = @();
@@ -5499,6 +6068,9 @@ foreach ($ContentSwitch in $csvservers) {
     }
     FindWordDocumentEnd;
 
+    #endregion CS Policies
+
+    #region CS Advanced Config
     WriteWordLine 0 0 " "
     WriteWordLine 3 0 "Advanced Configuration"
 
@@ -5528,7 +6100,63 @@ foreach ($ContentSwitch in $csvservers) {
 	$Table = $Null     
     
     FindWordDocumentEnd;
-    $selection.InsertNewPage()
+
+    WriteWordLine 0 0 " "
+
+    #endregion CS Advanced Config
+    #Don't process SSL unless we are using an SSL based Service Type
+    If ($ContentSwitch.ServiceType -match "SSL" ) {
+    #region Cert Bindings
+    $cscertbindingscount = Get-vNetScalerObjectCount -Container Config -ResourceType sslvserver_sslcertkey_binding -Name $ContentSwitch.Name;
+    $cscertcount = $cscertbindingscount.__count
+    $cscertbindings = Get-vNetScalerObject -ResourceType sslvserver_sslcertkey_binding -Name $ContentSwitch.Name;
+    WriteWordLine 3 0 "Certificates"
+    WriteWordLine 0 0 " "
+
+   
+    if($cscertcount -le 0) { WriteWordLine 0 0 "No SSL Certificates are bound to the vServer."} else {
+      
+          ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $CERTSH = @();
+
+    foreach($cscert in $cscertbindings) {
+        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+        ## IB - command will be about 400 characters wide!
+        $CERTSH += @{
+                NAME = $cscert.certkeyname;
+                CA = $cscert.ca;
+                CRL = $cscert.crlcheck;
+                SNI = $cscert.snicert;
+                OCSP = $cscert.ocspcheck;
+                CLEAR = $cscert.cleartextport;
+                
+            }
+        }
+        if ($CERTSH.Length -gt 0) {
+            $Params = $null
+            $Params = @{
+                Hashtable = $CERTSH;
+                Columns = "NAME","CA","CRL","SNI","OCSP","CLEAR";
+                Headers = "Certificate Name","CA Certificate","CRL Checks Enabled","SNI Enabled","OCSP Enabled","Clear Text Port";
+                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                AutoFit = $wdAutoFitContent;
+                }
+            $Table = AddWordTable @Params;
+            FindWordDocumentEnd;
+            WriteWordLine 0 0 " "
+            $Table = $null
+            }
+
+
+
+    }
+
+
+
+    #endregion Cert Bindings
+
+    } #End If ($ContentSwitch.ServiceType -contains "SSL" )
+
 
 } # end if
 
@@ -5589,7 +6217,7 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 	$Table = $Null
     $LBSRVH = $Null
     WriteWordLine 0 0 " "
- 
+    #region services and groups
         ##Services Table
         WriteWordLine 3 0 "Service and Service Group"
         WriteWordLine 0 0 " "
@@ -5661,6 +6289,9 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
             WriteWordLine 0 0 " "
             }
     WriteWordLine 0 0 " "
+    #endregion services and groups
+
+    #region policies
     WriteWordLine 3 0 "Policies"
     WriteWordLine 0 0 " "
         If ($lbvserverbindings.lbvserver_responderpolicy_binding.count -gt 0){
@@ -5721,6 +6352,10 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
+    #endregion policies
+
+    #region redirect
+
     WriteWordLine 3 0 "Redirect URL"
     WriteWordLine 0 0 " "
     ## IB - Use an array of hashtable to store the rows
@@ -5748,7 +6383,9 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 
     FindWordDocumentEnd;
     } else {WriteWordLine 0 0 "No Redirection URL Configured"}
-   
+
+    #endregion redirect
+    #region Advanced
     ##Advanced Configuration   
     WriteWordLine 0 0 " "
     WriteWordLine 3 0 "Advanced Configuration"
@@ -5794,6 +6431,60 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 	$Table = $Null
 
     $selection.InsertNewPage()
+
+    #endregion advanced
+
+        If ($LoadBalancer.ServiceType -match "SSL" ) {
+    #region Cert Bindings
+    $lbcertbindingscount = Get-vNetScalerObjectCount -Container Config -ResourceType sslvserver_sslcertkey_binding -Name $LoadBalancer.Name;
+    $lbcertcount = $lbcertbindingscount.__count
+    $lbcertbindings = Get-vNetScalerObject -ResourceType sslvserver_sslcertkey_binding -Name $LoadBalancer.Name;
+    WriteWordLine 3 0 "Certificates"
+    WriteWordLine 0 0 " "
+
+   
+    if($lbcertcount -le 0) { WriteWordLine 0 0 "No SSL Certificates are bound to the vServer."} else {
+      
+          ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $CERTSH = @();
+
+    foreach($lbcert in $lbcertbindings) {
+        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+        ## IB - command will be about 400 characters wide!
+        $CERTSH += @{
+                NAME = $lbcert.certkeyname;
+                CA = $lbcert.ca;
+                CRL = $lbcert.crlcheck;
+                SNI = $lbcert.snicert;
+                OCSP = $lbcert.ocspcheck;
+                CLEAR = $lbcert.cleartextport;
+                
+            }
+        }
+        if ($CERTSH.Length -gt 0) {
+            $Params = $null
+            $Params = @{
+                Hashtable = $CERTSH;
+                Columns = "NAME","CA","CRL","SNI","OCSP","CLEAR";
+                Headers = "Certificate Name","CA Certificate","CRL Checks Enabled","SNI Enabled","OCSP Enabled","Clear Text Port";
+                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                AutoFit = $wdAutoFitContent;
+                }
+            $Table = AddWordTable @Params;
+            FindWordDocumentEnd;
+            WriteWordLine 0 0 " "
+            $Table = $null
+            }
+
+
+
+    }
+
+
+
+    #endregion Cert Bindings
+
+    } #End If ($ContentSwitch.ServiceType -contains "SSL" )
     }
 }
 #endregion Citrix ADC Load Balancers
@@ -6791,6 +7482,7 @@ WriteWordLine 0 0 " "
     @{ Column1 = "TLS 1"; Column2 = $SSLService.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $SSLService.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $SSLService.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $SSLService.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $SSLService.snienable; }
     @{ Column1 = "Enable Server Authentication"; Column2 = $SSLService.serverauth; }
     @{ Column1 = "Common Name"; Column2 = $SSLService.commonname; }
@@ -6862,6 +7554,7 @@ WriteWordLine 0 0 " "
     @{ Column1 = "TLS 1"; Column2 = $SSLServiceGrp.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $SSLServiceGrp.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $SSLServiceGrp.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $SSLServiceGrp.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $SSLServiceGrp.snienable; }
     @{ Column1 = "Enable Server Authentication"; Column2 = $SSLServiceGrp.serverauth; }
     @{ Column1 = "Common Name"; Column2 = $SSLServiceGrp.commonname; }
@@ -6939,6 +7632,7 @@ WriteWordLine 0 0 " "
     @{ Column1 = "TLS 1"; Column2 = $SSLProfile.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $SSLProfile.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $SSLProfile.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $SSLProfile.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $SSLProfile.snienable; }
     @{ Column1 = "Enable Server Authentication"; Column2 = $SSLProfile.serverauth; }
     @{ Column1 = "Common Name"; Column2 = $SSLProfile.commonname; }
@@ -8420,6 +9114,7 @@ $Table = $null
     @{ Column1 = "TLS 1"; Column2 = $aaasslparameters.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $aaasslparameters.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $aaasslparameters.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $aaasslparameters.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $aaasslparameters.snienable; }
     @{ Column1 = "PUSH Encryption Trigger"; Column2 = $aaasslparameters.pushenctrigger; }
     @{ Column1 = "Send Close-Notify"; Column2 = $aaasslparameters.sendclosenotify; }
@@ -11065,7 +11760,7 @@ $selection.InsertNewPage()
 $vpnvserverscount = Get-vNetScalerObjectCount -Container config -Object vpnvserver;
 $vpnvservers = Get-vNetScalerObject -Container config -Object vpnvserver;
 
-if($vpnvserverscount.__count -le 0) { WriteWordLine 0 0 "No Citrix ADC Gateway has been configured"} else {
+if($vpnvserverscount.__count -le 0) { WriteWordLine 0 0 "No Citrix ADC Gateways have been configured"} else {
 
     foreach ($vpnvserver in $vpnvservers) {
         $vpnvservername = $vpnvserver.name
@@ -11463,6 +12158,55 @@ WriteWordLine 0 0 " "
 $Table = $null
     #endregion CAG Rewrite Policies 
 
+        #region Cert Bindings
+    $vpncertbindingscount = Get-vNetScalerObjectCount -Container Config -ResourceType sslvserver_sslcertkey_binding -Name $vpnvserver.Name;
+    $vpncertcount = $vpncertbindingscount.__count
+    $vpncertbindings = Get-vNetScalerObject -ResourceType sslvserver_sslcertkey_binding -Name $vpnvserver.Name;
+    WriteWordLine 3 0 "Certificates"
+    WriteWordLine 0 0 " "
+
+   
+    if($vpncertcount -le 0) { WriteWordLine 0 0 "No SSL Certificates are bound to the vServer."} else {
+      
+          ## IB - Use an array of hashtable to store the rows
+    [System.Collections.Hashtable[]] $CERTSH = @();
+
+    foreach($vpncert in $vpncertbindings) {
+        ## IB - Create parameters for the hashtable so that we can splat them otherwise the
+        ## IB - command will be about 400 characters wide!
+        $CERTSH += @{
+                NAME = $vpncert.certkeyname;
+                CA = $vpncert.ca;
+                CRL = $vpncert.crlcheck;
+                SNI = $vpncert.snicert;
+                OCSP = $vpncert.ocspcheck;
+                CLEAR = $vpncert.cleartextport;
+                
+            }
+        }
+        if ($CERTSH.Length -gt 0) {
+            $Params = $null
+            $Params = @{
+                Hashtable = $CERTSH;
+                Columns = "NAME","CA","CRL","SNI","OCSP","CLEAR";
+                Headers = "Certificate Name","CA Certificate","CRL Checks Enabled","SNI Enabled","OCSP Enabled","Clear Text Port";
+                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
+                AutoFit = $wdAutoFitContent;
+                }
+            $Table = AddWordTable @Params;
+            FindWordDocumentEnd;
+            WriteWordLine 0 0 " "
+            $Table = $null
+            }
+
+
+
+    }
+
+
+
+    #endregion Cert Bindings
+
     #region CAG SSL Configuration        
        
         WriteWordLine 3 0 "SSL Parameters"
@@ -11496,6 +12240,7 @@ $Table = $null
     @{ Column1 = "TLS 1"; Column2 = $cagsslparameters.tls1; }
     @{ Column1 = "TLS 1.1"; Column2 = $cagsslparameters.tls11; }
     @{ Column1 = "TLS 1.2"; Column2 = $cagsslparameters.tls12; }
+    @{ Column1 = "TLS 1.3"; Column2 = $cagsslparameters.tls13; }
     @{ Column1 = "Server Name Indication (SNI)"; Column2 = $cagsslparameters.snienable; }
     @{ Column1 = "PUSH Encryption Trigger"; Column2 = $cagsslparameters.pushenctrigger; }
     @{ Column1 = "Send Close-Notify"; Column2 = $cagsslparameters.sendclosenotify; }
@@ -12331,7 +13076,7 @@ WriteWordLine 0 0 " "
 
 Write-Verbose "$(Get-Date): `t`tTable: Write Citrix ADC Network Profiles Table"
 
-$httprofiles = Get-vNetScalerObject -Container config -Object nshttpprofile;
+$netrofiles = Get-vNetScalerObject -Container config -Object netprofile;
 
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $NETPROFILESH = @();
@@ -12369,6 +13114,14 @@ $selection.InsertNewPage()
 #endregion Citrix ADC HTTP Profiles
 
 #endregion Citrix ADC Profiles
+
+#region Logout
+
+Logout-vNetScalerSession
+
+#endregion Logout
+
+
 
 #endregion Citrix ADC Documentation Script Complete
 
