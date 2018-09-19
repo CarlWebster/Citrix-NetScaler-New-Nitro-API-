@@ -291,13 +291,13 @@
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-    NAME: Citrix_ADC_Script_v4_2.ps1
-	VERSION Citrix ADC Script: 4.2
+    NAME: Citrix_ADC_Script_v4_3.ps1
+	VERSION Citrix ADC Script: 4.3
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: June 13th 2018 
+	LASTEDIT: September 18th 2018 
 #>
 
 #region changelog
@@ -305,8 +305,8 @@
 .COMMENT
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .Citrix ADC Documentation Script
-    NAME: Citrix_ADC_Script_v4_2.ps1
-	VERSION Citrix ADC Script: 4.2
+    NAME: Citrix_ADC_Script_v4_3.ps1
+	VERSION Citrix ADC Script: 4.3
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
