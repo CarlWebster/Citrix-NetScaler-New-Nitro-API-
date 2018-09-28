@@ -132,6 +132,23 @@
 	Text file is placed in the same folder from where the script is run.
 	
 	This parameter is disabled by default.
+.PARAMETER Offline
+    ALIAS Export
+    This disables the detection of MS Word and exports the API information to XML Files
+    stored by default in an 'ADCDocsExport' subfolder in the directory in the script folder. 
+    This location can be overridden with the OfflinePath or ExportPath Parameter
+.PARAMETER OfflinePath
+    This overrides the path that the offline XML files are exported to when run with the Offline parameter
+.PARAMETER Import
+    This generates the word output of the script using the XML files captured when running in Offline or Export mode.
+    By default this will load content from an ADCDocsExport subfolder in the script working directory. This path 
+    can be overridden using the ImportPath parameter.
+
+    IMPORTANT: When running in Import mode, the NSIP of the appliance that the data was exported from MUST be provided 
+    to successfully generate the report.
+.PARAMETER ImportPath
+    This overrides the location that XML content is loaded from when running in Import mode to generate a report using offline content.
+    The import path should be a full path to the folder containing the export data to be used.
 .PARAMETER ScriptInfo
 	Outputs information about the script to a text file.
 	Text file is placed in the same folder from where the script is run.
@@ -139,7 +156,7 @@
 	This parameter is disabled by default.
 	This parameter has an alias of SI.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -150,7 +167,7 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -PDF
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -PDF
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -161,21 +178,21 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_2_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_3_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name.
 		Mod for the Cover Page format.
 		Carl Webster for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_2_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_3_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name (alias CN).
 		Mod for the Cover Page format (alias CP).
 		Carl Webster for the User Name (alias UN).
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -AddDateTime
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -191,7 +208,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.docx
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -PDF -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -PDF -AddDateTime
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -207,7 +224,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.PDF
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -Folder \\FileServer\ShareName
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Folder \\FileServer\ShareName
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -220,7 +237,7 @@
 
 	Output file will be saved in the path \\FileServer\ShareName
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -235,7 +252,7 @@
 	Script will use the default SMPTP port 25 and will not use SSL.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_2_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -248,19 +265,39 @@
 	
 	Script will use the email server smtp.office365.com on port 587 using SSL, sending from webster@carlwebster.com, sending to ITGroup@carlwebster.com.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
+.EXAMPLE 
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Export
+      OR
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Offline
+
+    Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\PSScript\ADCDocsExport\.
+.EXAMPLE 
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Export -ExportPath "C:\ADCExport"
+      OR
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Offline -OfflinePath "C:\ADCExport"
+
+    Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\ADCExport\.
+.EXAMPLE 
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Import
+
+    Will create a configuration report using the API data stored in C:\PSScript\ADCDocsExport.
+.EXAMPLE 
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Import -ImportPath "C:\ADCExport"
+
+    Will create a configuration report using the API data stored in C:\ADCExport.
 .INPUTS
 	None.  You cannot pipe objects to this script.
 .OUTPUTS
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-    NAME: Citrix_ADC_Script_v4_2.ps1
-	VERSION Citrix ADC Script: 4.2
+    NAME: Citrix_ADC_Script_v4_3.ps1
+	VERSION Citrix ADC Script: 4.3
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: June 13th 2018 
+	LASTEDIT: September 18th 2018 
 #>
 
 #region changelog
@@ -268,13 +305,16 @@
 .COMMENT
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .Citrix ADC Documentation Script
-    NAME: Citrix_ADC_Script_v4_2.ps1
-	VERSION Citrix ADC Script: 4.2
+    NAME: Citrix_ADC_Script_v4_3.ps1
+	VERSION Citrix ADC Script: 4.3
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: August, 2018 
+	LASTEDIT: September, 2018 
+
+.Release Notes version 4.3
+    * Offline Usage - Added ability to export data on a workstation without Word installed and create report on another workstation 
 
 .Release Notes version 4.2
 
@@ -453,7 +493,8 @@ Param(
     [string] $NSIP,
     
     [parameter(Mandatory=$false ) ]
-    [PSCredential] $Credential = (Get-Credential -Message 'Enter Citrix ADC credentials'),
+    #[PSCredential] $Credential = (Get-Credential -Message 'Enter Citrix ADC credentials'),
+    [PSCredential] $Credential,
 	
 	## EXPERIMENTAL: Require SSL/TLS, e.g. https://. This requires the client to trust to the NetScaler's certificate.
     [parameter(Mandatory=$false )]
@@ -500,6 +541,24 @@ Param(
 
 	[parameter(Mandatory=$False)] 
 	[Switch]$Dev=$False,
+
+    [parameter(ParameterSetName="Export",Mandatory=$False)]
+    [parameter(ParameterSetName="Word",Mandatory=$False)]
+    [Alias("Export")] 
+	[Switch]$Offline=$False,
+
+    [parameter(ParameterSetName="Export",Mandatory=$False)]
+    [parameter(ParameterSetName="Word",Mandatory=$False)]
+    [Alias("ExportPath")] 
+	[String]$OfflinePath="$pwd\ADCDocsExport",
+
+    [parameter(ParameterSetName="Import",Mandatory=$False)] 
+    [parameter(ParameterSetName="Word",Mandatory=$False)]
+	[Switch]$Import=$False,
+
+    [parameter(ParameterSetName="Import",Mandatory=$False)]
+    [parameter(ParameterSetName="Word",Mandatory=$False)] 
+	[String]$ImportPath="$pwd\ADCDocsExport",
 	
 	[parameter(Mandatory=$False)] 
 	[Alias("SI")]
@@ -515,7 +574,7 @@ Param(
 Set-StrictMode -Version 2
 
 #force -verbose on
-$PSDefaultParameterValues = @{"*:Verbose"=$True}
+$PSDefaultParameterValues = @{"*:Verbose"=$False}
 $SaveEAPreference = $ErrorActionPreference
 $ErrorActionPreference = 'SilentlyContinue'
 #recommended by webster
@@ -610,6 +669,27 @@ If(!(Test-Path Variable:Dev))
 If(!(Test-Path Variable:ScriptInfo))
 {
 	$ScriptInfo = $False
+}
+
+If(!(Test-Path Variable:Offline))
+{
+	$Offline = $False
+}
+
+If(!(Test-Path Variable:Import))
+{
+	$Import = $False
+}
+
+If ($Offline -and $Import) {
+  #If both are specified then run normally as the admin wants to export and generate the word doc
+  $Offline = $false
+  $Import = $false
+  Write-Host "$(Get-Date): Script Mode: Classic" -ForegroundColor Green
+  } ElseIf ($Offline) {
+    Write-Host "$(Get-Date): Script Mode: Export" -ForegroundColor Green
+  } ElseIf ($Import) {
+    Write-Host "$(Get-Date): Script Mode: Import" -ForegroundColor Green
 }
 
 If($Dev)
@@ -1289,10 +1369,12 @@ Function _SetDocumentProperty
 
 Function FindWordDocumentEnd
 {
+    If (!$Offline) {
 	#return focus to main document    
 	$Script:Doc.ActiveWindow.ActivePane.view.SeekView = $wdSeekMainDocument
 	#move to the end of the current document
 	$Script:Selection.EndKey($wdStory,$wdMove) | Out-Null
+    }
 }
 
 Function SetupWord
@@ -1780,8 +1862,10 @@ Function WriteWordLine
 		# Do nothing.
 	} 
 	Else 
-	{
+	{ 
+        If (!$Offline) {
 		$Script:Selection.TypeParagraph()
+        }
 	}
 }
 #endregion
@@ -1885,6 +1969,8 @@ Function AddWordTable
 
 	Process
 	{
+
+        If (!$Offline){
 		## Build the Word table data string to be converted to a range and then a table later.
 		[System.Text.StringBuilder] $WordRangeString = New-Object System.Text.StringBuilder;
 
@@ -2050,6 +2136,8 @@ Function AddWordTable
 		}
 
 		Return $WordTable;
+
+        } # end If not offline
 
 	} ## end Process
 }
@@ -2486,7 +2574,9 @@ Function SetFileName1andFileName2
 
 	If($MSWord -or $PDF)
 	{
-		CheckWordPreReq
+        If (!$Offline) {
+		  CheckWordPreReq
+        }
 
 		If(!$AddDateTime)
 		{
@@ -2496,8 +2586,9 @@ Function SetFileName1andFileName2
 				[string]$Script:FileName2 = "$($pwdpath)\$($OutputFileName).pdf"
 			}
 		}
-
+        If (!$Offline) {
 		SetupWord
+        }
 	}
 }
 #endregion
@@ -2660,6 +2751,10 @@ SetFileName1andFileName2 "Citrix ADC Documentation"
 #endregion file name and title name
 
 #region Citrix ADC Documentation Script Complete
+#Variables for Progress Bar
+[int]$script:ProgressSteps = 98
+[int]$script:Progress = 0
+
 
 ## Barry Schiffer Use Stopwatch class to time script execution
 $sw = [Diagnostics.Stopwatch]::StartNew()
@@ -2667,6 +2762,35 @@ $sw = [Diagnostics.Stopwatch]::StartNew()
 ##Disable Strict Mode to handle missing parameters
 Set-StrictMode -Off
 $selection.InsertNewPage()
+
+
+#Check Paths for import/export
+if ($Offline) {
+  #Does the export path exists
+  if(!(Test-Path "$OfflinePath\")){
+    #If not then try and create it
+    New-Item -Path "$OfflinePath\" -ItemType directory | Out-Null
+    if(!(Test-Path "$OfflinePath\")) {
+    #If it still doesn't exist then something is wrong - so exit
+    Write-Host "Unable to find or create the export path: $OfflinePath" -ForegroundColor Red
+    Write-Host "Please try again with a different path using the -ExportPath parameter or confirm the location is accessible. Exiting." -ForegroundColor Red
+    Exit
+    }
+  }
+}
+
+if ($Import) {
+  #Does the import path exist
+  if(!(Test-Path "$ImportPath\")){
+    #If it doesn't exist then something is wrong - so exit
+    Write-Host "Unable to find the import path: $ImportPath" -ForegroundColor Red
+    Write-Host "Please try again with a different path using the -ImportPath parameter or confirm the location is accessible. Exiting." -ForegroundColor Red
+    Exit
+    } Else {
+      $OfflinePath = $ImportPath
+    }
+  
+}
 
 #region Nitro Functions
 
@@ -2689,7 +2813,9 @@ function Get-vNetScalerObjectList {
         $uri = '{0}://{1}/nitro/v1/{2}/' -f $protocol, $script:nsSession.Address, $Container;
         $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
         $methodResponse = '{0}objects' -f $Container.ToLower();
+
         Write-Output $restResponse.($methodResponse).objects;
+
     }
 } #end function Get-vNetScalerObjectList
 
@@ -2729,11 +2855,30 @@ function Get-vNetScalerObject {
         $uri = '{0}?bulkbindings=yes' -f $uri
         }
         $uri = [System.Uri]::EscapeUriString($uri.ToLower());
+        If (!$Import) {
         $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
-        if ($null -ne $restResponse.($ResourceType)) { Write-Output $restResponse.($ResourceType); }
-        else { Write-Output $restResponse }
+        }
+        If ($Offline) {
+          $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
+          $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
+          $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
+          Disable-Verbose
+          $restResponse.($ResourceType) | Export-CliXML -Path $OfflineExportPath | Out-Null
+          Write-Output $restResponse.($ResourceType)
+          Enable-Verbose
+        } ElseIf ($Import) {
+          $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
+          $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
+          $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
+          Import-Clixml -Path $OfflineExportPath | Write-Output
+        } Else {
+          if ($null -ne $restResponse.($ResourceType)) { Write-Output $restResponse.($ResourceType); }
+          else { Write-Output $restResponse }
+        }
     }
 } #end function Get-vNetScalerObject
+
+
 
 function Get-vNetScalerFile {
 
@@ -2764,10 +2909,28 @@ function Get-vNetScalerFile {
         #Don't URI encode as we've already replaced / with %2F as required - URL encoding after this, encodes the % which breaks the request
         #$uri = [System.Uri]::EscapeUriString($uri);
         #Write-Output $uri;
+        If (!$Import) {
         $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
-        $test = 1
+        }
+
+        If ($Offline) {
+          $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
+          $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
+          $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
+          Disable-Verbose
+          $restResponse.systemfile | Export-CliXML -Path $OfflineExportPath | Out-Null
+          Enable-Verbose
+          Write-Output $restResponse.systemfile;
+        } ElseIf ($Import) {
+          $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
+          $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
+          $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
+          Import-Clixml -Path $OfflineExportPath | Write-Output
+        } Else {
+
         if ($null -ne $restResponse.systemfile) { Write-Output $restResponse.systemfile; }
         else { Write-Output $restResponse }
+        }
     }
 } #end function Get-vNetScalerFile
 
@@ -2833,7 +2996,9 @@ function InvokevNetScalerNitroMethod {
             ErrorAction = 'Stop';
             Verbose = ($PSBoundParameters['Debug'] -eq $true);
         }
-        Write-Output (Invoke-RestMethod @irmParameters);
+        If (!$Import) {
+          Write-Output (Invoke-RestMethod @irmParameters);
+        }
     }
 } #end function InvokevNetScalerNitroMethod
 
@@ -2857,11 +3022,15 @@ function Connect-vNetScalerSession {
         # Citrix ADC authentication credentials
         [Parameter(ParameterSetName='HTTP')]
         [Parameter(ParameterSetName='HTTPS')]
-        [System.Management.Automation.PSCredential] $Credential = $(Get-Credential -Message "Provide Citrix ADC credentials for '$ComputerName'";),
+        [System.Management.Automation.PSCredential] $Credential,
         ## EXPERIMENTAL: Require SSL/TLS, e.g. https://. This requires the client to trust to the NetScaler's certificate.
         [Parameter(ParameterSetName='HTTPS')] [System.Management.Automation.SwitchParameter] $UseNSSSL
     )
     process {
+
+        If (!$Import) {
+        $Credential = $(Get-Credential -Message "Provide Citrix ADC credentials for '$ComputerName'";)
+        }
         if ($UseNSSSL) { $protocol = 'https'; }
         else { $protocol = 'http'; }
         $script:nsSession = @{ Address = $ComputerName; UseNSSSL = $UseNSSSL }
@@ -2875,7 +3044,9 @@ function Connect-vNetScalerSession {
             ErrorAction = 'Stop';
             Verbose = ($PSBoundParameters['Debug'] -eq $true);
         }
+        If (!$Import) {
         $restResponse = Invoke-RestMethod @invokeRestMethodParams;
+        }
         ## Store the session cookie at the script scope
         $script:nsSession.Session = $nsSessionCookie;
         ## Store the session expiry
@@ -2903,7 +3074,9 @@ function Logout-vNetScalerSession {
             ErrorAction = 'Stop';
             Verbose = ($PSBoundParameters['Debug'] -eq $true);
         }
+        If (!$Import) {
         $restResponse = Invoke-RestMethod @irmParameters;
+        }
         #Remove the Session Variable
 
         Write-Output $restResponse;
@@ -2939,10 +3112,27 @@ function Get-vNetScalerObjectCount {
         } Else {
           $uri = '{0}://{1}/nitro/v1/{2}/{3}?count=yes' -f $protocol,$script:nsSession.Address, $Container.ToLower(), $Object.ToLower();
         }
+        if (!$Import) {
+          $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
+        }
         
-        $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
+        If ($Offline) {
+          $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
+          $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
+          $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
+          Disable-Verbose
+          $restResponse.($Object.ToLower()) | Export-CliXML -Path $OfflineExportPath | Out-Null;
+          Enable-Verbose
+          Write-Output $restResponse.($Object.ToLower());
+        } ElseIf ($Import) {
+          $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
+          $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
+          $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
+          Import-Clixml -Path $OfflineExportPath | Write-Output
+        } Else {
         # $objectResponse = '{0}objects' -f $Container.ToLower();
         Write-Output $restResponse.($Object.ToLower());
+        }
     }
 }
 
@@ -2990,6 +3180,20 @@ Function Get-AttributeFromCSS {
 
 #region generic functions
 
+Function Enable-Verbose() {
+
+$VerbosePreference = "Continue"
+Return $VerbosePreference
+
+}
+
+Function Disable-Verbose() {
+
+$VerbosePreference = "SilentlyContinue"
+Return $VerbosePreference
+
+}
+
 function IsNull($objectToCheck) {
     if ($objectToCheck -eq $null) {
         return $true
@@ -3016,6 +3220,27 @@ function Get-NonEmptyString($String) {
 
 }
 
+Function Get-CleanBase64($String) {
+
+$String = $String.Replace("/", "_");
+$String = $String.Replace("=", "_");
+$String = $String.Replace("+", "_");
+
+If (($String.Length + $OfflinePath.Length) -ge 254) {
+
+$totalLength = $String.Length + $OfflinePath.Length
+[int]$charsToRemove = ($totalLength - 254) + 5
+
+  $String = $String.Remove(0, $charsToRemove)
+#Write-Host "New String: $String" -ForegroundColor Yellow
+
+}
+
+Write-Output $String
+
+
+}
+
 Function Get-StringFromBase64 {
 
     [CmdletBinding()]
@@ -3039,10 +3264,21 @@ Function Get-StringFromBase64 {
 
 }
 
+Function Set-Progress($Status) {
+$script:Progress++
+Write-Progress -Id 1 -Activity "Citrix ADC Documentation Script" -Status "Processing: $Status" -PercentComplete (($script:Progress / $script:ProgressSteps) * 100)
+
+}
+
+Function Close-Progress() {
+ Write-Progress -Id 1 -Activity "Citrix ADC Documentation Script" -Completed
+
+}
+
 #endregion generic functions
 
 #region Citrix ADC Connect
-
+Set-Progress -Status "Connecting to Citrix ADC"
 ## Ensure we can connect to the Citrix ADC appliance before we spin up Word!
 ## Connect to the API if there is no session cookie
 ## Note: repeated logons will result in 'Connection limit to cfe exceeded' errors.
@@ -3058,6 +3294,7 @@ $Chapter = 0
 
 #region Citrix ADC feature state
 ##Getting Feature states for usage later on and performance enhancements by not running parts of the script when feature is disabled
+Set-Progress -Status "Enumerating Feature Configuration"
 $NSFeatures = Get-vNetScalerObject -Container config -Object nsfeature -Verbose;
 If ($NSFEATURES.WL -eq "True") {$FEATWL = "Enabled"} Else {$FEATWL = "Disabled"}
 If ($NSFEATURES.SP -eq "True") {$FEATSP = "Enabled"} Else {$FEATSP = "Disabled"}
@@ -3117,12 +3354,14 @@ $Build = $($NSVersion1[5] + " " + $nsversion1[6] + " " + $nsversion1[7] -replace
 
 ## Set script test version
 ## WIP THIS WORKS ONLY WHEN REGIONAL SETTINGS DIGIT IS SET TO . :)
-$ScriptVersion = 12.
+$ScriptVersion = 12.1
 #endregion Citrix ADC Version
 
 #region Citrix ADC System Information
+Set-Progress -Status "Citrix ADC System Information"
 
 #region Basics
+Set-Progress -Status "Citrix ADC Configuration"
 WriteWordLine 1 0 "Citrix ADC Configuration"
 
 $nsconfig = Get-vNetScalerObject -Container config -Object nsconfig;
@@ -3152,7 +3391,7 @@ $Table = AddWordTable @Params;
 
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
-
+Set-Progress -Status "Citrix ADC Edition"
 WriteWordLine 2 0 "Citrix ADC Edition"
 WriteWordLine 0 0 " "
 $License = Get-vNetScalerObject -Container config -Object nslicense;
@@ -3177,7 +3416,7 @@ FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 
 #region Citrix ADC Status
-
+Set-Progress -Status "Citrix ADC Status"
 WriteWordLine 2 0 "Citrix ADC Status"
 WriteWordLine 0 0 " "
 $nsstatus = Get-vNetScalerObject -Container stat -Object ns;
@@ -3216,7 +3455,7 @@ WriteWordLine 0 0 " "
 
 #endregion Citrix ADC Status
 #region Citrix ADC Hardware
-
+Set-Progress -Status "Citrix ADC Hardware"
 WriteWordLine 2 0 "Citrix ADC Hardware"
 WriteWordLine 0 0 " "
 $nshardware = Get-vNetScalerObject -Container config -Object nshardware;
@@ -3257,7 +3496,7 @@ WriteWordLine 0 0 " "
 #endregion Citrix ADC Hardware
 
 #region Citrix ADC Capacity
-
+Set-Progress -Status "Citrix ADC Capacity"
 WriteWordLine 2 0 "Citrix ADC Capacity"
 WriteWordLine 0 0 " "
 $nscapacity = Get-vNetScalerObject -Container config -Object nscapacity;
@@ -3300,7 +3539,7 @@ WriteWordLine 0 0 " "
 #region Citrix ADC IP
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC IP"
-
+Set-Progress -Status "Citrix ADC Management IP"
 WriteWordLine 2 0 "Citrix ADC Management IP Address"
 WriteWordLine 0 0 " "
 
@@ -3328,10 +3567,10 @@ Foreach ($IP in $NSIP1){ ##Lists all Citrix ADC IPs while we only need NSIP for 
 #endregion Citrix ADC IP
 
 #region Citrix ADC High Availability
-
+Set-Progress -Status "Citrix ADC High Availability"
 WriteWordLine 2 0 "Citrix ADC High Availability"
 WriteWordLine 0 0 " "
-$HANodes = Get-vNetScalerObject -Container config -Object hanode;$
+$HANodes = Get-vNetScalerObject -Container config -Object hanode;
 
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $HAH = @();
@@ -3371,7 +3610,7 @@ foreach ($HANODE in $HANodes) {
 #region Citrix ADC Global HTTP Parameters
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Global HTTP Parameters"
-
+Set-Progress -Status "Citrix ADC Global HTTP Parameters"
 WriteWordLine 2 0 "Citrix ADC Global HTTP Parameters"
 WriteWordLine 0 0 " "
 $nshttpparam = Get-vNetScalerObject -Container config -Object nshttpparam;
@@ -3398,7 +3637,7 @@ $Table = $null
 #region Citrix ADC Global TCP Parameters
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Global TCP Parameters"
-
+Set-Progress -Status "Citrix ADC Global TCP Parameters"
 WriteWordLine 2 0 "Citrix ADC Global TCP Parameters"
 WriteWordLine 0 0 " "
 $nstcpparam = Get-vNetScalerObject -Container config -Object nstcpparam;
@@ -3429,7 +3668,7 @@ $nsdiameter = Get-vNetScalerObject -Container config -Object nsdiameter;
 
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Global Diameter Parameter"
-
+Set-Progress -Status "Citrix ADC Global Diameter Parameters"
 WriteWordLine 2 0 "Citrix ADC Global Diameter Parameters"
 WriteWordLine 0 0 " "
 $Params = $null
@@ -3456,6 +3695,7 @@ $Table = $null
 #region Citrix ADC Time Zone
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Time zone"
+Set-Progress -Status "Citrix ADC Time Zone"
 WriteWordLine 2 0 "Citrix ADC Time Zone"
 WriteWordLine 0 0 " "
 $Params = $null
@@ -3477,6 +3717,7 @@ WriteWordLine 0 0 " "
 #region Citrix ADC Location Database
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Location Database"
+Set-Progress -Status "Citrix ADC Location Database"
 WriteWordLine 2 0 "Citrix ADC Location Database"
 WriteWordLine 0 0 " "
 $nslocdbs = Get-vNetScalerObject -Container config -Object locationfile;
@@ -3521,6 +3762,7 @@ if ($LOCDBSH.Length -gt 0) {
 #region Citrix ADC Custom Location Entries
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Custom Location Entries"
+Set-Progress -Status "Citrix ADC Custom Location Entries"
 WriteWordLine 3 0 "Citrix ADC Custom Location Entries"
 WriteWordLine 0 0 " "
 $nslocs = Get-vNetScalerObject -Container config -Object location;
@@ -3574,10 +3816,12 @@ if ($LOCSH.Length -gt 0) {
 $selection.InsertNewPage()
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters System Authentication"
+Set-Progress -Status "Citrix ADC System Administration"
 WriteWordLine 2 0 "Citrix ADC System Authentication"
 WriteWordLine 0 0 " "
 
 #region Local Administration Users
+Set-Progress -Status "Citrix ADC System Users"
 WriteWordLine 3 0 "Citrix ADC System Users"
 WriteWordLine 0 0 " "
 $nssystemusers = Get-vNetScalerObject -Container config -Object systemuser;
@@ -3612,6 +3856,7 @@ WriteWordLine 0 0 " "
 #endregion Authentication Local Administration Users
 
 #region Database Users
+Set-Progress -Status "Citrix ADC DB Users"
 WriteWordLine 3 0 "Citrix ADC Database Users"
 WriteWordLine 0 0 " "
 $nsdbusercounter = Get-vNetScalerObjectCount -Container config -Object dbuser; 
@@ -3651,6 +3896,7 @@ WriteWordLine 0 0 " "
 #endregion Database Users
 
 #region Authentication Local Administration Groups
+Set-Progress -Status "Citrix ADC System Groups"
 WriteWordLine 3 0 "Citrix ADC System Groups"
 WriteWordLine 0 0 " "
 $nssystemgroups = Get-vNetScalerObject -Container config -Object systemgroup;
@@ -3688,6 +3934,7 @@ WriteWordLine 0 0 " "
 #endregion Authentication Local Administration Groups
 
 #region SMPP Users
+Set-Progress -Status "Citrix ADC SMPP Users"
 WriteWordLine 3 0 "Citrix ADC SMPP Users"
 WriteWordLine 0 0 " "
 $nssmppusercounter = Get-vNetScalerObjectCount -Container config -Object smppuser; 
@@ -3727,6 +3974,7 @@ WriteWordLine 0 0 " "
 #endregion SMPP Users
 
 #region Command Policies
+Set-Progress -Status "Citrix ADC Command Policies"
 WriteWordLine 3 0 "Citrix ADC Command Policies"
 WriteWordLine 0 0 " "
 $nscmdpolcounter = Get-vNetScalerObjectCount -Container config -Object systemcmdpolicy; 
@@ -3768,7 +4016,7 @@ WriteWordLine 0 0 " "
 #endregion SMPP Users
 
 #region RPC Nodes
-
+Set-Progress -Status "Citrix ADC RPC Nodes"
 WriteWordLine 2 0 "Citrix ADC RPC Nodes"
 WriteWordLine 0 0 " "
 $rpcnodecounter = Get-vNetScalerObjectCount -Container config -Object nsrpcnode; 
@@ -3812,7 +4060,7 @@ $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Features"
 
 $selection.InsertNewPage()
-
+Set-Progress -Status "Citrix ADC Features"
 WriteWordLine 1 0 "Citrix ADC Features"
 WriteWordLine 0 0 " "
 If ($Version -gt $ScriptVersion) {
@@ -3821,6 +4069,7 @@ If ($Version -gt $ScriptVersion) {
     WriteWordLine 0 0 ""
     }
 #region Citrix ADC Basic Features
+Set-Progress -Status "Citrix ADC Basic Features"
 WriteWordLine 2 0 "Citrix ADC Basic Features"
 WriteWordLine 0 0 " "
 ## IB - Use an array of hashtable to store the rows
@@ -3860,7 +4109,7 @@ WriteWordLine 0 0 " "
 #region Citrix ADC Advanced Features
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Advanced Features"
-
+Set-Progress -Status "Citrix ADC Advanced Features"
 WriteWordLine 2 0 "Citrix ADC Advanced Features"
 WriteWordLine 0 0 " "
 ## IB - Use an array of hashtable to store the rows
@@ -3928,7 +4177,7 @@ WriteWordLine 0 0 " "
 $selection.InsertNewPage()
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Modes"
-
+Set-Progress -Status "Citrix ADC Modes"
 WriteWordLine 1 0 "Citrix ADC Modes"
 WriteWordLine 0 0 " "
 $nsmode = Get-vNetScalerObject -Container config -Object nsmode; 
@@ -3980,9 +4229,10 @@ $selection.InsertNewPage()
 #region Citrix ADC Monitoring
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Monitoring"
-
+Set-Progress -Status "Citrix ADC Monitoring"
 WriteWordLine 1 0 "Citrix ADC Monitoring"
 WriteWordLine 0 0 " "
+Set-Progress -Status "Citrix ADC SNMP Community"
 WriteWordLine 2 0 "SNMP Community"
 WriteWordLine 0 0 " "
 
@@ -4055,7 +4305,7 @@ if($snmpmanagercount -le 0) { WriteWordLine 0 0 "No SNMP Manager has been config
         }
     }
 WriteWordLine 0 0 ""
-
+Set-Progress -Status "Citrix ADC SNMP Alerts"
 WriteWordLine 2 0 "SNMP Alert"
 WriteWordLine 0 0 " "
 ## IB - Use an array of hashtable to store the rows
@@ -4092,7 +4342,7 @@ foreach ($snmpalarm in $snmpalarms) {
 
 WriteWordLine 0 0 ""
 
-
+Set-Progress -Status "Citrix ADC SNMP Traps"
 WriteWordLine 2 0 "SNMP Traps"
 WriteWordLine 0 0 " "
 $snmptrapscounter = Get-vNetScalerObjectCount -Container config -Object snmptrap; 
@@ -4140,10 +4390,11 @@ $selection.InsertNewPage()
 
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC AppFlow"
-
+Set-Progress -Status "Citrix ADC AppFlow"
 WriteWordLine 1 0 "Citrix ADC AppFlow"
 WriteWordLine 0 0 " "
 #region AppFlow Parameters
+Set-Progress -Status "Citrix ADC AppFlow Parameters"
 WriteWordLine 2 0 "AppFlow Parameters"
 WriteWordLine 0 0 " "
 
@@ -4215,7 +4466,7 @@ $Table = $null
 #endregion AppFlow Parameters
 
 #region AppFlow Collectors
-
+Set-Progress -Status "Citrix ADC AppFlow Collectors"
 WriteWordLine 2 0 "AppFlow Collectors"
 WriteWordLine 0 0 " "
 $afcolcounter = Get-vNetScalerObjectCount -Container config -Object appflowcollector; 
@@ -4259,7 +4510,7 @@ WriteWordLine 0 0 " "
 #endregion AppFlow Collectors
 
 #region AppFlow Policies
-
+Set-Progress -Status "Citrix ADC AppFlow Policies"
 WriteWordLine 2 0 "AppFlow Policies"
 WriteWordLine 0 0 " "
 $afpolcounter = Get-vNetScalerObjectCount -Container config -Object appflowpolicy; 
@@ -4303,7 +4554,7 @@ WriteWordLine 0 0 " "
 #endregion AppFlow Policies
 
 #region AppFlow Actions
-
+Set-Progress -Status "Citrix ADC AppFlow Actions"
 WriteWordLine 2 0 "AppFlow Actions"
 WriteWordLine 0 0 " "
 
@@ -4361,7 +4612,7 @@ $Table = $null
 #endregion AppFlow Actions
 
 #region AppFlow Policy Labels
-
+Set-Progress -Status "Citrix ADC AppFlow Policy Labels"
 WriteWordLine 2 0 "AppFlow Policy Labels"
 WriteWordLine 0 0 " "
 
@@ -4455,7 +4706,7 @@ $Table = $null
 #end region AppFlow Policy Labels
 
 #region AppFlow Analytics Profiles
-
+Set-Progress -Status "Citrix ADC AppFlow Analytics Profiles"
 WriteWordLine 2 0 "AppFlow Analytics Profiles"
 WriteWordLine 0 0 " "
 
@@ -4533,12 +4784,12 @@ $Table = $null
 
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Auditing"
-
+Set-Progress -Status "Citrix ADC Auditing"
 WriteWordLine 1 0 "Citrix ADC Auditing"
 WriteWordLine 0 0 " "
 
 #region Syslog Parameters
-
+Set-Progress -Status "Citrix ADC Syslog Parameters"
 WriteWordLine 2 0 "Syslog Parameters"
 WriteWordLine 0 0 " "
 
@@ -4589,6 +4840,7 @@ $Table = $null
 #region Syslog Policies
 ##BUG Does not report on no configured syslog policies
 ##Fixed AM 09/05/2017
+Set-Progress -Status "Citrix ADC Syslog Policies"
 WriteWordLine 2 0 "Syslog Policies"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tSyslog Policies"
@@ -4637,6 +4889,7 @@ foreach ($syslogpolicy in $syslogpolicies) {
 #region Syslog Actions
 ##BUG Does not report on no configured syslog policies
 ##Fixed AM 09/05/2017
+Set-Progress -Status "Citrix ADC Syslog Servers"
 WriteWordLine 2 0 "Syslog Servers"
 WriteWordLine 0 0 " "
 
@@ -4710,7 +4963,7 @@ $Table = $null
 
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Clustering"
-
+Set-Progress -Status "Citrix ADC Cluster"
 WriteWordLine 1 0 "Citrix ADC Cluster"
 WriteWordLine 0 0 " "
 $clusternodecounter = Get-vNetScalerObjectCount -Container config -Object clusternode; 
@@ -4723,7 +4976,7 @@ WriteWordLine 0 0 " "
 } Else {
 
 #region Cluster Instances
-
+Set-Progress -Status "Citrix ADC Cluster Instances"
 WriteWordLine 2 0 "Cluster Instances"
 WriteWordLine 0 0 " "
 
@@ -4772,7 +5025,7 @@ $Table = $null
 #endregion Cluster Instances
 
 #region Cluster Nodes
-
+Set-Progress -Status "Citrix ADC Cluster Nodes"
 WriteWordLine 2 0 "Cluster Nodes"
 WriteWordLine 0 0 " "
 
@@ -4827,11 +5080,11 @@ $Table = $null
 
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Networking"
-
+Set-Progress -Status "Citrix ADC Networking"
 WriteWordLine 1 0 "Citrix ADC Networking"
 WriteWordLine 0 0 " "
 #region Citrix ADC Interfaces
-
+Set-Progress -Status "Citrix ADC Interfaces"
 WriteWordLine 2 0 "Citrix ADC Interfaces"
 WriteWordLine 0 0 " "
 $InterfaceCounter = Get-vNetScalerObjectCount -Container config -Object interface; 
@@ -4879,7 +5132,7 @@ if($InterfaceCounter.__count -le 0) { WriteWordLine 0 0 "No Interface has been c
 #endregion Citrix ADC Interfaces
 
 #region Citrix ADC Channels
-
+Set-Progress -Status "Citrix ADC Channels"
 WriteWordLine 2 0 "Citrix ADC Channels"
 WriteWordLine 0 0 " "
 $ChannelCounter = Get-vNetScalerObjectCount -Container config -Object channel; 
@@ -4925,7 +5178,7 @@ if($ChannelCounter.__count -le 0) {
 #endregion Citrix ADC Channels
 
 #region Citrix ADC IP addresses
-
+Set-Progress -Status "Citrix ADC IP Addresses"
 WriteWordLine 2 0 "Citrix ADC IP addresses"
 WriteWordLine 0 0 " "
 $IPs = Get-vNetScalerObject -Container config -Object nsip;
@@ -4963,7 +5216,7 @@ $Table = $null
 #endregion Citrix ADC IP addresses
 
 #region Citrix ADC vLAN
-
+Set-Progress -Status "Citrix ADC VLANs"
 WriteWordLine 2 0 "Citrix ADC vLANs"
 WriteWordLine 0 0 " "
 $VLANCounter = Get-vNetScalerObjectCount -Container config -Object vlan; 
@@ -5012,7 +5265,7 @@ if($VLANCounter.__count -le 0) { WriteWordLine 0 0 "No vLAN has been configured"
 #endregion Citrix ADC vLAN
 
 #region Citrix ADC VXLAN
-
+Set-Progress -Status "Citrix ADC VXLANs"
 WriteWordLine 2 0 "Citrix ADC VXLANs"
 WriteWordLine 0 0 " "
 $VXLANCounter = Get-vNetScalerObjectCount -Container config -Object vxlan; 
@@ -5056,7 +5309,7 @@ if($VXLANCounter.__count -le 0) { WriteWordLine 0 0 "No VXLANs have been configu
 #endregion Citrix ADC VXLAN
 
 #region routing table
-
+Set-Progress -Status "Citrix ADC Routing Table"
 WriteWordLine 2 0 "Citrix ADC Routing Table"
 WriteWordLine 0 0 " "
 
@@ -5098,7 +5351,7 @@ foreach ($ROUTE in $nsroute) {
 #endregion routing table
 
 #region Citrix ADC PBRs
-
+Set-Progress -Status "Citrix ADC PBRs"
 WriteWordLine 2 0 "Citrix ADC Policy Based Routes"
 WriteWordLine 0 0 " "
 $NSPBRCounter = Get-vNetScalerObjectCount -Container config -Object nspbr; 
@@ -5220,7 +5473,7 @@ if($NSPBR6Counter.__count -le 0) { WriteWordLine 0 0 "No IPv6 Policy Based Route
 #endregion Citrix ADC PBRs
 
 #region Linksets
-
+Set-Progress -Status "Citrix ADC LinkSets"
 WriteWordLine 2 0 "Citrix ADC LinkSets"
 WriteWordLine 0 0 " "
 
@@ -5272,7 +5525,7 @@ $NSLSS = Get-vNetScalerObject -Container config -Object linkset;
 #region Citrix ADC Traffic Domains
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Traffic Domains"
-
+Set-Progress -Status "Citrix ADC Traffic Domains"
 WriteWordLine 2 0 "Citrix ADC Traffic Domains"
 WriteWordLine 0 0 " "
 
@@ -5315,11 +5568,12 @@ if($TDcounter.__count -le 0) { WriteWordLine 0 0 "No Traffic Domains have been c
 
 #region Citrix ADC DNS Configuration
 $selection.InsertNewPage()
+Set-Progress -Status "Citrix ADC DNS Configuration"
 WriteWordLine 1 0 "Citrix ADC DNS Configuration"
 WriteWordLine 0 0 " "
 
 #region dns name servers
-
+Set-Progress -Status "Citrix ADC DNS Name Servers"
 WriteWordLine 2 0 "Citrix ADC DNS Name Servers"
 WriteWordLine 0 0 " "
 
@@ -5360,6 +5614,7 @@ if($dnsnameservercounter.__count -le 0) { WriteWordLine 0 0 "No DNS Name Server 
 
 #region DNS Address Records
 WriteWordLine 0 0 " "
+Set-Progress -Status "Citrix ADC DNS Address Records"
 WriteWordLine 2 0 "Citrix ADC DNS Address Records"
 WriteWordLine 0 0 " "
 $dnsaddreccounter = Get-vNetScalerObjectCount -Container config -Object dnsaddrec; 
@@ -5399,6 +5654,7 @@ if($dnsaddreccounter.__count -le 0) { WriteWordLine 0 0 "No DNS Name Server has 
 
 #region DNS AAA Records
 WriteWordLine 0 0 " "
+Set-Progress -Status "Citrix ADC DNS AAA Records"
 WriteWordLine 2 0 "Citrix ADC DNS AAA Records"
 WriteWordLine 0 0 " "
 $dnsaaaareccounter = Get-vNetScalerObjectCount -Container config -Object dnsaaaarec; 
@@ -5438,6 +5694,7 @@ if($dnsaaaareccounter.__count -le 0) { WriteWordLine 0 0 "No DNS AAA records hav
 
 #region DNS CNAME Records
 WriteWordLine 0 0 " "
+Set-Progress -Status "Citrix ADC DNS CNAME Records"
 WriteWordLine 2 0 "Citrix ADC DNS CNAME Records"
 WriteWordLine 0 0 " "
 $dnscnamereccounter = Get-vNetScalerObjectCount -Container config -Object dnscnamerec; 
@@ -5477,6 +5734,7 @@ if($dnscnamereccounter.__count -le 0) { WriteWordLine 0 0 "No DNS CNAME records 
 
 #region DNS MX Records
 WriteWordLine 0 0 " "
+Set-Progress -Status "Citrix ADC DNS MX Records"
 WriteWordLine 2 0 "Citrix ADC DNS MX Records"
 WriteWordLine 0 0 " "
 $dnsmxreccounter = Get-vNetScalerObjectCount -Container config -Object dnsmxrec; 
@@ -5516,6 +5774,7 @@ if($dnsmxreccounter.__count -le 0) { WriteWordLine 0 0 "No DNS MX records have b
 
 #region DNS NS Records
 WriteWordLine 0 0 " "
+Set-Progress -Status "Citrix ADC DNS NS Records"
 WriteWordLine 2 0 "Citrix ADC DNS NS Records"
 WriteWordLine 0 0 " "
 $dnsnsreccounter = Get-vNetScalerObjectCount -Container config -Object dnsnsrec; 
@@ -5555,6 +5814,7 @@ if($dnsnsreccounter.__count -le 0) { WriteWordLine 0 0 "No DNS NS records have b
 
 #region DNS SOA Records
 WriteWordLine 0 0 " "
+Set-Progress -Status "Citrix ADC DNS SOA Records"
 WriteWordLine 2 0 "Citrix ADC DNS SOA Records"
 WriteWordLine 0 0 " "
 $dnssoareccounter = Get-vNetScalerObjectCount -Container config -Object dnssoarec; 
@@ -5598,6 +5858,7 @@ if($dnssoareccounter.__count -le 0) { WriteWordLine 0 0 "No DNS SOA records have
 
 #region Citrix ADC ACL
 $selection.InsertNewPage()
+Set-Progress -Status "Citrix ADC ACL Configuration"
 WriteWordLine 1 0 "Citrix ADC ACL Configuration"
 WriteWordLine 0 0 " "
 #region Citrix ADC Simple ACL
@@ -5688,12 +5949,13 @@ $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Authentication"
 
 $selection.InsertNewPage()
-
+Set-Progress -Status "Citrix ADC Authentication"
 WriteWordLine 1 0 "Citrix ADC Authentication"
 WriteWordLine 0 0 " "
 #region Authentication LDAP Policies
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC LDAP Authentication"
+Set-Progress -Status "Citrix ADC Status"
 WriteWordLine 2 0 "Citrix ADC LDAP Policies"
 WriteWordLine 0 0 " "
 $authpolsldap = Get-vNetScalerObject -Container config -Object authenticationldappolicy;
@@ -5981,9 +6243,10 @@ WriteWordLine 0 0 " "
 #endregion Citrix ADC System Information
 
 #region traffic management
-
+Set-Progress -Status "Citrix ADC Traffic Management"
 
 #region Citrix ADC Content Switches
+Set-Progress -Status "Citrix ADC Content Switches"
 $Chapter++
 $selection.InsertNewPage()
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Content Switching"
@@ -6035,7 +6298,7 @@ foreach ($ContentSwitch in $csvservers) {
         foreach ($CSbinding in $csvserverbindings) {
 
             $cspolicy = Get-vNetScalerObject -ResourceType cspolicy -Name $CSbinding.policyname; 
-            $csaction = Get-vNetScalerObject -ResourceType csaction -Name $cspolicy.action;
+            #$csaction = Get-vNetScalerObject -ResourceType csaction -Name $cspolicy.action;
 
             ## IB - Add each Content Switch binding with a policyName to the array
             $ContentSwitchPolicies += @{
@@ -6043,7 +6306,7 @@ foreach ($ContentSwitch in $csvservers) {
                     Action = $cspolicy.action;
                     Priority = $cspolicy.priority;
                     Rule = $cspolicy.rule;
-                    LB = $csaction.targetlbvserver;
+ 
                     }
                 }      
         if ($ContentSwitchPolicies.Length -gt 0) {
@@ -6053,8 +6316,8 @@ foreach ($ContentSwitch in $csvservers) {
             $Params = $null
             $Params = @{
                 Hashtable = $ContentSwitchPolicies;
-                Columns = "Policy","Action","Priority","Rule","LB";
-                Headers = "Policy Name","Action","Priority","Rule","Target Load Balancer";
+                Columns = "Policy","Action","Priority","Rule";
+                Headers = "Policy Name","Action","Priority","Rule";
                 AutoFit = $wdAutoFitContent
                 Format = -235; ## IB - Word constant for Light List Accent 5
             }
@@ -6163,6 +6426,7 @@ foreach ($ContentSwitch in $csvservers) {
 #endregion Citrix ADC Content Switches
 
 #region Citrix ADC Load Balancers
+Set-Progress -Status "Citrix ADC Load Balancing"
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Load Balancing"
 
@@ -6491,7 +6755,7 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 
 #region Citrix ADC Cache Redirection
 $Chapter++
-
+Set-Progress -Status "Citrix ADC Cache Redirection"
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Cache Redirection"
 WriteWordLine 1 0 "Citrix ADC Cache Redirection"
 WriteWordLine 0 0 " "
@@ -6538,6 +6802,7 @@ $selection.InsertNewPage()
 #endregion Citrix ADC Cache Redirection
 
 #region Citrix ADC Services
+Set-Progress -Status "Citrix ADC Services"
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Services"
 
@@ -6677,6 +6942,7 @@ if($servicescounter.__count -le 0) { WriteWordLine 0 0 "No Services have been co
 #endregion Citrix ADC Services
 
 #region Citrix ADC Service Groups
+Set-Progress -Status "Citrix ADC Service Groups"
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Service Groups"
 
@@ -6842,6 +7108,7 @@ if($servicegroupscounter.__count -le 0) { WriteWordLine 0 0 "No Service Groups h
 #endregion Citrix ADC Service Groups
 
 #region Citrix ADC Servers
+Set-Progress -Status "Citrix ADC Servers"
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Servers"
 WriteWordLine 1 0 "Citrix ADC Servers"
@@ -6886,7 +7153,7 @@ $selection.InsertNewPage()
 #endregion Citrix ADC Servers
 
 #region Global Server Load Balancing
-
+Set-Progress -Status "Citrix ADC GSLB"
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Global Server Load Balancing"
 WriteWordLine 1 0 "Citrix ADC Global Server Load Balancing"
@@ -7330,6 +7597,7 @@ $selection.InsertNewPage()
 #endregion Global Server Load Balancing
 
 #region Citrix ADC SSL
+Set-Progress -Status "Citrix ADC SSL"
 WriteWordLine 1 0 "Citrix ADC SSL"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tCitrix ADC SSL"
@@ -7339,7 +7607,7 @@ $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters SSL Certificates"
 
 $selection.InsertNewPage()
-
+Set-Progress -Status "Citrix ADC SSL Certificates"
 WriteWordLine 2 0 "SSL Certificates"
 WriteWordLine 0 0 " "
 $sslcerts = Get-vNetScalerObject -Object sslcertkey;
@@ -7400,6 +7668,7 @@ $Table = $null
 
 
 #region SSL Ciphers
+Set-Progress -Status "Citrix ADC SSL Ciphers"
 WriteWordLine 2 0 "SSL Ciphers"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tSSL Ciphers"
@@ -7446,6 +7715,7 @@ $SSLCiphers = Get-vNetScalerObject -Container config -Object sslcipher;
 #endregion SSL Ciphers
 
 #region SSL Services
+Set-Progress -Status "Citrix ADC SSL Services"
 WriteWordLine 2 0 "SSL Services"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tSSL Services"
@@ -7514,7 +7784,7 @@ $Table = $null
 #endregion SSL Services
 
 #region SSL Service Groups
-
+Set-Progress -Status "Citrix ADC SSL Service Groups"
 WriteWordLine 2 0 "SSL Service Groups"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tSSL Service Groups"
@@ -7592,7 +7862,7 @@ WriteWordLine 0 0 " "
 #endregion SSL Service Groups
 
 #region SSL Profiles
-
+Set-Progress -Status "Citrix ADC SSL Profiles"
 WriteWordLine 2 0 "SSL Profiles"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tSSL Profiles"
@@ -7687,13 +7957,14 @@ $selection.InsertNewPage()
 #endregion traffic management
 
 #region AppExpert
-
+Set-Progress -Status "Citrix ADC AppExpert"
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC AppExpert"
 WriteWordLine 1 0 "Citrix ADC AppExpert"
 WriteWordLine 0 0 " "
 
 #region HTTP Callouts
+Set-Progress -Status "Citrix ADC HTTP Callouts"
 WriteWordLine 2 0 "HTTP Callouts"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tHTTP Callouts"
@@ -7756,6 +8027,7 @@ $Table = $null
 #endregion HTTP Callouts
 
 #region Pattern Sets
+Set-Progress -Status "Citrix ADC Pattern Sets"
 WriteWordLine 2 0 "Pattern Sets"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tPattern Sets"
@@ -7812,6 +8084,7 @@ WriteWordLine 0 0 " "
 #endregion Pattern Sets
 
 #region Data Sets
+Set-Progress -Status "Citrix ADC Data Sets"
 WriteWordLine 2 0 "Data Sets"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tData Sets"
@@ -7874,7 +8147,7 @@ WriteWordLine 0 0 " "
 #endregion URL Sets
 
 #region String Maps
-
+Set-Progress -Status "Citrix ADC String Maps"
 WriteWordLine 2 0 "String Maps"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tString Maps"
@@ -7925,7 +8198,7 @@ WriteWordLine 0 0 " "
 #endregion String Maps
 
 #region XML NameSpaces
-
+Set-Progress -Status "Citrix ADC XML Namespaces"
 WriteWordLine 2 0 "XML Namespaces"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tXML Namespaces"
@@ -7973,6 +8246,7 @@ WriteWordLine 0 0 " "
 #endregion XML NameSpaces
 
 #region NS Variables
+Set-Progress -Status "Citrix ADC Variables"
 WriteWordLine 2 0 "NS Variables"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tNS Variables"
@@ -8093,7 +8367,7 @@ $Table = $null
 #endregion Policy Extensions
 
 #region Expressions
-
+Set-Progress -Status "Citrix ADC Expressions"
 WriteWordLine 2 0 "Expressions"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tExpressions"
@@ -8190,7 +8464,7 @@ WriteWordLine 0 0 " "
 #endregion Expressions
 
 #region rate limiting
-
+Set-Progress -Status "Citrix ADC Rate Limiting"
 WriteWordLine 2 0 "Rate Limiting"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tRate Limiting"
@@ -8298,7 +8572,7 @@ $Table = $null
 #endregion rate limiting
 
 #region Action Analytics
-
+Set-Progress -Status "Citrix ADC Action Analytics"
 WriteWordLine 2 0 "Action Analytics"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tAction Analytics"
@@ -8411,7 +8685,7 @@ $Table = $null
 #endregion Action Analytics
 
 #region AppQoE
-
+Set-Progress -Status "Citrix ADC AppQoE"
 WriteWordLine 2 0 "AppQoE"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tAppQoE"
@@ -8565,12 +8839,14 @@ $Table = $null
 #endregion AppExpert
 
 #region Citrix ADC Security
+Set-Progress -Status "Citrix ADC Security"
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Security"
 WriteWordLine 1 0 "Citrix ADC Security"
 WriteWordLine 0 0 " "
 
 #region AAA
+Set-Progress -Status "Citrix ADC AAA"
 WriteWordLine 2 0 "Citrix ADC AAA - Application Traffic"
 WriteWordLine 0 0 " "
 
@@ -9254,7 +9530,7 @@ WriteWordLine 0 0 " "
 #endregion AAA
 
 #region AppFW
-
+        Set-Progress -Status "Citrix ADC App Firewall"
         WriteWordLine 2 0 "Application Firewall"
         WriteWordLine 0 0 " "
 
@@ -9454,7 +9730,7 @@ WriteWordLine 0 0 " "
 #endregion Citrix ADC Security
 
 #region Citrix ADC Gateway
-
+Set-Progress -Status "Citrix Gateway"
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC (Access) Gateway"
 WriteWordLine 1 0 "Citrix ADC (Access) Gateway"
@@ -10082,9 +10358,10 @@ $Table = $null
 #endregion Citrix ADC Gateway RDP
 
 #region Citrix ADC Gateway Portal Themes
+Set-Progress -Status "Citrix Gateway Portal Themes"
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "Citrix ADC Gateway Portal Themes";
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Portal Themes"
+WriteWordLine 2 0 "Citrix Gateway Portal Themes";
+Write-Verbose "$(Get-Date): `tCitrix Gateway Portal Themes"
 WriteWordLine 0 0 " ";
 
 $vpnportalthemes = Get-vNetScalerObject -Container config -Object vpnportaltheme;
@@ -11628,8 +11905,8 @@ $Table = $null
 #endregion Citrix ADC Gateway Portal Themes
 
 #region Unified Gateway SaaS Templates
-
-Write-Verbose "$(Get-Date): `tCitrix ADC Unified Gateway SaaS Templates"
+Set-Progress -Status "Citrix Unified Gateway SaaS Templates"
+Write-Verbose "$(Get-Date): `tCitrix Unified Gateway SaaS Templates"
 WriteWordLine 2 0 "Citrix ADC Unified Gateway SaaS Templates"
 WriteWordLine 0 0 " "
 WriteWordLine 3 0 "System Templates"
@@ -13116,6 +13393,7 @@ $selection.InsertNewPage()
 #endregion Citrix ADC Profiles
 
 #region Logout
+Set-Progress -Status "Logging out of Citrix ADC"
 
 Logout-vNetScalerSession
 
@@ -13142,11 +13420,17 @@ Write-Verbose "$(Get-Date): Finishing up document"
 ###Change the two lines below for your script
 $AbstractTitle = "Citrix ADC Documentation Report"
 $SubjectTitle = "Citrix ADC Documentation Report"
+
+If (!$Offline) {
+Set-Progress -Status "Finalising Document"
 UpdateDocumentProperties $AbstractTitle $SubjectTitle
 
 ProcessDocumentOutput
 
+}
+
 ProcessScriptEnd
+Set-Progress -Status "Script Completed"
 #recommended by webster
 #$error
 #endregion script template 2

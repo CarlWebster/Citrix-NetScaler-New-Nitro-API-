@@ -2,6 +2,30 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #Please provide feedback or feature requests to amccullough84@gmail.com
 
+#Version 4.3 18-September-2018
+	* Added ability to export data on a workstation without Word installed and create report on another workstation 
+
+.EXAMPLE 
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Export
+      OR
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Offline
+
+    Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\PSScript\ADCDocsExport\.
+.EXAMPLE 
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Export -ExportPath "C:\ADCExport"
+      OR
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Offline -OfflinePath "C:\ADCExport"
+
+    Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\ADCExport\.
+.EXAMPLE 
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Import
+
+    Will create a configuration report using the API data stored in C:\PSScript\ADCDocsExport.
+.EXAMPLE 
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Import -ImportPath "C:\ADCExport"
+
+    Will create a configuration report using the API data stored in C:\ADCExport.
+
 #Version 4.2 17-August-2018
 	* FIX: Get-vNetScalerObjectCount always connects using non-SSL - thanks to Eglan Kurek for reporting
 	* Added User Administration > Database Users, SMPP Users and Command Policies
