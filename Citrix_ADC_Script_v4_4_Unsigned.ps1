@@ -156,7 +156,7 @@
 	This parameter is disabled by default.
 	This parameter has an alias of SI.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -167,7 +167,7 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -PDF
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -PDF
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -178,21 +178,21 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_3_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_4_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name.
 		Mod for the Cover Page format.
 		Carl Webster for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_3_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_4_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name (alias CN).
 		Mod for the Cover Page format (alias CP).
 		Carl Webster for the User Name (alias UN).
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -AddDateTime
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -208,7 +208,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.docx
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -PDF -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -PDF -AddDateTime
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -224,7 +224,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.PDF
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Folder \\FileServer\ShareName
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Folder \\FileServer\ShareName
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -237,7 +237,7 @@
 
 	Output file will be saved in the path \\FileServer\ShareName
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -252,7 +252,7 @@
 	Script will use the default SMPTP port 25 and will not use SSL.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -266,23 +266,23 @@
 	Script will use the email server smtp.office365.com on port 587 using SSL, sending from webster@carlwebster.com, sending to ITGroup@carlwebster.com.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Export
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Export
       OR
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Offline
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Offline
 
     Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\PSScript\ADCDocsExport\.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Export -ExportPath "C:\ADCExport"
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Export -ExportPath "C:\ADCExport"
       OR
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Offline -OfflinePath "C:\ADCExport"
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Offline -OfflinePath "C:\ADCExport"
 
     Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\ADCExport\.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Import
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Import
 
     Will create a configuration report using the API data stored in C:\PSScript\ADCDocsExport.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_3_Signed.ps1 -Import -ImportPath "C:\ADCExport"
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Import -ImportPath "C:\ADCExport"
 
     Will create a configuration report using the API data stored in C:\ADCExport.
 .INPUTS
@@ -291,13 +291,13 @@
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-    NAME: Citrix_ADC_Script_v4_3.ps1
-	VERSION Citrix ADC Script: 4.3
+    NAME: Citrix_ADC_Script_v4_4.ps1
+	VERSION Citrix ADC Script: 4.4
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: September 18th 2018 
+	LASTEDIT: February 4th 2019
 #>
 
 #region changelog
@@ -305,13 +305,16 @@
 .COMMENT
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .Citrix ADC Documentation Script
-    NAME: Citrix_ADC_Script_v4_3.ps1
-	VERSION Citrix ADC Script: 4.3
+    NAME: Citrix_ADC_Script_v4_4.ps1
+	VERSION Citrix ADC Script: 4.4
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: September, 2018 
+	LASTEDIT: February, 2019
+
+.Release Notes version 4.4
+    * FIX: Some bindings were not being correctly reported due to incorrect handling of null return values - Thanks to Aaron Kahn for reporting this.
 
 .Release Notes version 4.3
     * Offline Usage - Added ability to export data on a workstation without Word installed and create report on another workstation 
@@ -8939,11 +8942,12 @@ $Table = $null
             
         WriteWordLine 4 0 "Certificate Authentication Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $aaacertpolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationcertpolicy_binding -name $aaavservername
         $aaacertpols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationcertpolicy_binding -name $aaavservername
-        $errorcode = $aaacertpols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Certificate authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaacertpolscount.__Count -le 0) {WriteWordLine 0 0 "No Certificate authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $CERTPOLHASH = @(); 
@@ -8986,11 +8990,12 @@ $Table = $null
             
         WriteWordLine 4 0 "LDAP Authentication Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $aaaldappolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationldappolicy_binding -name $aaavservername
         $aaaldappols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationldappolicy_binding -name $aaavservername
-        $errorcode = $aaaldappols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No LDAP authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaaldappolscount.__Count -le 0) {WriteWordLine 0 0 "No LDAP authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $LDAPPOLHASH = @(); 
@@ -9033,11 +9038,12 @@ $Table = $null
             
         WriteWordLine 4 0 "Login Schema Authentication Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $aaalspolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationloginschemapolicy_binding -name $aaavservername
         $aaalspols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationloginschemapolicy_binding -name $aaavservername
-        $errorcode = $aaalspols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Login Schema authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaalspolscount.__count -le 0) {WriteWordLine 0 0 "No Login Schema authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $LSPOLHASH = @(); 
@@ -9080,11 +9086,12 @@ $Table = $null
             
         WriteWordLine 4 0 "Negotiate Authentication Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $aaanegpolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationnegotiatepolicy_binding -name $aaavservername
         $aaanegpols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationnegotiatepolicy_binding -name $aaavservername
-        $errorcode = $aaanegpols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Negotiate authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaanegpolscount.__count -le 0) {WriteWordLine 0 0 "No Negotiate authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $NEGPOLHASH = @(); 
@@ -9127,11 +9134,12 @@ $Table = $null
             
         WriteWordLine 4 0 "Radius Authentication Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $aaaradpolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationradiuspolicy_binding -name $aaavservername
         $aaaradpols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationradiuspolicy_binding -name $aaavservername
-        $errorcode = $aaaradpols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Radius authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaaradpolscount.__count -le 0) {WriteWordLine 0 0 "No Radius authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $RADPOLHASH = @(); 
@@ -9174,11 +9182,12 @@ $Table = $null
             
         WriteWordLine 4 0 "SAML IDP Authentication Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $aaasidppolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationdamlidppolicy_binding -name $aaavservername
         $aaasidppols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationdamlidppolicy_binding -name $aaavservername
-        $errorcode = $aaasidppols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No SAML IDP authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaasidppolscount.__count -le 0) {WriteWordLine 0 0 "No SAML IDP authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $SIDPPOLHASH = @(); 
@@ -9221,11 +9230,11 @@ $Table = $null
             
         WriteWordLine 4 0 "SAML Authentication Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        $aaasamlpolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationsamlpolicy_binding -name $aaavservername
         $aaasamlpols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationsamlpolicy_binding -name $aaavservername
-        $errorcode = $aaasamlpols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No SAML authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaasamlpolscount.__count -le 0) {WriteWordLine 0 0 "No SAML authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $SAMLPOLHASH = @(); 
@@ -9268,11 +9277,11 @@ $Table = $null
             
         WriteWordLine 4 0 "TACAS Authentication Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        $aaatacaspolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationtacaspolicy_binding -name $aaavservername
         $aaatacaspols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationtacaspolicy_binding -name $aaavservername
-        $errorcode = $aaatacaspols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No TACAS authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaatacaspolscount.__count -le 0) {WriteWordLine 0 0 "No TACAS authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $TACASPOLHASH = @(); 
@@ -9315,11 +9324,12 @@ $Table = $null
             
         WriteWordLine 4 0 "WebAuth Authentication Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $aaawebpolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationwebauthpolicy_binding -name $aaavservername
         $aaawebpols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationwebauthpolicy_binding -name $aaavservername
-        $errorcode = $aaawebpols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No WebAuth authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaawebpolscount = Get-vNetScalerObjectCount -container config ) {WriteWordLine 0 0 "No WebAuth authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $WEBPOLHASH = @(); 
@@ -9420,11 +9430,11 @@ $Table = $null
 #region AAA SSL Ciphers             
         WriteWordLine 4 0 "SSL Ciphers"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        $aaacipherbindscount = Get-vNetScalerObjectCount -container config -ResourceType sslvserver_sslciphersuite_binding -name $aaavservername;
         $aaacipherbinds = Get-vNetScalerObject -ResourceType sslvserver_sslciphersuite_binding -name $aaavservername;
-        $errorcode = $aaacipherbinds.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No SSL Ciphers have been bound."} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaacipherbindscount.__count -le 0) {WriteWordLine 0 0 "No SSL Ciphers have been bound."} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $CIPHERSH = @(); 
@@ -9470,11 +9480,11 @@ $Table = $null
 #region KCD Accounts
  WriteWordLine 3 0 "KCD Accounts"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        $kcdaccountscount = Get-vNetScalerObjectCount -container config -ResourceType aaakcdaccount
         $kcdaccounts = Get-vNetScalerObject -ResourceType aaakcdaccount;
-        $errorcode = $kcdaccounts.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If (($errorcode -ne 1) -or (!$kcdaccounts)) {WriteWordLine 0 0 "No KCD Accounts have been configured."; WriteWordLine 0 0 " ";} else { #Uses the mentioned error code to determine existency of policy
+        If (($kcdaccountscount.__count -le 1) -or (!$kcdaccounts)) {WriteWordLine 0 0 "No KCD Accounts have been configured."; WriteWordLine 0 0 " ";} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $KCDH = @(); 
@@ -9539,11 +9549,12 @@ WriteWordLine 0 0 " "
         WriteWordLine 3 0 "Application Firewall Profiles"
         WriteWordLine 0 0 " "
 
-                $errorcode = 1 #Set Error code to 1
+                
+                $fwprofilescount = Get-vNetScalerObjectCount -container config -ResourceType appfwprofile
         $fwprofiles = Get-vNetScalerObject -ResourceType appfwprofile;
-        $errorcode = $fwprofiles.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No AppFW Profiles have been configured."} else { #Uses the mentioned error code to determine existency of policy
+        If ($fwprofilescount.__count -le 0) {WriteWordLine 0 0 "No AppFW Profiles have been configured."} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $AFWPROFH = @(); 
@@ -9671,11 +9682,12 @@ WriteWordLine 0 0 " "
         WriteWordLine 3 0 "Application Firewall Policies"
         WriteWordLine 0 0 " "
 
-                $errorcode = 1 #Set Error code to 1
+                
+                $fwpoliciescount = Get-vNetScalerObjectCount -container config -ResourceType appfwpolicy
         $fwpolicies = Get-vNetScalerObject -ResourceType appfwpolicy;
-        $errorcode = $fwpolicies.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If (($errorcode -ne 1) -or (!$fwpolicies)) {WriteWordLine 0 0 "No AppFW Policies have been configured."} else { #Uses the mentioned error code to determine existency of policy
+        If (($fwpoliciescount.__count -le 0) -or (!$fwpolicies)) {WriteWordLine 0 0 "No AppFW Policies have been configured."} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $AFWPOLH = @(); 
@@ -12100,11 +12112,12 @@ $Table = $null
     #region CAG Authentication LDAP Policies             
         WriteWordLine 3 0 "Authentication LDAP Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $vpnvserverldappolscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_authenticationldappolicy_binding -name $vpnvserver.Name
         $vpnvserverldappols = Get-vNetScalerObject -ResourceType vpnvserver_authenticationldappolicy_binding -name $vpnvserver.Name
-        $errorcode = $vpnvserverldappols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No LDAP Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($vpnvserverldappolscount.__Count -le 0) {WriteWordLine 0 0 "No LDAP Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $AUTHPOLHASH = @(); 
@@ -12144,11 +12157,12 @@ $Table = $null
     #region CAG Authentication Radius Policies             
         WriteWordLine 3 0 "Authentication RADIUS Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 
+        
+        $vpnvserverradiuspolscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_authenticationradiuspolicy_binding -name $vpnvserver.Name
         $vpnvserverradiuspols = Get-vNetScalerObject -ResourceType vpnvserver_authenticationradiuspolicy_binding -name $vpnvserver.Name
-        $errorcode = $vpnvserverradiuspols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No RADIUS Policies have been configured"} else {
+        If ($vpnvserverradiuspolscount.__Count -le 0) {WriteWordLine 0 0 "No RADIUS Policies have been configured"} else {
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $AUTHPOLRADHASH = @(); 
@@ -12189,11 +12203,12 @@ $Table = $null
     #region CAG Authentication SAML IDP Policies             
         WriteWordLine 3 0 "Authentication SAML IDP Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $vpnvserversamlidppolscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_authenticationsamlidppolicy_binding -name $vpnvserver.Name
         $vpnvserversamlidppols = Get-vNetScalerObject -ResourceType vpnvserver_authenticationsamlidppolicy_binding -name $vpnvserver.Name
-        $errorcode = $vpnvserversamlidppols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No SAML IDP Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($vpnvserversamlidppolscount.__Count -le 0) {WriteWordLine 0 0 "No SAML IDP Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $AUTHPOLSAMLIDPHASH = @(); 
@@ -12233,11 +12248,13 @@ $Table = $null
        
         WriteWordLine 3 0 "Session Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
-        $vpnvserversespols = Get-vNetScalerObject -ResourceType vpnvserver_vpnsessionpolicy_binding -name $vpnvserver.Name
-        $errorcode = $vpnvserversespols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
+        $vpnvserversespolscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_vpnsessionpolicy_binding -name $vpnvserver.Name;
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Session Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        $vpnvserversespols = Get-vNetScalerObject -ResourceType vpnvserver_vpnsessionpolicy_binding -name $vpnvserver.Name
+        # $errorcode = $vpnvserversespols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+
+        If ($vpnvserversespolscount.__count -le 0) {WriteWordLine 0 0 "No Session Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $SESSIONPOLH = @();     
 
@@ -12274,11 +12291,13 @@ $Table = $null
        
         WriteWordLine 3 0 "Secure Ticket Authority"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
-        $vpnvserverstas = Get-vNetScalerObject -ResourceType vpnvserver_staserver_binding -name $vpnvserver.Name
-        $errorcode = $vpnvserverstas.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Secure Ticket Authority has been configured"} else { #Uses the mentioned error code to determine existency of policy
+        $vpnvserverstascount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_staserver_binding -name $vpnvserver.Name
+        $vpnvserverstas = Get-vNetScalerObject -ResourceType vpnvserver_staserver_binding -name $vpnvserver.Name
+        
+
+        If ($vpnvserverstascount.__Count -le 0) {WriteWordLine 0 0 "No Secure Ticket Authority has been configured"} else { #Uses the mentioned error code to determine existency of policy
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $STAPOLH = @();     
 
@@ -12316,11 +12335,12 @@ $Table = $null
        
         WriteWordLine 3 0 "Cache Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $vpnvservercachepolscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_cachepolicy_binding -name $vpnvserver.Name
         $vpnvservercachepols = Get-vNetScalerObject -ResourceType vpnvserver_cachepolicy_binding -name $vpnvserver.Name
-        $errorcode = $vpnvservercachepols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Session Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($vpnvservercachepolscount.__Count -le 0) {WriteWordLine 0 0 "No Cache Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $SESSIONCACHEPOLH = @();     
 
@@ -12357,11 +12377,11 @@ $Table = $null
        
         WriteWordLine 3 0 "Responder Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        $vpnvserverrespolscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_responderpolicy_binding -name $vpnvserver.Name
         $vpnvserverrespols = Get-vNetScalerObject -ResourceType vpnvserver_responderpolicy_binding -name $vpnvserver.Name
-        $errorcode = $vpnvserverrespols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Responder Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($vpnvserverrespolscount.__Count -le 0) {WriteWordLine 0 0 "No Responder Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $RESPOLH = @();     
 
@@ -12398,11 +12418,11 @@ $Table = $null
        
         WriteWordLine 3 0 "Rewrite Policies"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        $vpnvserverrwpolscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_rewritepolicy_binding -name $vpnvserver.Name
         $vpnvserverrwpols = Get-vNetScalerObject -ResourceType vpnvserver_rewritepolicy_binding -name $vpnvserver.Name
-        $errorcode = $vpnvserverrwpols.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Rewrite Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($vpnvserverrwpolscount.__Count -le 0) {WriteWordLine 0 0 "No Rewrite Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $RWPOLH = @();     
 
@@ -12546,11 +12566,12 @@ WriteWordLine 0 0 " "
         #region CAG SSL Ciphers             
         WriteWordLine 3 0 "SSL Ciphers"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $vpncipherbindscount = Get-vNetScalerObjectCount -Container Config -ResourceType sslvserver_sslciphersuite_binding -name $vpnvserver.Name
         $vpncipherbinds = Get-vNetScalerObject -ResourceType sslvserver_sslciphersuite_binding -name $vpnvserver.Name
-        $errorcode = $vpncipherbinds.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No SSL Ciphers have been bound."} else { #Uses the mentioned error code to determine existency of policy
+        If ($vpncipherbindscount.__count -le 0) {WriteWordLine 0 0 "No SSL Ciphers have been bound."} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $CIPHERSH = @(); 
@@ -12590,11 +12611,12 @@ WriteWordLine 0 0 " "
     #region CAG Intranet Applications             
         WriteWordLine 3 0 "Intranet Applications"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $vpnintappbindscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_vpnintranetapplication_binding -name $vpnvserver.Name
         $vpnintappbinds = Get-vNetScalerObject -ResourceType vpnvserver_vpnintranetapplication_binding -name $vpnvserver.Name
-        $errorcode = $vpnintappbinds.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Intranet Applications have been bound."} else { #Uses the mentioned error code to determine existency of policy
+        If ($vpnintappbindscount.__Count -le 0) {WriteWordLine 0 0 "No Intranet Applications have been bound."} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $INTAPPSH = @(); 
@@ -12631,11 +12653,11 @@ WriteWordLine 0 0 " "
     #region CAG Intranet IPs             
         WriteWordLine 3 0 "Intranet IP's"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        $vpnintipbindscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_vpnintranetip_binding -name $vpnvserver.Name
         $vpnintipbinds = Get-vNetScalerObject -ResourceType vpnvserver_vpnintranetip_binding -name $vpnvserver.Name
-        $errorcode = $vpnintipbinds.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+       
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Intranet IP's have been bound."} else { #Uses the mentioned error code to determine existency of policy
+        If ($vpnintipbindscount.__Count -le 0) {WriteWordLine 0 0 "No Intranet IP's have been bound."} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $INTIPSH = @(); 
@@ -12673,11 +12695,12 @@ WriteWordLine 0 0 " "
     #region CAG Bookmarks             
         WriteWordLine 3 0 "Bookmarks"
         WriteWordLine 0 0 " "
-        $errorcode = 1 #Set Error code to 1
+        
+        $vpninturlbindscount = Get-vNetScalerObjectCount -Container Config -ResourceType vpnvserver_vpnurl_binding -name $vpnvserver.Name
         $vpninturlbinds = Get-vNetScalerObject -ResourceType vpnvserver_vpnurl_binding -name $vpnvserver.Name
-        $errorcode = $vpninturlbinds.errorcode #Set Errorcode to the actual error, if no error exists it will clear the value
+        
 
-        If ($errorcode -ne 1) {WriteWordLine 0 0 "No Bookmarks's have been bound."} else { #Uses the mentioned error code to determine existency of policy
+        If ($vpninturlbindscount.__Count -le 0) {WriteWordLine 0 0 "No Bookmarks's have been bound."} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $INTURLSH = @(); 
