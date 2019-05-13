@@ -27,13 +27,12 @@
 .PARAMETER NSIP
     Citrix ADC IP address, could be NSIP or SNIP with management enabled
 .PARAMETER Credential
-	Citrix ADC username
-	
-	Specifies a user name for the Citrix ADC credential, such as "User01" or "Domain01\User01".
-
-	You are prompted for a password.
-
-	If you omit this parameter, you are prompted for a user name and a password.	
+    Accepts a PSCredential object with Username and Password to be used to Authenticate to the Citrix ADC Appliance
+.PARAMETER NSUsername
+    Accepts a Username to authenticate to the Citrix ADC Appliance
+.PARAMETER NSPassword
+    Accepts a Password to authenticate to the Citrix ADC Appliance.
+    Note: It is recommended to create a PSCredential object for stored authentication as storing passwords in plaintext is inherrently insecure.
 .PARAMETER UseNSSSL
 	EXPERIMENTAL: Require SSL/TLS for communication with the NetScaler Nitro API. 
 .PARAMETER CompanyName
@@ -2770,12 +2769,12 @@ SetFileName1andFileName2 "Citrix ADC Documentation"
 
 #region Citrix ADC Documentation Script Complete
 #Variables for Progress Bar
-[int]$script:ProgressSteps = 98
+[int]$script:ProgressSteps = 102
 [int]$script:Progress = 0
 
 
 ## Barry Schiffer Use Stopwatch class to time script execution
-$sw = [Diagnostics.Stopwatch]::StartNew()
+#$sw = [Diagnostics.Stopwatch]::StartNew()
 
 ##Disable Strict Mode to handle missing parameters
 Set-StrictMode -Off
@@ -3387,7 +3386,7 @@ If ($NSFEATURES.CMP -eq "True") {$FEATCMP = "Enabled"} Else {$FEATCMP = "Disable
 If ($NSFEATURES.PQ -eq "True") {$FEATPQ = "Enabled"} Else {$FEATPQ = "Disabled"}
 If ($NSFEATURES.SSL -eq "True") {$FEATSSL = "Enabled"} Else {$FEATSSL = "Disabled"}
 If ($NSFEATURES.GSLB -eq "True") {$FEATGSLB = "Enabled"} Else {$FEATGSLB = "Disabled"}
-If ($NSFEATURES.HDSOP -eq "True") {$FEATHDSOP = "Enabled"} Else {$FEATHDOSP = "Disabled"}
+If ($NSFEATURES.HDSOP -eq "True") {$FEATHDOSP = "Enabled"} Else {$FEATHDOSP = "Disabled"}
 If ($NSFEATURES.CF -eq "True") {$FEATCF = "Enabled"} Else {$FEATCF = "Disabled"}
 If ($NSFEATURES.IC -eq "True") {$FEATIC = "Enabled"} Else {$FEATIC = "Disabled"}
 If ($NSFEATURES.SSLVPN -eq "True") {$FEATSSLVPN = "Enabled"} Else {$FEATSSLVPN = "Disabled"}
@@ -3852,14 +3851,14 @@ WriteWordLine 0 0 " "
 $nslocsCount = Get-vNetScalerObjectCount -Container config -Object location;
 $nslocs = Get-vNetScalerObject -Container config -Object location;
 
-If ($nslocdbsCount.__Count -le 0) { WriteWordLine 0 0 "No Custom Location Entries have been configured." } Else {
+If ($nslocsCount.__Count -le 0) { WriteWordLine 0 0 "No Custom Location Entries have been configured." } Else {
 $LOCSH = $null    
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $LOCSH = @();
 
 foreach ($nsloc in $nslocs) {
 
-If (IsNull($nsloc.preferredlocation)){$locprefferedlocation = ""} Else { $locpreferredlocation = $nsloc.prefferedlocation};
+If (IsNull($nsloc.preferredlocation)){$locpreferredlocation = ""} Else { $locpreferredlocation = $nsloc.prefferedlocation};
 If (IsNull($nsloc.longitude)){$loclongitude = ""} Else { $loclongitude = $nsloc.longitude};
 If (IsNull($nsloc.latitude)){$loclatitude = ""} Else { $loclatitude = $nsloc.latitude};
 
@@ -3869,7 +3868,7 @@ If (IsNull($nsloc.latitude)){$loclatitude = ""} Else { $loclatitude = $nsloc.lat
     $LOCSH += @{
             IPFrom = $nsloc.ipfrom;
             IPTo = $nsloc.ipto;
-            Preferred = $locprefferedlocation;
+            Preferred = $locpreferredlocation;
             Longitude = $loclongitude;
             Latitude = $loclatitude;
         }
@@ -3948,7 +3947,6 @@ Set-Progress -Status "Citrix ADC DB Users"
 WriteWordLine 3 0 "Citrix ADC Database Users"
 WriteWordLine 0 0 " "
 $nsdbusercounter = Get-vNetScalerObjectCount -Container config -Object dbuser; 
-$nsbdusercount = $nsdbusercounter.__count
 
 if($nsdbusercounter.__count -le 0) { WriteWordLine 0 0 "No Database Users have been configured"} else {
 $nsdbusers = Get-vNetScalerObject -Container config -Object dbuser;
@@ -4026,7 +4024,6 @@ Set-Progress -Status "Citrix ADC SMPP Users"
 WriteWordLine 3 0 "Citrix ADC SMPP Users"
 WriteWordLine 0 0 " "
 $nssmppusercounter = Get-vNetScalerObjectCount -Container config -Object smppuser; 
-$nssmppusercount = $nssmppusercounter.__count
 
 if($nssmppusercounter.__count -le 0) { WriteWordLine 0 0 "No SMPP Users have been configured"} else {
 $nssmppusers = Get-vNetScalerObject -Container config -Object smppuser;
@@ -4066,7 +4063,6 @@ Set-Progress -Status "Citrix ADC Command Policies"
 WriteWordLine 3 0 "Citrix ADC Command Policies"
 WriteWordLine 0 0 " "
 $nscmdpolcounter = Get-vNetScalerObjectCount -Container config -Object systemcmdpolicy; 
-$nscmdpolcount = $nscmdpolcounter.__count
 
 if($nscmdpolcounter.__count -le 0) { WriteWordLine 0 0 "No Command Policies have been configured"} else {
 $nscmdpols = Get-vNetScalerObject -Container config -Object systemcmdpolicy;
@@ -5665,7 +5661,7 @@ WriteWordLine 2 0 "Citrix ADC DNS Name Servers"
 WriteWordLine 0 0 " "
 
 $dnsnameservercounter = Get-vNetScalerObjectCount -Container config -Object dnsnameserver; 
-$dnsnameservecount = $dnsnameservercounter.__count
+
 $dnsnameservers = Get-vNetScalerObject -Container config -Object dnsnameserver;
 
 if($dnsnameservercounter.__count -le 0) { WriteWordLine 0 0 "No DNS Name Server has been configured"} else {
@@ -6031,7 +6027,6 @@ WriteWordLine 0 0 " "
 WriteWordLine 2 0 "Citrix ADC Extended ACL"
 WriteWordLine 0 0 " "
 $nsaclCounter = Get-vNetScalerObjectCount -Container config -Object nsacl; 
-$nsaclCount = $nsaclCounter.__count
 $nsacls = Get-vNetScalerObject -Container config -Object nsacl;
 
 if($nsaclCounter.__count -le 0) { WriteWordLine 0 0 "No Extended ACL has been configured"} else {
@@ -7783,7 +7778,7 @@ WriteWordLine 0 0 " "
 $sslcerts = Get-vNetScalerObject -Object sslcertkey;
 
 ## IB - Use an array of hashtable to store the rows
-[System.Collections.Hashtable[]] $SSLCERTSH = @();
+#[System.Collections.Hashtable[]] $SSLCERTSH = @();
 
 foreach ($sslcert in $sslcerts) {
 
@@ -8047,9 +8042,14 @@ WriteWordLine 2 0 "SSL Profiles"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tSSL Profiles"
 
+$SSLProfilescount = Get-vNetScalerObjectCount -Container config -Object sslprofile;
 $SSLProfiles = Get-vNetScalerObject -Container config -Object sslprofile;
 
-If ($SSLProfiles.Length -gt 0) {
+if($SSLProfilescount.__count -le 0) { 
+
+    WriteWordLine 0 0 "No SSL Profiles have been configured."
+    WriteWordLine 0 0 " "
+    } else {
 
 Foreach ($SSLProfile in $SSLProfiles) {
 
@@ -8130,7 +8130,7 @@ WriteWordLine 0 0 "No SSL Profiles have been configured."
 
 #endregion SSL Profiles
 
-$selection.InsertNewPage()
+
 
 #endregion Citrix ADC SSL
 
@@ -8816,7 +8816,7 @@ WriteWordLine 0 0 " "
 } else {
 
 $streamidentifiers = Get-vNetScalerObject -Container config -Object streamidentifier;
-  foreach ($streamidentifier in $treamidentifiers) {
+  foreach ($streamidentifier in $streamidentifiers) {
     $streamname = $streamidentifier.name
     WriteWordLine 4 0 "Stream Identifier: $streamname"
     WriteWordLine 0 0 " "
@@ -10690,7 +10690,7 @@ foreach ($vpnportaltheme in $vpnportalthemes) {
   #EULA Title Font Size
   $PTEULATitleFontSize = Get-AttributeFromCSS -SearchPattern ".eula_title {" -Attribute "font-size" -Lines 1 -Inputstring $customcsscontents
 
-  $test = 2
+
 
   #Language
 
@@ -13243,7 +13243,7 @@ WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `t`tTable: Write Citrix ADC Monitors Table"
 
 $monitorcounter = Get-vNetScalerObjectCount -Container config -Object lbmonitor; 
-$monitorcount = $monitorcounter.__count
+
 $monitors = Get-vNetScalerObject -Container config -Object lbmonitor;
    
 ## IB - Use an array of hashtable to store the rows
