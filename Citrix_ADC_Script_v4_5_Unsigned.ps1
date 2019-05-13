@@ -155,7 +155,7 @@
 	This parameter is disabled by default.
 	This parameter has an alias of SI.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -166,7 +166,7 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -PDF
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -PDF
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -177,21 +177,21 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_4_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_5_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name.
 		Mod for the Cover Page format.
 		Carl Webster for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_4_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_5_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name (alias CN).
 		Mod for the Cover Page format (alias CP).
 		Carl Webster for the User Name (alias UN).
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -AddDateTime
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -207,7 +207,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.docx
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -PDF -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -PDF -AddDateTime
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -223,7 +223,7 @@
 	June 1, 2016 at 6PM is 2016-06-01_1800.
 	Output filename will be Script_Template_2016-06-01_1800.PDF
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Folder \\FileServer\ShareName
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Folder \\FileServer\ShareName
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -236,7 +236,7 @@
 
 	Output file will be saved in the path \\FileServer\ShareName
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -251,7 +251,7 @@
 	Script will use the default SMPTP port 25 and will not use SSL.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -265,38 +265,47 @@
 	Script will use the email server smtp.office365.com on port 587 using SSL, sending from webster@carlwebster.com, sending to ITGroup@carlwebster.com.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Export
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Export
       OR
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Offline
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Offline
 
     Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\PSScript\ADCDocsExport\.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Export -ExportPath "C:\ADCExport"
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Export -ExportPath "C:\ADCExport"
       OR
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Offline -OfflinePath "C:\ADCExport"
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Offline -OfflinePath "C:\ADCExport"
 
     Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\ADCExport\.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Import
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Import
 
     Will create a configuration report using the API data stored in C:\PSScript\ADCDocsExport.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_4_Signed.ps1 -Import -ImportPath "C:\ADCExport"
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Import -ImportPath "C:\ADCExport"
 
     Will create a configuration report using the API data stored in C:\ADCExport.
+.EXAMPLE
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -NSIP 172.16.20.10 -Credential $MyCredentials
+
+    Will execute the script silently connecting to an ADC appliance on 172.16.20.10 using credentials stored in the PSCredential Object $Mycredentials
+.EXAMPLE
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -NSIP 172.16.20.10 -NSUserName nsroot -NSPassword nsroot
+
+    Will execute the script silently connecting to an ADC appliance on 172.16.20.10 using credentials nsroot/nsroot
+
 .INPUTS
 	None.  You cannot pipe objects to this script.
 .OUTPUTS
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-    NAME: Citrix_ADC_Script_v4_4.ps1
-	VERSION Citrix ADC Script: 4.4
+    NAME: Citrix_ADC_Script_v4_5.ps1
+	VERSION Citrix ADC Script: 4.5
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: February 4th 2019
+	LASTEDIT: May 13th 2019
 #>
 
 #region changelog
@@ -304,13 +313,22 @@
 .COMMENT
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .Citrix ADC Documentation Script
-    NAME: Citrix_ADC_Script_v4_4.ps1
-	VERSION Citrix ADC Script: 4.4
+    NAME: Citrix_ADC_Script_v4_5.ps1
+	VERSION Citrix ADC Script: 4.5
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
 	LASTEDIT: February, 2019
+.Release Notes version 4.5
+    * FIX: Issue connecting to Citrix ADC when using untrusted certificate on the management interface.
+    * NEW: Pass PSCredential object to -Credential parameter to authenticate to Citrix ADC silently
+    * NEW: -NSUserName and -NSPassword paramters allow authentication to Citrix ADC silently
+    * FIX: Fixed issue where some users were prompted for missing parameter when running the script
+    * FIX: Modes table had incorrect header values
+    * FIX: Output issues for Certificates, ADC Servers, SAML Authentication, Location Database, Network Profiles, NSGW Session Profiles
+    * FIX: NSGW Session Profiles using wrong value for SSO Domain
+    * FIX: Formatting issue for HTTP Callouts 
 
 .Release Notes version 4.4
     * FIX: Some bindings were not being correctly reported due to incorrect handling of null return values - Thanks to Aaron Kahn for reporting this.
@@ -6552,6 +6570,7 @@ foreach ($ContentSwitch in $csvservers) {
 
 
     #endregion Cert Bindings
+
 
     } #End If ($ContentSwitch.ServiceType -contains "SSL" )
 
