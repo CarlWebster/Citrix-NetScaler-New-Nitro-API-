@@ -4345,7 +4345,8 @@ $nsmode = Get-vNetScalerObject -Container config -Object nsmode;
 $Params = $null
 $Params = @{
     Hashtable = $ADVModes;
-    Columns = "Mode","Enabled";
+    Columns = "Description","Value";
+    Headers = "Mode","Enabled";
     AutoFit = $wdAutoFitContent
     Format = -235; ## IB - Word constant for Light List Accent 5
 }
