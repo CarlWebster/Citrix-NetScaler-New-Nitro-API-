@@ -2896,8 +2896,11 @@ function Get-vNetScalerObject {
         Write-Log "REST Response: $restResponse"
         }
         If ($Offline) {
+          Write-Log "Convert URI to ASCII: $uri"
           $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
+          Write-Log "ASCII Encoded: $FileNameBytes"
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
+          Write-Log "Base64 Encoded File Name: $tmpFileName"
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
           Write-Log "Export Path: $OfflineExportPath"
           #Disable-Verbose
@@ -2909,8 +2912,11 @@ function Get-vNetScalerObject {
           Write-Output $restResponse.($ResourceType)
           #Enable-Verbose
         } ElseIf ($Import) {
+          Write-Log "Convert URI to ASCII: $uri"
           $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
+          Write-Log "ASCII Encoded: $FileNameBytes"
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
+          Write-Log "Base64 Encoded File Name: $tmpFileName"
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
           Write-Log "Import Path: $OfflineExportPath"
             Try {
