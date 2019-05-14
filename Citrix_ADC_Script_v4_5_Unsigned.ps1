@@ -3334,13 +3334,13 @@ function Get-NonEmptyString($String) {
 }
 
 Function Get-CleanBase64($String) {
-
+Write-Log "Unchanged BASE64 encoded string: $String"
 $String = $String.Replace("/", "_");
 $String = $String.Replace("=", "_");
 $String = $String.Replace("+", "_");
-
+Write-Log "Removing unsafe characters"
 If (($String.Length + $OfflinePath.Length) -ge 254) {
-
+Write-Log "File name is longer than 254 characters - trimming."
 $totalLength = $String.Length + $OfflinePath.Length
 [int]$charsToRemove = ($totalLength - 254) + 5
 
