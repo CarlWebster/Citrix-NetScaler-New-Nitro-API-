@@ -3001,7 +3001,6 @@ function Read-vNetScalerFile {
         #$uri = [System.Uri]::EscapeUriString($uri);
         #Write-Output $uri;
         $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
-        $test = 1
         if ($null -ne $restResponse.systemfile) { Write-Output $restResponse; }
         else { Write-Output $restResponse }
     #}
@@ -3036,7 +3035,13 @@ function InvokevNetScalerNitroMethod {
         }
         If (!$Import) {
           [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls12
-          Write-Output (Invoke-RestMethod @irmParameters);
+          Try {
+          $response = Invoke-RestMethod @irmParameters
+          } Catch {
+            Write-Log "Error: $_.Exception"
+          }  
+          Write-Output $response
+          #Write-Output (Invoke-RestMethod @irmParameters);
         }
     }
 } #end function InvokevNetScalerNitroMethod
@@ -3069,7 +3074,7 @@ function Connect-vNetScalerSession {
         Write-Log "Connecting to Citrix ADC"
         If (!$Credential) {
             Write-Log "No PSCredential object found."
-            If (($null -eq $NSUserName) -or ($null -eq $NSPassword)) {
+            If (($NSUserName -eq "") -or ($NSPassword -eq "")) {
                 write-log "Either username or password parameters have not been provided."
                 If (!$Import) {
                     Write-Log "Prompt for credentials"
@@ -3101,7 +3106,11 @@ function Connect-vNetScalerSession {
         $restResponse = Invoke-RestMethod @invokeRestMethodParams;
           Write-Log "Login Response: $restResponse"
         } Catch {
-            Write-Log $restResponse
+            SaveandCloseDocumentandShutdownWord
+            Remove-Variable -Name nsSession -Scope Script
+            Write-Log "Login Status: $($_.Exception)" 
+            Write-Error "Failed to connect to Citrix ADC: $($_.Exception)"
+            Exit
         }
         }
         ## Store the session cookie at the script scope
@@ -3110,7 +3119,7 @@ function Connect-vNetScalerSession {
         $script:nsSession.Expiry = (Get-Date).AddSeconds($Timeout);
         ## Return the Rest Method response
         Write-Output $restResponse;
-        Write-Log "NSSession Settings: $Script:nsSession"
+        
     }
 } #end function Connect-vNetScalerSession
 
@@ -3155,7 +3164,7 @@ function Get-vNetScalerObjectCount {
         # Citrix ADC Nitro API resource name, e.g. /nitro/v1/config/lbvserver/MYLBVSERVER
         [Parameter()] [Alias('Name')] [System.String] $ResourceName,
         # Citrix ADC Nitro API Container, i.e. nitro/v1/stat/ or nitro/v1/config/
-        [Parameter(Mandatory)] [ValidateSet('Stat','Config')] [string] $Container = 'Config'
+        [Parameter()] [ValidateSet('Stat','Config')] [string] $Container = 'Config'
     )
 
     begin {
@@ -3174,7 +3183,11 @@ function Get-vNetScalerObjectCount {
         write-log "Get-vNetScalerObjectCount Request URL: $uri"
         if (!$Import) {
           [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls12
+          try {
           $restResponse = InvokevNetScalerNitroMethod -Uri $Uri -Container $Container;
+          } Catch {
+            Write-Log "Error: $_.Exception"
+          }
         }
         
         If ($Offline) {
@@ -8289,9 +8302,9 @@ WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tData Sets"
 $datatsetpolicies = Get-vNetScalerObject -Container config -Object policydataset;
 
-$datatsetcount = Get-vNetScalerObjectCount -Container config -Object policydataset;
+$datasetcount = Get-vNetScalerObjectCount -Container config -Object policydataset;
 
-If($datatsetcount.__Count -le 0){
+If($datasetcount.__Count -le 0){
   WriteWordLine 0 0 "No Data Sets are configured."
   WriteWordLine 0 0 " "
 }
@@ -9525,7 +9538,7 @@ $Table = $null
         $aaawebpols = Get-vNetScalerObject -ResourceType authenticationvserver_authenticationwebauthpolicy_binding -name $aaavservername
         
 
-        If ($aaawebpolscount = Get-vNetScalerObjectCount -container config ) {WriteWordLine 0 0 "No WebAuth authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
+        If ($aaawebpolscount.__count -le 0 ) {WriteWordLine 0 0 "No WebAuth authentication Policies have been configured"} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $WEBPOLHASH = @(); 
