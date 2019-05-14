@@ -6773,34 +6773,41 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
         [Parameter(Mandatory)] [System.String[]] $Headers
     )
     
-      $BindingCount = Get-vNetScalerObjectCount -Container Config -Object $BindingType -ResourceName $vServerName
+    $BindingCount = Get-vNetScalerObjectCount -Container Config -Object $BindingType -ResourceName $vServerName
 
-        If ($BindingCount.__Count -gt 0) {
-            $BindingObject = Get-vNetScalerObject -Container Config -Object $BindingType -ResourceName $vServerName
+    If ($BindingCount.__Count -gt 0) {
+        $BindingObject = Get-vNetScalerObject -Container Config -Object $BindingType -ResourceName $vServerName
+        
+        WriteWordLine 4 0 "$BindingTypeName"
+        WriteWordLine 0 0 " "
+        [System.Collections.Hashtable[]] $POLICIESH = @();
+        [System.Collections.HashTable] $TempHash = @{};
+        $ArrProperties = $Properties.split(",")
+        ForEach ($Binding in $BindingObject) {
             
-            WriteWordLine 4 0 "$BindingTypeName"
-            WriteWordLine 0 0 " "
-            [System.Collections.Hashtable[]] $POLICIESH = @();
-            $ArrProperties = $Properties.split(",")
-            ForEach ($Binding in $BindingObject) {
-                Remove-Variable -Name TempArray
-                [System.Collections.HashTable]$TempArray = @();
-                
-                    foreach ($Property in $ArrProperties) {
+                $TempHash.Clear()
+            
+                foreach ($objProperty in $ArrProperties) {
 
-                        $Value = $Binding."$Property"
-                        $TempArray.Add($Property,$Value);
+                    $objValue = $Binding."$objProperty"
+                    Try {
+                    $TempHash.Add($objProperty,$objValue);
+                    } Catch {
+                      Write-Log $_.exception
                     }
-              $POLICIESH += $TempArray;
-            }  
-            $Params = $null
-            $Params = @{
-                Hashtable = $POLICIESH;
-                Columns = $Properties;
-                Headers = $Headers;
-                AutoFit = $wdAutoFitContent;
-                Format = -235; ## IB - Word constant for Light List Accent 5
-            }
+
+
+                }
+          $POLICIESH += $TempHash;
+        }  
+        $Params = $null
+        $Params = @{
+            Hashtable = $POLICIESH;
+            Columns = $Properties.Split(",");
+            Headers = $Headers.Split(",");
+            AutoFit = $wdAutoFitContent;
+            Format = -235; ## IB - Word constant for Light List Accent 5
+        }
             ## IB - Add the table to the document, splatting the parameters
             $Table = AddWordTable @Params;
             ## IB - Set the header background and bold font
@@ -6871,7 +6878,10 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
 
-    New-PolicyBindingTable -vServerName $lbvservername -BindingType "lbvserver_tmtrafficpolicy_binding" -BindingTypeName "Traffic Policies" -Properties "priority,policyname" -Headers "Priority,Policy Name"
+    New-PolicyBindingTable -vServerName $lbvservername -BindingType "lbvserver_tmtrafficpolicy_binding" -BindingTypeName "Traffic Policies" -Properties "priority,policyname,bindpoint" -Headers "Priority,Policy Name,Bind Point"
+    New-PolicyBindingTable -vServerName $lbvservername -BindingType "lbvserver_analyticsprofile_binding" -BindingTypeName "Analytics Policies" -Properties "analyticsprofile" -Headers "Analytics Profile"
+    New-PolicyBindingTable -vServerName $lbvservername -BindingType "lbvserver_cachepolicy_binding" -BindingTypeName "Cache Policies" -Properties "priority,policyname,bindpoint,gotopriorityexpression" -Headers "Priority,Policy Name,BindPoint,Go To Expression"
+    
     #endregion policies
 
     #region redirect
@@ -6955,7 +6965,6 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 	$TableRange = $Null
 	$Table = $Null
 
-    $selection.InsertNewPage()
 
     #endregion advanced
 
