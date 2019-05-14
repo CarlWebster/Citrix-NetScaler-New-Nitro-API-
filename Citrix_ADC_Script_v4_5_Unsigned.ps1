@@ -2899,15 +2899,25 @@ function Get-vNetScalerObject {
           $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
-          Disable-Verbose
-          $restResponse.($ResourceType) | Export-CliXML -Path $OfflineExportPath | Out-Null
+          Write-Log "Export Path: $OfflineExportPath"
+          #Disable-Verbose
+            Try {
+              $restResponse.($ResourceType) | Export-CliXML -Path $OfflineExportPath | Out-Null
+            } Catch {
+                Write-Log "$($_.Exception)"
+            }
           Write-Output $restResponse.($ResourceType)
-          Enable-Verbose
+          #Enable-Verbose
         } ElseIf ($Import) {
           $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
-          Import-Clixml -Path $OfflineExportPath | Write-Output
+          Write-Log "Import Path: $OfflineExportPath"
+            Try {
+              Import-Clixml -Path $OfflineExportPath | Write-Output
+            } Catch {
+                Write-Log "$($_.Exception)"
+            }
         } Else {
           if ($null -ne $restResponse.($ResourceType)) { Write-Output $restResponse.($ResourceType); }
           else { Write-Output $restResponse }
@@ -2955,15 +2965,25 @@ function Get-vNetScalerFile {
           $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
-          Disable-Verbose
+          #Disable-Verbose
+          Write-Log "Export Path: $OfflineExportPath"
+          Try {
           $restResponse.systemfile | Export-CliXML -Path $OfflineExportPath | Out-Null
-          Enable-Verbose
+          } Catch {
+              Write-Log "$($_.Exception)"
+          }
+          #Enable-Verbose
           Write-Output $restResponse.systemfile;
         } ElseIf ($Import) {
           $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
-          Import-Clixml -Path $OfflineExportPath | Write-Output
+          Write-Log "Import Path: $OfflineExportPath"
+          Try {
+            Import-Clixml -Path $OfflineExportPath | Write-Output
+          } Catch {
+              Write-Log "$($_.Exception)"
+          }
         } Else {
 
         if ($null -ne $restResponse.systemfile) { Write-Output $restResponse.systemfile; }
@@ -3194,14 +3214,15 @@ function Get-vNetScalerObjectCount {
           $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
-          Disable-Verbose
+          #Disable-Verbose
           $restResponse.($Object.ToLower()) | Export-CliXML -Path $OfflineExportPath | Out-Null;
-          Enable-Verbose
+          #Enable-Verbose
           Write-Output $restResponse.($Object.ToLower());
         } ElseIf ($Import) {
           $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
+          Write-Log "Import Path: $OfflineExportPath"
           Import-Clixml -Path $OfflineExportPath | Write-Output
         } Else {
         # $objectResponse = '{0}objects' -f $Container.ToLower();
@@ -6727,6 +6748,71 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
     #region policies
     WriteWordLine 3 0 "Policies"
     WriteWordLine 0 0 " "
+    Function New-PolicyBindingTable {
+        #Params
+        #Vserver Name
+        #Binding Type
+        #Policy Type (String)
+        #Array of Properties
+        #Array of Descriptions
+        <#
+    .SYNOPSIS
+        Creates a Word Table for LB vServer Policy Bindings
+#>
+    [CmdletBinding()]
+    param (
+        # LBVserver Name to query bindings for
+        [Parameter(Mandatory)] [System.String] $vServerName,
+        # Binding Type to Query
+        [Parameter(Mandatory)] [System.String] $BindingType,
+        # Firendly Name for Binding Type (used in Header)
+        [Parameter(Mandatory)] [System.String[]] $BindingTypeName,
+        # Array of Object Properties to output
+        [Parameter(Mandatory)] [System.String[]] $Properties,
+        # Retrieve Builk Bindings for an object
+        [Parameter(Mandatory)] [System.String[]] $Headers
+    )
+    
+      $BindingCount = Get-vNetScalerObjectCount -Container Config -Object $BindingType -ResourceName $vServerName
+
+        If ($BindingCount.__Count -gt 0) {
+            $BindingObject = Get-vNetScalerObject -Container Config -Object $BindingType -ResourceName $vServerName
+            
+            WriteWordLine 4 0 "$BindingTypeName"
+            WriteWordLine 0 0 " "
+            [System.Collections.Hashtable[]] $POLICIESH = @();
+            $ArrProperties = $Properties.split(",")
+            ForEach ($Binding in $BindingObject) {
+                Remove-Variable -Name TempArray
+                [System.Collections.HashTable]$TempArray = @();
+                
+                    foreach ($Property in $ArrProperties) {
+
+                        $Value = $Binding."$Property"
+                        $TempArray.Add($Property,$Value);
+                    }
+              $POLICIESH += $TempArray;
+            }  
+            $Params = $null
+            $Params = @{
+                Hashtable = $POLICIESH;
+                Columns = $Properties;
+                Headers = $Headers;
+                AutoFit = $wdAutoFitContent;
+                Format = -235; ## IB - Word constant for Light List Accent 5
+            }
+            ## IB - Add the table to the document, splatting the parameters
+            $Table = AddWordTable @Params;
+            ## IB - Set the header background and bold font
+            #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
+            FindWordDocumentEnd;
+            $Table = $null   
+            WriteWordLine 0 0 " "     
+        }
+        
+    }
+    
+    
         If ($lbvserverbindings.lbvserver_responderpolicy_binding.count -gt 0){
 
             ## IB - Use an array of hashtable to store the rows
@@ -6780,11 +6866,12 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
             FindWordDocumentEnd;
             } else { 
               WriteWordLine 0 0 "No Rewrite Policies are bound to the virtual server."
-              WriteWordLine 0 0 " "
             }
 
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
+
+    New-PolicyBindingTable -vServerName $lbvservername -BindingType "lbvserver_tmtrafficpolicy_binding" -BindingTypeName "Traffic Policies" -Properties "priority,policyname" -Headers "Priority,Policy Name"
     #endregion policies
 
     #region redirect
