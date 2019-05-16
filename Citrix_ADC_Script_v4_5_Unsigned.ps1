@@ -509,7 +509,7 @@ Param(
 	[parameter(Mandatory=$False )] 
 	[Switch]$AddDateTime=$False,
 	
-    [parameter(Mandatory=$true )]
+    [parameter(Mandatory=$False )]
     [string] $NSIP,
     
     [parameter(Mandatory=$false ) ]
@@ -708,6 +708,13 @@ If(!(Test-Path Variable:Offline))
 If(!(Test-Path Variable:Import))
 {
 	$Import = $False
+}
+
+If(!(Test-Path Variable:NSIP) -or ("" -eq $NSIP))
+{
+    If(!$Import) {
+        $NSIP = Read-Host "Please enter the Management IP address for Citrix ADC" 
+    }
 }
 
 If ($Offline -and $Import) {
@@ -2903,9 +2910,32 @@ function Get-vNetScalerObject {
           Write-Log "Base64 Encoded File Name: $tmpFileName"
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
           Write-Log "Export Path: $OfflineExportPath"
+          $LongPath = $false
+          #Check Path Length
+          If ($OfflineExportPath.Length -ge 254) {
+              Write-Log "Path exceeds path limit - converting to literal path"
+              $LongPath = $true
+              #Make path literal
+              $BasePath = '\\?\'
+              $PathInfo = [System.URI]$OfflineExportPath
+              If ($PathInfo.IsUNC) {
+                  $BasePath = '\\?\UNC\'
+              }
+              $LiteralPath = Join-Path -Path $BasePath -ChildPath $OfflineExportPath
+              Write-Log "New Literal Path: $LiteralPath"
+          }
           #Disable-Verbose
             Try {
-              $restResponse.($ResourceType) | Export-CliXML -Path $OfflineExportPath | Out-Null
+                if (!$LongPath){
+                    $restResponse.($ResourceType) | Export-CliXML -Path $OfflineExportPath | Out-Null
+                } Else {
+                    Try {
+                        $restResponse.($ResourceType) | Export-CliXML -LiteralPath $LiteralPath | Out-Null
+                    } Catch {
+                        Write-Log $_.exception
+                        Write-Warning $_.exception
+                    }
+                }
             } Catch {
                 Write-Log "$($_.Exception)"
             }
@@ -2919,8 +2949,31 @@ function Get-vNetScalerObject {
           Write-Log "Base64 Encoded File Name: $tmpFileName"
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
           Write-Log "Import Path: $OfflineExportPath"
+          $LongPath = $false
+          #Check Path Length
+          If ($OfflineExportPath.Length -ge 254) {
+              Write-Log "Path exceeds path limit - converting to literal path"
+              $LongPath = $true
+              #Make path literal
+              $BasePath = '\\?\'
+              $PathInfo = [System.URI]$OfflineExportPath
+              If ($PathInfo.IsUNC) {
+                  $BasePath = '\\?\UNC\'
+              }
+              $LiteralPath = Join-Path -Path $BasePath -ChildPath $OfflineExportPath
+              Write-Log "New Literal Path: $LiteralPath"
+          }
             Try {
-              Import-Clixml -Path $OfflineExportPath | Write-Output
+                if (!$LongPath){
+                    Import-Clixml -Path $OfflineExportPath | Write-Output
+                } Else {
+                    Try {
+                        Import-Clixml -LiteralPath $LiteralPath | Write-Output
+                    } Catch {
+                        Write-Log $_.exception
+                        Write-Warning $_.exception
+                    }
+                }
             } Catch {
                 Write-Log "$($_.Exception)"
             }
@@ -2973,8 +3026,31 @@ function Get-vNetScalerFile {
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
           #Disable-Verbose
           Write-Log "Export Path: $OfflineExportPath"
+          $LongPath = $false
+          #Check Path Length
+          If ($OfflineExportPath.Length -ge 254) {
+              Write-Log "Path exceeds path limit - converting to literal path"
+              $LongPath = $true
+              #Make path literal
+              $BasePath = '\\?\'
+              $PathInfo = [System.URI]$OfflineExportPath
+              If ($PathInfo.IsUNC) {
+                  $BasePath = '\\?\UNC\'
+              }
+              $LiteralPath = Join-Path -Path $BasePath -ChildPath $OfflineExportPath
+              Write-Log "New Literal Path: $LiteralPath"
+          }
           Try {
-          $restResponse.systemfile | Export-CliXML -Path $OfflineExportPath | Out-Null
+                If(!$LongPath){
+                    $restResponse.systemfile | Export-CliXML -Path $OfflineExportPath | Out-Null
+                } Else {
+                    Try {
+                        $restResponse.systemfile | Export-CliXML -LiteralPath $LiteralPath | Out-Null
+                    } Catch {
+                        Write-Log $_.exception
+                        Write-Warning $_.exception
+                    }
+                }
           } Catch {
               Write-Log "$($_.Exception)"
           }
@@ -2985,8 +3061,26 @@ function Get-vNetScalerFile {
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
           Write-Log "Import Path: $OfflineExportPath"
+          $LongPath = $false
+          #Check Path Length
+          If ($OfflineExportPath.Length -ge 254) {
+              Write-Log "Path exceeds path limit - converting to literal path"
+              $LongPath = $true
+              #Make path literal
+              $BasePath = '\\?\'
+              $PathInfo = [System.URI]$OfflineExportPath
+              If ($PathInfo.IsUNC) {
+                  $BasePath = '\\?\UNC\'
+              }
+              $LiteralPath = Join-Path -Path $BasePath -ChildPath $OfflineExportPath
+              Write-Log "New Literal Path: $LiteralPath"
+          }
           Try {
-            Import-Clixml -Path $OfflineExportPath | Write-Output
+              If(!$LongPath) {
+                Import-Clixml -Path $OfflineExportPath | Write-Output
+              } Else {
+                Import-Clixml -LiteralPath $LiteralPath | Write-Output 
+              }
           } Catch {
               Write-Log "$($_.Exception)"
           }
@@ -3220,8 +3314,36 @@ function Get-vNetScalerObjectCount {
           $FileNameBytes = [System.Text.Encoding]::ASCII.GetBytes($uri)
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
+          Write-Log "Export Path: $OfflineExportPath"
+          $LongPath = $false
+          #Check Path Length
+          If ($OfflineExportPath.Length -ge 254) {
+              Write-Log "Path exceeds path limit - converting to literal path"
+              $LongPath = $true
+              #Make path literal
+              $BasePath = '\\?\'
+              $PathInfo = [System.URI]$OfflineExportPath
+              If ($PathInfo.IsUNC) {
+                  $BasePath = '\\?\UNC\'
+              }
+              $LiteralPath = Join-Path -Path $BasePath -ChildPath $OfflineExportPath
+              Write-Log "New Literal Path: $LiteralPath"
+          }
           #Disable-Verbose
-          $restResponse.($Object.ToLower()) | Export-CliXML -Path $OfflineExportPath | Out-Null;
+          try {
+              If(!$LongPath) { 
+                $restResponse.($Object.ToLower()) | Export-CliXML -Path $OfflineExportPath | Out-Null;
+              } Else {
+                Try {
+                    $restResponse.($Object.ToLower()) | Export-CliXML -LiteralPath $LiteralPath | Out-Null;
+                } Catch {
+                    Write-Log $_.exception
+                    Write-Warning $_.exception
+                }
+              }
+          } Catch {
+              Write-Log $_.exception
+          }
           #Enable-Verbose
           Write-Output $restResponse.($Object.ToLower());
         } ElseIf ($Import) {
@@ -3229,7 +3351,32 @@ function Get-vNetScalerObjectCount {
           $tmpFileName = Get-CleanBase64([System.Convert]::ToBase64String($FileNameBytes))
           $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "$tmpFileName.xml"
           Write-Log "Import Path: $OfflineExportPath"
-          Import-Clixml -Path $OfflineExportPath | Write-Output
+          If ($OfflineExportPath.Length -ge 254) {
+            Write-Log "Path exceeds path limit - converting to literal path"
+            $LongPath = $true
+            #Make path literal
+            $BasePath = '\\?\'
+            $PathInfo = [System.URI]$OfflineExportPath
+            If ($PathInfo.IsUNC) {
+                $BasePath = '\\?\UNC\'
+            }
+            $LiteralPath = Join-Path -Path $BasePath -ChildPath $OfflineExportPath
+            Write-Log "New Literal Path: $LiteralPath"
+        }
+        try { 
+            If (!$LongPath){
+                Import-Clixml -Path $OfflineExportPath | Write-Output
+            } Else {
+                Try {
+                    Import-Clixml -LiteralPath $LiteralPath | Write-Output
+                } Catch {
+                    Write-Log $_.exception
+                    Write-Warning $_.exception
+                }
+            }
+        } Catch {
+            Write-Log $_.exception
+        }
         } Else {
         # $objectResponse = '{0}objects' -f $Container.ToLower();
         Write-Output $restResponse.($Object.ToLower());
@@ -3339,15 +3486,7 @@ $String = $String.Replace("/", "_");
 $String = $String.Replace("=", "_");
 $String = $String.Replace("+", "_");
 Write-Log "Removing unsafe characters"
-If (($String.Length + $OfflinePath.Length) -ge 254) {
-Write-Log "File name is longer than 254 characters - trimming."
-$totalLength = $String.Length + $OfflinePath.Length
-[int]$charsToRemove = ($totalLength - 254) + 5
 
-  $String = $String.Remove(0, $charsToRemove)
-#Write-Host "New String: $String" -ForegroundColor Yellow
-
-}
 
 Write-Output $String
 
@@ -3419,9 +3558,22 @@ Set-Progress -Status "Connecting to Citrix ADC"
 ## Ensure we can connect to the Citrix ADC appliance before we spin up Word!
 ## Connect to the API if there is no session cookie
 ## Note: repeated logons will result in 'Connection limit to cfe exceeded' errors.
+If ($Import) {
+    $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "nsSession.xml"
+    If (Test-Path -Path $OfflineExportPath) {
+        $script:nsSession = Import-Clixml -Path $OfflineExportPath
+    }
+}
 if (-not (Get-Variable -Name nsSession -Scope Script -ErrorAction SilentlyContinue)) { 
     Write-Log "nsSession variable doesn't exist, so start a new connection"
     [ref] $null = Connect-vNetScalerSession -ComputerName $nsip -UseNSSSL:$UseNSSSL -Credential $Credential -ErrorAction Stop;
+}
+### If we are running in offline/export mode, export the NSSession Variable so we can use this on import
+### Export $Script:nsSession
+If ($Offline) {
+    $OfflineExportPath = Join-Path -Path $OfflinePath -ChildPath "nsSession.xml"
+    $script:nsSession | Export-CliXML -Path $OfflineExportPath
+
 }
 #endregion Citrix ADC Connect
 
