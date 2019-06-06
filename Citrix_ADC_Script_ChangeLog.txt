@@ -2,6 +2,25 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #Please provide feedback or feature requests to amccullough84@gmail.com
 
+#Version 4.5 13-May-2019
+    * FIX: Issue connecting to Citrix ADC when using untrusted certificate on the management interface.
+    * NEW: Pass PSCredential object to -Credential parameter to authenticate to Citrix ADC silently
+    * NEW: -NSUserName and -NSPassword paramters allow authentication to Citrix ADC silently
+    * FIX: Fixed issue where some users were prompted for missing parameter when running the script
+    * FIX: Modes table had incorrect header values
+    * FIX: Output issues for Certificates, ADC Servers, SAML Authentication, Location Database, Network Profiles, NSGW Session Profiles
+    * FIX: NSGW Session Profiles using wrong value for SSO Domain
+    * FIX: Formatting issue for HTTP Callouts 
+
+.EXAMPLE
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -NSIP 172.16.20.10 -Credential $MyCredentials
+
+    Will execute the script silently connecting to an ADC appliance on 172.16.20.10 using credentials stored in the PSCredential Object $Mycredentials
+.EXAMPLE
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -NSIP 172.16.20.10 -NSUserName nsroot -NSPassword nsroot
+
+    Will execute the script silently connecting to an ADC appliance on 172.16.20.10 using credentials nsroot/nsroot
+
 #Version 4.4 04-February-2019
 	* Fixed issue where some bindings were not being correctly reported due to incorrect handling of null return values - Thanks to Aaron Kahn for reporting this.
 
