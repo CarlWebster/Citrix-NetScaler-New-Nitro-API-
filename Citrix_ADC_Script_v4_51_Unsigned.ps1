@@ -104,8 +104,8 @@
 .PARAMETER AddDateTime
 	Adds a date time stamp to the end of the file name.
 	Time stamp is in the format of yyyy-MM-dd_HHmm.
-	June 1, 2016 at 6PM is 2016-06-01_1800.
-	Output filename will be ReportName_2016-06-01_1800.docx (or .pdf).
+	June 1, 2020 at 6PM is 2020-06-01_1800.
+	Output filename will be ReportName_2020-06-01_1800.docx (or .pdf).
 	This parameter is disabled by default.
 .PARAMETER Folder
 	Specifies the optional output folder to save the output report. 
@@ -204,8 +204,8 @@
 
 	Adds a date time stamp to the end of the file name.
 	Time stamp is in the format of yyyy-MM-dd_HHmm.
-	June 1, 2016 at 6PM is 2016-06-01_1800.
-	Output filename will be Script_Template_2016-06-01_1800.docx
+	June 1, 2020 at 6PM is 2020-06-01_1800.
+	Output filename will be Script_Template_2020-06-01_1800.docx
 .EXAMPLE
 	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -PDF -AddDateTime
 	
@@ -220,8 +220,8 @@
 
 	Adds a date time stamp to the end of the file name.
 	Time stamp is in the format of yyyy-MM-dd_HHmm.
-	June 1, 2016 at 6PM is 2016-06-01_1800.
-	Output filename will be Script_Template_2016-06-01_1800.PDF
+	June 1, 2020 at 6PM is 2020-06-01_1800.
+	Output filename will be Script_Template_2020-06-01_1800.PDF
 .EXAMPLE
 	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Folder \\FileServer\ShareName
 	
@@ -299,8 +299,8 @@
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-    NAME: Citrix_ADC_Script_v4_5.ps1
-	VERSION Citrix ADC Script: 4.5
+    NAME: Citrix_ADC_Script_v4_51.ps1
+	VERSION Citrix ADC Script: 4.51
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
@@ -313,13 +313,22 @@
 .COMMENT
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .Citrix ADC Documentation Script
-    NAME: Citrix_ADC_Script_v4_5.ps1
-	VERSION Citrix ADC Script: 4.5
+    NAME: Citrix_ADC_Script_v4_51.ps1
+	VERSION Citrix ADC Script: 4.51
 	VERSION Script Template: 2016
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
 	LASTEDIT: February, 2019
+	
+.Release Notes version 4.51
+#	Fix Swedish Table of Contents (Thanks to Johan Kallio)
+#		From 
+#			'sv-'	{ 'Automatisk innehållsförteckning2'; Break }
+#		To
+#			'sv-'	{ 'Automatisk innehållsförteckn2'; Break }
+#	Updated help text
+
 .Release Notes version 4.5
     * FIX: Issue connecting to Citrix ADC when using untrusted certificate on the management interface.
     * NEW: Pass PSCredential object to -Credential parameter to authenticate to Citrix ADC silently
@@ -2721,6 +2730,12 @@ Function ProcessScriptEnd
 
 	$ErrorActionPreference = $SaveEAPreference
 	[gc]::collect()
+			
+	Write-Host "                                                                                    " -BackgroundColor Black -ForegroundColor White
+	Write-Host "               This FREE script was brought to you by Conversant Group              " -BackgroundColor Black -ForegroundColor White
+	Write-Host "We design, build, and manage infrastructure for a secure, dependable user experience" -BackgroundColor Black -ForegroundColor White
+	Write-Host "                       Visit our website conversantgroup.com                        " -BackgroundColor Black -ForegroundColor White
+	Write-Host "                                                                                    " -BackgroundColor Black -ForegroundColor White
 }
 #endregion
 

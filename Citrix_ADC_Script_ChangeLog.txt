@@ -2,6 +2,14 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #Please provide feedback or feature requests to amccullough84@gmail.com
 
+#Version 4.51
+#	Fix Swedish Table of Contents (Thanks to Johan Kallio)
+#		From 
+#			'sv-'	{ 'Automatisk innehållsförteckning2'; Break }
+#		To
+#			'sv-'	{ 'Automatisk innehållsförteckn2'; Break }
+#	Updated help text
+
 #Version 4.5 13-May-2019
     * FIX: Issue connecting to Citrix ADC when using untrusted certificate on the management interface.
     * NEW: Pass PSCredential object to -Credential parameter to authenticate to Citrix ADC silently
