@@ -2,6 +2,23 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #Please provide feedback or feature requests to amccullough84@gmail.com
 
+.Release Notes version 4.52
+#	Add checking for a Word version of 0, which indicates the Office installation needs repairing
+#	Change location of the -Dev, -Log, and -ScriptInfo output files from the script folder to the -Folder location (Thanks to Guy Leech for the "suggestion")
+#	Remove code to check for $Null parameter values
+#	Reformatted the terminating Write-Error messages to make them more visible and readable in the console
+#	Remove the SMTP parameterset and manually verify the parameters
+#	Update Function SendEmail to handle anonymous unauthenticated email
+#	Update Help Text
+
+#Version 4.51
+#	Fix Swedish Table of Contents (Thanks to Johan Kallio)
+#		From 
+#			'sv-'	{ 'Automatisk innehållsförteckning2'; Break }
+#		To
+#			'sv-'	{ 'Automatisk innehållsförteckn2'; Break }
+#	Updated help text
+
 #Version 4.5 13-May-2019
     * FIX: Issue connecting to Citrix ADC when using untrusted certificate on the management interface.
     * NEW: Pass PSCredential object to -Credential parameter to authenticate to Citrix ADC silently
