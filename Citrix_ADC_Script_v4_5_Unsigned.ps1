@@ -2888,7 +2888,7 @@ function Get-vNetScalerObject {
         if ($script:nsSession.UseNSSSL) { $protocol = 'https'; }
         else { $protocol = 'http'; }
         $uri = '{0}://{1}/nitro/v1/{2}/{3}' -f $protocol, $script:nsSession.Address, $Container, $ResourceType;
-        if ($ResourceName) { $uri = '{0}/{1}' -f $uri, $ResourceName; }
+        if ($ResourceName) { $uri = '{0}/{1}' -f $uri, [System.Web.HttpUtility]::UrlEncode($ResourceName); }
         if ($Attribute) {
             $attrs = [System.String]::Join(',', $Attribute);
             $uri = '{0}?attrs={1}' -f $uri, $attrs;
@@ -3296,7 +3296,7 @@ function Get-vNetScalerObjectCount {
 
     process {
         If ($ResourceName) {
-          $uri = '{0}://{1}/nitro/v1/{2}/{3}/{4}?count=yes' -f $protocol,$script:nsSession.Address, $Container.ToLower(), $Object.ToLower(), $ResourceName;
+          $uri = '{0}://{1}/nitro/v1/{2}/{3}/{4}?count=yes' -f $protocol,$script:nsSession.Address, $Container.ToLower(), $Object.ToLower(), [System.Web.HttpUtility]::UrlEncode($ResourceName);
         } Else {
           $uri = '{0}://{1}/nitro/v1/{2}/{3}?count=yes' -f $protocol,$script:nsSession.Address, $Container.ToLower(), $Object.ToLower();
         }
@@ -3425,6 +3425,169 @@ Function Get-AttributeFromCSS {
 }
 
 #endregion CSS Functions
+
+#region Policy Functions
+
+Function New-PolicyBindingTable {
+    #Params
+    #Vserver Name
+    #Binding Type
+    #Policy Type (String)
+    #Array of Properties
+    #Array of Descriptions
+    <#
+.SYNOPSIS
+    Creates a Word Table for LB vServer Policy Bindings
+#>
+[CmdletBinding()]
+param (
+    # LBVserver Name to query bindings for
+    [Parameter(Mandatory)] [Alias("Object")] [System.String] $vServerName,
+    # Binding Type to Query
+    [Parameter(Mandatory)] [System.String] $BindingType,
+    # Firendly Name for Binding Type (used in Header)
+    [Parameter(Mandatory)] [System.String[]] $BindingTypeName,
+    # Array of Object Properties to output
+    [Parameter(Mandatory)] [System.String[]] $Properties,
+    # Retrieve Headers to use in Table
+    [Parameter(Mandatory)] [System.String[]] $Headers,
+    # Heading level to use for the section heading
+    [Parameter()] [System.Int32] $HeadingLevel = 4
+
+)
+
+$BindingCount = Get-vNetScalerObjectCount -Container Config -Object $BindingType -ResourceName $vServerName
+
+If ($BindingCount.__Count -gt 0) {
+    $BindingObject = Get-vNetScalerObject -Container Config -Object $BindingType -ResourceName $vServerName
+    Switch($HeadingLevel) {
+        1 {WriteWordLine 1 0 "$BindingTypeName"}
+        2 {WriteWordLine 2 0 "$BindingTypeName"}
+        3 {WriteWordLine 3 0 "$BindingTypeName"}
+        4 {WriteWordLine 4 0 "$BindingTypeName"}
+        5 {WriteWordLine 5 0 "$BindingTypeName"}
+    }
+    
+    WriteWordLine 0 0 " "
+    [System.Collections.Hashtable[]] $POLICIESH = @();
+    #[System.Collections.HashTable] $TempHash = @{};
+    $ArrProperties = $Properties.split(",")
+    ForEach ($Binding in $BindingObject) {
+        
+            #$TempHash.Clear()
+            [System.Collections.HashTable] $TempHash = @{};
+        
+            foreach ($objProperty in $ArrProperties) {
+
+                $objValue = $Binding."$objProperty"
+                Try {
+                $TempHash.Add($objProperty,$objValue);
+                } Catch {
+                  Write-Log $_.exception
+                }
+
+
+            }
+      $POLICIESH += $TempHash;
+    }  
+    $Params = $null
+    $Params = @{
+        Hashtable = $POLICIESH;
+        Columns = $Properties.Split(",");
+        Headers = $Headers.Split(",");
+        AutoFit = $wdAutoFitContent;
+        Format = -235; ## IB - Word constant for Light List Accent 5
+    }
+        ## IB - Add the table to the document, splatting the parameters
+        $Table = AddWordTable @Params;
+        ## IB - Set the header background and bold font
+        #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
+        FindWordDocumentEnd;
+        $Table = $null   
+        WriteWordLine 0 0 " "     
+    }
+    
+}
+
+Function New-HeadedTable {
+    #Params
+    #Vserver Name
+    #Binding Type
+    #Policy Type (String)
+    #Array of Properties
+    #Array of Descriptions
+    <#
+.SYNOPSIS
+    Creates a Word Table for LB vServer Policy Bindings
+#>
+[CmdletBinding()]
+param (
+    # Binding Type to Query
+    [Parameter(Mandatory)] [System.String] $Object,
+    # Firendly Name for Binding Type (used in Header)
+    [Parameter(Mandatory)] [System.String[]] $SectionHeading,
+    # Array of Object Properties to output
+    [Parameter(Mandatory)] [System.String[]] $Properties,
+    # Retrieve Headers to use in Table
+    [Parameter(Mandatory)] [System.String[]] $Headers,
+    # Heading level to use for the section heading
+    [Parameter()] [System.Int32] $SectionHeadingLevel = 4
+
+)
+
+$ObjectCount = Get-vNetScalerObjectCount -Container Config -Object $Object
+
+If ($ObjectCount.__Count -gt 0) {
+    $NSObjects = Get-vNetScalerObject -Container Config -Object $Object
+    Switch($SectionHeadingLevel) {
+        1 {WriteWordLine 1 0 "$SectionHeading"}
+        2 {WriteWordLine 2 0 "$SectionHeading"}
+        3 {WriteWordLine 3 0 "$SectionHeading"}
+        4 {WriteWordLine 4 0 "$SectionHeading"}
+        5 {WriteWordLine 5 0 "$SectionHeading"}
+    }
+    
+    WriteWordLine 0 0 " "
+    [System.Collections.Hashtable[]] $POLICIESH = @();
+    #[System.Collections.HashTable] $TempHash = @{};
+    $ArrProperties = $Properties.split(",")
+    ForEach ($NSObject in $NSObjects) {
+        
+    [System.Collections.HashTable] $TempHash = @{};
+    #$TempHash.Clear()    
+            foreach ($objProperty in $ArrProperties) {
+
+                $objValue = $NSObject."$objProperty"
+                Try {
+                $TempHash.Add($objProperty,$objValue);
+                } Catch {
+                  Write-Log $_.exception
+                }
+
+
+            }
+      $POLICIESH += $TempHash;
+    }  
+    $Params = $null
+    $Params = @{
+        Hashtable = $POLICIESH;
+        Columns = $Properties.Split(",");
+        Headers = $Headers.Split(",");
+        AutoFit = $wdAutoFitContent;
+        Format = -235; ## IB - Word constant for Light List Accent 5
+    }
+        ## IB - Add the table to the document, splatting the parameters
+        $Table = AddWordTable @Params;
+        ## IB - Set the header background and bold font
+        #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
+        FindWordDocumentEnd;
+        $Table = $null   
+        WriteWordLine 0 0 " "     
+    }
+    
+}
+
+#endregion Policy Functions
 
 #region generic functions
 
@@ -4141,7 +4304,7 @@ if ($AUTHLOCH.Length -gt 0) {
     $Params = @{
         Hashtable = $AUTHLOCH;
         Columns = "LocalUser";
-        Headers = "Local User";
+        Headers = "Local User Accounts";
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
         }
@@ -4299,9 +4462,13 @@ if ($CMDPOLH.Length -gt 0) {
         Columns = "NAME","ACTION","CMDSPEC";
         Headers = "Policy Name", "Action", "Command Policy";
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
-        AutoFit = $wdAutoFitContent;
+        AutoFit = $wdAutoFitFixed;
         }
     $Table = AddWordTable @Params;
+    $Table.Columns.Item(1).Width = 100;
+    $Table.Columns.Item(2).Width = 50;
+    $Table.Columns.Item(3).Width = 294;
+
     FindWordDocumentEnd;
     $Table = $null
     }
@@ -6601,13 +6768,13 @@ WriteWordLine 0 0 " "
 $csvserverscount = Get-vNetScalerObjectCount -Container Config -object csvserver
 $csvservers = Get-vNetScalerObject -Object csvserver;
 
-If ($csvserverscount.__Count -le 0) {
-    WriteWordLine 0 0 "No policies have been configured for this Content Switch"
+If ($csvserverscount.__count -le 0) {
+    WriteWordLine 0 0 "No Content Switching vServers have been configured."
 } Else {
 
-foreach ($ContentSwitch in $csvservers) {
+  foreach ($ContentSwitch in $csvservers) {
     $csvservername = $ContentSwitch.name
-    WriteWordLine 2 0 "Content Switch $csvservername";
+    WriteWordLine 2 0 "Content Switch: $csvservername";
     WriteWordLine 0 0 " "
     ## IB - Create parameters for the hashtable so that we can splat them otherwise the
     ## IB - command will be about 400 characters wide!
@@ -6633,7 +6800,11 @@ foreach ($ContentSwitch in $csvservers) {
     FindWordDocumentEnd;
     WriteWordLine 0 0 " "
     $Table = $null
+
     $csvserverbindings = Get-vNetScalerObject -ResourceType csvserver_cspolicy_binding -Name $ContentSwitch.Name;
+    $csvserverbindingscount = Get-vNetScalerObjectCount -ResourceType csvserver_cspolicy_binding -Name $ContentSwitch.Name;
+
+    if ($csvserverbindingscount.__count -le 0) {} Else {
 
     #region CS Policies
     WriteWordLine 3 0 "Policies"
@@ -6676,8 +6847,11 @@ foreach ($ContentSwitch in $csvservers) {
             WriteWordLine 0 0 "No policies have been configured for this Content Switch"
     }
     FindWordDocumentEnd;
+    $csvserverbindings = $null
 
     #endregion CS Policies
+
+    }
 
     #region CS Advanced Config
     WriteWordLine 0 0 " "
@@ -6907,76 +7081,7 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
     #region policies
     WriteWordLine 3 0 "Policies"
     WriteWordLine 0 0 " "
-    Function New-PolicyBindingTable {
-        #Params
-        #Vserver Name
-        #Binding Type
-        #Policy Type (String)
-        #Array of Properties
-        #Array of Descriptions
-        <#
-    .SYNOPSIS
-        Creates a Word Table for LB vServer Policy Bindings
-#>
-    [CmdletBinding()]
-    param (
-        # LBVserver Name to query bindings for
-        [Parameter(Mandatory)] [System.String] $vServerName,
-        # Binding Type to Query
-        [Parameter(Mandatory)] [System.String] $BindingType,
-        # Firendly Name for Binding Type (used in Header)
-        [Parameter(Mandatory)] [System.String[]] $BindingTypeName,
-        # Array of Object Properties to output
-        [Parameter(Mandatory)] [System.String[]] $Properties,
-        # Retrieve Builk Bindings for an object
-        [Parameter(Mandatory)] [System.String[]] $Headers
-    )
-    
-    $BindingCount = Get-vNetScalerObjectCount -Container Config -Object $BindingType -ResourceName $vServerName
 
-    If ($BindingCount.__Count -gt 0) {
-        $BindingObject = Get-vNetScalerObject -Container Config -Object $BindingType -ResourceName $vServerName
-        
-        WriteWordLine 4 0 "$BindingTypeName"
-        WriteWordLine 0 0 " "
-        [System.Collections.Hashtable[]] $POLICIESH = @();
-        [System.Collections.HashTable] $TempHash = @{};
-        $ArrProperties = $Properties.split(",")
-        ForEach ($Binding in $BindingObject) {
-            
-                $TempHash.Clear()
-            
-                foreach ($objProperty in $ArrProperties) {
-
-                    $objValue = $Binding."$objProperty"
-                    Try {
-                    $TempHash.Add($objProperty,$objValue);
-                    } Catch {
-                      Write-Log $_.exception
-                    }
-
-
-                }
-          $POLICIESH += $TempHash;
-        }  
-        $Params = $null
-        $Params = @{
-            Hashtable = $POLICIESH;
-            Columns = $Properties.Split(",");
-            Headers = $Headers.Split(",");
-            AutoFit = $wdAutoFitContent;
-            Format = -235; ## IB - Word constant for Light List Accent 5
-        }
-            ## IB - Add the table to the document, splatting the parameters
-            $Table = AddWordTable @Params;
-            ## IB - Set the header background and bold font
-            #SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
-            FindWordDocumentEnd;
-            $Table = $null   
-            WriteWordLine 0 0 " "     
-        }
-        
-    }
     
     
         If ($lbvserverbindings.lbvserver_responderpolicy_binding.count -gt 0){
@@ -8555,17 +8660,17 @@ Set-Progress -Status "Citrix ADC Data Sets"
 WriteWordLine 2 0 "Data Sets"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tData Sets"
-$datatsetpolicies = Get-vNetScalerObject -Container config -Object policydataset;
+
 
 $datasetcount = Get-vNetScalerObjectCount -Container config -Object policydataset;
 
 If($datasetcount.__Count -le 0){
   WriteWordLine 0 0 "No Data Sets are configured."
   WriteWordLine 0 0 " "
-}
+} Else {
+  $datatsetpolicies = Get-vNetScalerObject -Container config -Object policydataset;
 
-
-foreach ($datasetpolicy in $datatsetpolicies) {
+  foreach ($datasetpolicy in $datatsetpolicies) {
 
 $dataset = Get-vNetScalerObject -Container config -Object policydataset_binding -Name $datasetpolicy.name;
 
@@ -8600,18 +8705,14 @@ FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 }
 
-
+}
 
     
 
 
 #endregion Data Sets
 
-#region URL Sets
 
-#API not working in 12.0 Beta
-
-#endregion URL Sets
 
 #region String Maps
 Set-Progress -Status "Citrix ADC String Maps"
@@ -9322,7 +9423,7 @@ $aaavservers = Get-vNetScalerObject -Container config -Object authenticationvser
 
 if($aaavserverscount.__count -le 0) { 
 
-WriteWordLine 0 0 "No AAA vServer has been configured"
+WriteWordLine 0 0 "No AAA vServers have been configured"
 WriteWordLine 0 0 " "
 } else {
 
@@ -9941,6 +10042,92 @@ $Table = $null
 } #endforeach region AAA
 } #end if AAA vServers
 
+#region AAA Users
+
+WriteWordLine 3 0 "AAA Users"
+WriteWordLine 0 0 " "
+
+$aaauserscount = Get-vNetScalerObjectCount -container config -ResourceType aaauser
+
+If ($aaauserscount.__count -le 0) {WriteWordLine 0 0 "No AAA Users have been configured."} Else {
+$aaausers = Get-vNetScalerObject -Container Config -ResourceType aaauser
+
+New-HeadedTable -Object aaauser -SectionHeading "All Users Accounts" -Properties "username" -Headers "Username" 
+
+  Foreach ($user in $aaausers) {
+
+    $aaauserbindingcount = Get-vNetScalerObjectCount -container config -ResourceType aaauser_binding -ResourceName $user.username
+    
+
+    If ($aaauserbindingcount.__count -le 0) {} Else {
+      WriteWordLine 4 0 "$($user.username) Bindings"
+      WriteWordLine 0 0 ""
+      #Group Bindings
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_aaagroup_binding -BindingTypeName "Groups" -Properties "groupname" -Headers "Group Name" -HeadingLevel 5
+      #Authorization Policies
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_authorizationpolicy_binding -BindingTypeName "Authorization Policies" -Properties "groupname" -Headers "Group Name" -HeadingLevel 5
+      #Intranet IP Bindings
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_intranetip_binding -BindingTypeName "Intranet IP" -Properties "intranetip,netmask" -Headers "Intranet IP,NetMask" --HeadingLevel 5
+      #Traffic Management Session Policy Bindings
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_tmsessionpolicy_binding -BindingTypeName "Traffic Management Session Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
+      #VPN Intranet Applications
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_vpnintranetapplication_binding -BindingTypeName "Intranet Applications" -Properties "intranetapplication" -Headers "Intranet Application" -HeadingLevel 5
+      #VPN Session Policies
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_vpnsessionpolicy_binding -BindingTypeName "Citrix Gateway Session Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
+      #VPN Traffic Policies
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_vpntrafficpolicy_binding -BindingTypeName "Citrix Gateway Traffic Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
+      #VPN Bookmarks
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_vpnurl_binding -BindingTypeName "Citrix Gateway Bookmarks" -Properties "urlname" -Headers "Bookmark" -HeadingLevel 5
+      WriteWordLine 0 0 ""
+    }
+
+  }
+}
+
+#endregion AAA Users
+
+#region AAA Groups
+
+WriteWordLine 3 0 "AAA Groups"
+WriteWordLine 0 0 " "
+
+$aaagroupscount = Get-vNetScalerObjectCount -container config -ResourceType aaagroup
+
+If ($aaagroupscount.__count -le 0) {WriteWordLine 0 0 "No AAA Groups have been configured."} Else {
+$aaagroups = Get-vNetScalerObject -Container Config -ResourceType aaagroup
+
+New-HeadedTable -Object aaagroup -SectionHeading "All Groups" -Properties "groupname" -Headers "Group Name" 
+  Foreach ($group in $aaagroups) {
+
+    $aaagroupbindingcount = Get-vNetScalerObjectCount -container config -ResourceType aaagroup_binding -ResourceName $group.groupname
+    
+    
+    If ($aaagroupbindingcount.__count -le 0) {} Else {
+      WriteWordLine 4 0 "$($group.groupname) Bindings"
+      WriteWordLine 0 0 ""  
+      #User Bindings
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_aaauser_binding -BindingTypeName "Users" -Properties "username" -Headers "User Name" -HeadingLevel 5
+      #Authorization Policies
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_authorizationpolicy_binding -BindingTypeName "Authorization Policies" -Properties "groupname" -Headers "Group Name" -HeadingLevel 5
+      #Intranet IP Bindings
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_intranetip_binding -BindingTypeName "Intranet IP" -Properties "intranetip,netmask" -Headers "Intranet IP,NetMask" --HeadingLevel 5
+      #Traffic Management Session Policy Bindings
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_tmsessionpolicy_binding -BindingTypeName "Traffic Management Session Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
+      #VPN Intranet Applications
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_vpnintranetapplication_binding -BindingTypeName "Intranet Applications" -Properties "intranetapplication" -Headers "Intranet Application" -HeadingLevel 5
+      #VPN Session Policies
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_vpnsessionpolicy_binding -BindingTypeName "Citrix Gateway Session Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
+      #VPN Traffic Policies
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_vpntrafficpolicy_binding -BindingTypeName "Citrix Gateway Traffic Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
+      #VPN Bookmarks
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_vpnurl_binding -BindingTypeName "Citrix Gateway Bookmarks" -Properties "urlname" -Headers "Bookmark" -HeadingLevel 5
+      WriteWordLine 0 0 ""
+    }
+  }
+}
+
+#endregion AAA Groups
+
 #region KCD Accounts
  WriteWordLine 3 0 "KCD Accounts"
         WriteWordLine 0 0 " "
@@ -9948,7 +10135,7 @@ $Table = $null
         $kcdaccounts = Get-vNetScalerObject -ResourceType aaakcdaccount;
         
 
-        If (($kcdaccountscount.__count -le 1) -or (!$kcdaccounts)) {WriteWordLine 0 0 "No KCD Accounts have been configured."; WriteWordLine 0 0 " ";} else { #Uses the mentioned error code to determine existency of policy
+        If (($kcdaccountscount.__count -le 0) -or (!$kcdaccounts)) {WriteWordLine 0 0 "No KCD Accounts have been configured."; WriteWordLine 0 0 " ";} else { #Uses the mentioned error code to determine existency of policy
 
             ## IB - Use an array of hashtable to store the rows
             [System.Collections.Hashtable[]] $KCDH = @(); 

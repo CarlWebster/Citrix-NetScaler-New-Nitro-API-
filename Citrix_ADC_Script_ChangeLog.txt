@@ -12,6 +12,8 @@
     * FIX: NSGW Session Profiles using wrong value for SSO Domain
     * FIX: Formatting issue for HTTP Callouts 
 
+#Version 4.6
+	* Added AAA Users and Groups and associated bindings
 .EXAMPLE
     PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -NSIP 172.16.20.10 -Credential $MyCredentials
 
