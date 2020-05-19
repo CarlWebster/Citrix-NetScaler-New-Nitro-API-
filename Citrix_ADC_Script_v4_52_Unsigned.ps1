@@ -615,6 +615,9 @@ Param(
 	
     [parameter(Mandatory=$False )]
     [string] $NSIP,
+
+    [parameter(Mandatory=$False )]
+    [string] $Features = "ALL",
     
     [parameter(Mandatory=$false ) ]
     #[PSCredential] $Credential = (Get-Credential -Message 'Enter Citrix ADC credentials'),
@@ -2089,7 +2092,8 @@ Function WriteWordLine
 		1 {$Script:Selection.Style = $Script:MyHash.Word_Heading1; Break}
 		2 {$Script:Selection.Style = $Script:MyHash.Word_Heading2; Break}
 		3 {$Script:Selection.Style = $Script:MyHash.Word_Heading3; Break}
-		4 {$Script:Selection.Style = $Script:MyHash.Word_Heading4; Break}
+        4 {$Script:Selection.Style = $Script:MyHash.Word_Heading4; Break}
+        5 {$Script:Selection.Style = $Script:MyHash.Word_Heading5; Break}
 		Default {$Script:Selection.Style = $Script:MyHash.Word_NoSpacing; Break}
 	}
 	
@@ -3008,6 +3012,56 @@ SetFileName1andFileName2 "Citrix ADC Documentation"
 
 #endregion file name and title name
 
+#region ProcessSections
+#This is currently only implemented for script testing
+$Modules = $Features.ToLower()
+$arrModules = $Modules.Split(",")
+$sectAll = $false
+$sectCore = $false
+$sectDNS = $false
+$sectCluster = $false
+$sectContentSwitching = $false
+$sectLoadBalancing = $false
+$sectCacheRedirection = $false
+$sectServices = $False
+$sectGSLB = $False
+$sectSSL = $False
+$sectAppExpert = $False
+$sectSecurity = $False
+$sectGateway = $false
+$sectMonitors = $false
+$sectPolicies = $false
+
+switch ($arrModules) {
+
+    "all" {$sectAll = $true}
+    "core" {$sectCore = $true}
+    "dns" {$sectDNS = $true}
+    "cluster" {$sectCluster = $true}
+    "contentswitching" {$sectContentSwitching = $true}
+    "cs" {$sectContentSwitching = $true}
+    "lb" {$sectLoadBalancing = $true}
+    "loadbalancing" {$sectLoadBalancing = $true}
+    "cacheredirection" {$sectCacheRedirection = $true}
+    "services" {$sectServices = $true}
+    "gslb" {$sectGSLB = $true}
+    "ssl" {$sectSSL = $true}
+    "appexpert" {$sectAppExpert = $true}
+    "security" {$sectSecurity = $true}
+    "gateway" {$sectGateway = $true}
+    "monitors" {$sectMonitors = $true}
+    "policies" {$sectPolicies = $true}
+}
+
+
+
+
+
+
+
+
+#endregion ProcessSections
+
 #region Citrix ADC Documentation Script Complete
 #Variables for Progress Bar
 [int]$script:ProgressSteps = 102
@@ -3676,9 +3730,10 @@ param (
     [Parameter()] [System.Int32] $HeadingLevel = 4
 
 )
-
+Write-Log "Enter New-PolicyBindingTable"
+Write-Log "Params - Object: $vServerName,BindingType:$BindingType,BindingTypeName:$BindingTypeName,Properties:$Properties,Headers:$Headers,HeadingLevel:$HeadingLevel"
 $BindingCount = Get-vNetScalerObjectCount -Container Config -Object $BindingType -ResourceName $vServerName
-
+Write-Log "Number of Bindings: $($BindingCount.__Count)"
 If ($BindingCount.__Count -gt 0) {
     $BindingObject = Get-vNetScalerObject -Container Config -Object $BindingType -ResourceName $vServerName
     Switch($HeadingLevel) {
@@ -3727,7 +3782,12 @@ If ($BindingCount.__Count -gt 0) {
         $Table = $null   
         WriteWordLine 0 0 " "     
     }
-    
+  $BindingType = $null
+  $BindingTypeName = $null  
+  $Properties = $null
+  $Headers = $null
+  $HeadingLevel = $null
+  $BindingCount = $null
 }
 
 Function New-HeadedTable {
@@ -4028,13 +4088,14 @@ $Build = $($NSVersion1[5] + " " + $nsversion1[6] + " " + $nsversion1[7] -replace
 
 ## Set script test version
 ## WIP THIS WORKS ONLY WHEN REGIONAL SETTINGS DIGIT IS SET TO . :)
-$ScriptVersion = 12.1
+$ScriptVersion = 13.0
 #endregion Citrix ADC Version
 
 #region Citrix ADC System Information
 Set-Progress -Status "Citrix ADC System Information"
-
+If ($SectAll -or $SectCore) { #Start Section Control for Core
 #region Basics
+
 Set-Progress -Status "Citrix ADC Configuration"
 WriteWordLine 1 0 "Citrix ADC Configuration"
 
@@ -4513,10 +4574,22 @@ $AUTHLOCH = $null
 
 foreach ($nssystemuser in $nssystemusers) {
 
+    #Get Command Policies for user
+    $cmdPolicyCount = Get-vNetScalerObjectCount -Container config -Object systemuser_systemcmdpolicy_binding -name $nssystemuser.username
+    $cmdPolicies = ""
+    If ($cmdPolicyCount.__Count -gt 0) {
+      $cmdPolicyObjects = Get-vNetScalerObject -Container config -Object systemuser_systemcmdpolicy_binding -name $nssystemuser.username
+      foreach($cmdPolicy in $cmdPolicyObjects) {
+          $cmdPolicies = $cmdPolicy.policyname
+      }
+    }
     ## IB - Create parameters for the hashtable so that we can splat them otherwise the
     ## IB - command will be about 400 characters wide!
     $AUTHLOCH += @{
             LocalUser = $nssystemuser.username;
+            ExternalAuth = $nssystemuser.externalauth;
+            Timeout = $nssystemuser.timeout;
+            CommandPolicy = $cmdPolicies;
         }
     }
 
@@ -4524,8 +4597,8 @@ if ($AUTHLOCH.Length -gt 0) {
     $Params = $null
     $Params = @{
         Hashtable = $AUTHLOCH;
-        Columns = "LocalUser";
-        Headers = "Local User Accounts";
+        Columns = "LocalUser","ExternalAuth","Timeout","CommandPolicy";
+        Headers = "User Name", "External Authentication","Timeout","Command Policy";
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
         }
@@ -4588,10 +4661,21 @@ if($nssystemgroupscount -le 0) { WriteWordLine 0 0 "No System Groups have been c
 [System.Collections.Hashtable[]] $AUTHGRPH = @();
 
 foreach ($nssystemgroup in $nssystemgroups) {
+    #Get Command Policies for user
+    $cmdPolicyCount = Get-vNetScalerObjectCount -Container config -Object systemgroup_systemcmdpolicy_binding -name $nssystemgroup.groupname
+    $cmdPolicies = ""
+    If ($cmdPolicyCount.__Count -gt 0) {
+      $cmdPolicyObjects = Get-vNetScalerObject -Container config -Object systemgroup_systemcmdpolicy_binding -name $nssystemgroup.groupname
+      foreach($cmdPolicy in $cmdPolicyObjects) {
+          $cmdPolicies = $cmdPolicy.policyname
+      }
+    }
     ## IB - Create parameters for the hashtable so that we can splat them otherwise the
     ## IB - command will be about 400 characters wide!
     $AUTHGRPH += @{
             SystemGroup = $nssystemgroup.groupname;
+            Timeout = $nssystemgroup.timeout;
+            CommandPolicy = $cmdPolicies;
         }
     }
 
@@ -4599,8 +4683,8 @@ if ($AUTHGRPH.Length -gt 0) {
     $Params = $null
     $Params = @{
         Hashtable = $AUTHGRPH;
-        Columns = "SystemGroup";
-        Headers = "System Group";
+        Columns = "SystemGroup","Timeout","CommandPolicy";
+        Headers = "Group Name", "Timeout", "Command Policy";
         Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
         AutoFit = $wdAutoFitContent;
         }
@@ -4743,7 +4827,7 @@ Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Features"
 
 $selection.InsertNewPage()
 Set-Progress -Status "Citrix ADC Features"
-WriteWordLine 1 0 "Citrix ADC Features"
+WriteWordLine 2 0 "Citrix ADC Features"
 WriteWordLine 0 0 " "
 If ($Version -gt $ScriptVersion) {
     WriteWordLine 0 0 ""
@@ -4752,7 +4836,7 @@ If ($Version -gt $ScriptVersion) {
     }
 #region Citrix ADC Basic Features
 Set-Progress -Status "Citrix ADC Basic Features"
-WriteWordLine 2 0 "Citrix ADC Basic Features"
+WriteWordLine 3 0 "Citrix ADC Basic Features"
 WriteWordLine 0 0 " "
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $AdvancedConfiguration = @(
@@ -4764,7 +4848,7 @@ WriteWordLine 0 0 " "
     @{ Description = "HTTP Compression"; Value = $FEATCMP }
     @{ Description = "Integrated Caching"; Value = $FEATIC }
     @{ Description = "Load Balancing"; Value = $FEATLB }
-    @{ Description = "Citrix ADC Gateway"; Value = $FEATSSLVPN }
+    @{ Description = "Citrix Gateway"; Value = $FEATSSLVPN }
     @{ Description = "Rewrite"; Value = $FEATRewrite }
     @{ Description = "SSL Offloading"; Value = $FEATSSL }
 );
@@ -4792,7 +4876,7 @@ WriteWordLine 0 0 " "
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Advanced Features"
 Set-Progress -Status "Citrix ADC Advanced Features"
-WriteWordLine 2 0 "Citrix ADC Advanced Features"
+WriteWordLine 3 0 "Citrix ADC Advanced Features"
 WriteWordLine 0 0 " "
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $AdvancedFeatures = @(
@@ -4860,7 +4944,7 @@ $selection.InsertNewPage()
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Modes"
 Set-Progress -Status "Citrix ADC Modes"
-WriteWordLine 1 0 "Citrix ADC Modes"
+WriteWordLine 2 0 "Citrix ADC Modes"
 WriteWordLine 0 0 " "
 $nsmode = Get-vNetScalerObject -Container config -Object nsmode; 
 
@@ -4912,10 +4996,10 @@ $selection.InsertNewPage()
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Monitoring"
 Set-Progress -Status "Citrix ADC Monitoring"
-WriteWordLine 1 0 "Citrix ADC Monitoring"
+WriteWordLine 2 0 "Citrix ADC Monitoring"
 WriteWordLine 0 0 " "
 Set-Progress -Status "Citrix ADC SNMP Community"
-WriteWordLine 2 0 "SNMP Community"
+WriteWordLine 3 0 "SNMP Community"
 WriteWordLine 0 0 " "
 
 $snmpcommunitycounter = Get-vNetScalerObjectCount -Container config -Object snmpcommunity; 
@@ -4951,7 +5035,7 @@ if($snmpcommunitycount -le 0) { WriteWordLine 0 0 "No SNMP Community has been co
     }
 WriteWordLine 0 0 " "
 
-WriteWordLine 2 0 "SNMP Manager"
+WriteWordLine 3 0 "SNMP Manager"
 WriteWordLine 0 0 " "
 $snmpmanagercounter = Get-vNetScalerObjectCount -Container config -Object snmpmanager; 
 $snmpmanagercount = $snmpmanagercounter.__count
@@ -4988,7 +5072,7 @@ if($snmpmanagercount -le 0) { WriteWordLine 0 0 "No SNMP Manager has been config
     }
 WriteWordLine 0 0 ""
 Set-Progress -Status "Citrix ADC SNMP Alerts"
-WriteWordLine 2 0 "SNMP Alert"
+WriteWordLine 3 0 "SNMP Alert"
 WriteWordLine 0 0 " "
 ## IB - Use an array of hashtable to store the rows
 [System.Collections.Hashtable[]] $SNMPALERTSH = @();
@@ -5025,7 +5109,7 @@ foreach ($snmpalarm in $snmpalarms) {
 WriteWordLine 0 0 ""
 
 Set-Progress -Status "Citrix ADC SNMP Traps"
-WriteWordLine 2 0 "SNMP Traps"
+WriteWordLine 3 0 "SNMP Traps"
 WriteWordLine 0 0 " "
 $snmptrapscounter = Get-vNetScalerObjectCount -Container config -Object snmptrap; 
 $snmptrapscount = $snmptrapscounter.__count
@@ -5073,11 +5157,11 @@ $selection.InsertNewPage()
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC AppFlow"
 Set-Progress -Status "Citrix ADC AppFlow"
-WriteWordLine 1 0 "Citrix ADC AppFlow"
+WriteWordLine 2 0 "Citrix ADC AppFlow"
 WriteWordLine 0 0 " "
 #region AppFlow Parameters
 Set-Progress -Status "Citrix ADC AppFlow Parameters"
-WriteWordLine 2 0 "AppFlow Parameters"
+WriteWordLine 3 0 "AppFlow Parameters"
 WriteWordLine 0 0 " "
 
 $afparams = Get-vNetScalerObject -Object appflowparam;
@@ -5149,7 +5233,7 @@ $Table = $null
 
 #region AppFlow Collectors
 Set-Progress -Status "Citrix ADC AppFlow Collectors"
-WriteWordLine 2 0 "AppFlow Collectors"
+WriteWordLine 3 0 "AppFlow Collectors"
 WriteWordLine 0 0 " "
 $afcolcounter = Get-vNetScalerObjectCount -Container config -Object appflowcollector; 
 $afcolscount = $afcolcounter.__count
@@ -5193,7 +5277,7 @@ WriteWordLine 0 0 " "
 
 #region AppFlow Policies
 Set-Progress -Status "Citrix ADC AppFlow Policies"
-WriteWordLine 2 0 "AppFlow Policies"
+WriteWordLine 3 0 "AppFlow Policies"
 WriteWordLine 0 0 " "
 $afpolcounter = Get-vNetScalerObjectCount -Container config -Object appflowpolicy; 
 $afpolscount = $afpolcounter.__count
@@ -5237,7 +5321,7 @@ WriteWordLine 0 0 " "
 
 #region AppFlow Actions
 Set-Progress -Status "Citrix ADC AppFlow Actions"
-WriteWordLine 2 0 "AppFlow Actions"
+WriteWordLine 3 0 "AppFlow Actions"
 WriteWordLine 0 0 " "
 
 $afactcounter = Get-vNetScalerObjectCount -Container config -Object appflowaction; 
@@ -5249,7 +5333,7 @@ if($afactscount -le 0) { WriteWordLine 0 0 "No AppFlow Actions have been configu
 
 ForEach ($afact in $afacts) {
 
-WriteWordLine 3 0 "Actions: $($afact.name)"
+WriteWordLine 4 0 "Actions: $($afact.name)"
 WriteWordLine 0 0 " "
 
 
@@ -5295,7 +5379,7 @@ $Table = $null
 
 #region AppFlow Policy Labels
 Set-Progress -Status "Citrix ADC AppFlow Policy Labels"
-WriteWordLine 2 0 "AppFlow Policy Labels"
+WriteWordLine 3 0 "AppFlow Policy Labels"
 WriteWordLine 0 0 " "
 
 $afpollblcounter = Get-vNetScalerObjectCount -Container config -Object appflowpolicylabel; 
@@ -5307,7 +5391,7 @@ if($afpollblscount -le 0) { WriteWordLine 0 0 "No AppFlow Policy Labels have bee
 
 ForEach ($afpollbl in $afpollbls) {
 
-WriteWordLine 3 0 "Policy Label: $($afpollbl.labelname)"
+WriteWordLine 4 0 "Policy Label: $($afpollbl.labelname)"
 WriteWordLine 0 0 " "
 
 
@@ -5389,7 +5473,7 @@ $Table = $null
 
 #region AppFlow Analytics Profiles
 Set-Progress -Status "Citrix ADC AppFlow Analytics Profiles"
-WriteWordLine 2 0 "AppFlow Analytics Profiles"
+WriteWordLine 3 0 "AppFlow Analytics Profiles"
 WriteWordLine 0 0 " "
 
 $aprcounter = Get-vNetScalerObjectCount -Container config -Object analyticsprofile; 
@@ -5401,7 +5485,7 @@ if($aprscount -le 0) { WriteWordLine 0 0 "No AppFlow Analytics Profiles have bee
 
 ForEach ($aprof in $aprofs) {
 
-WriteWordLine 3 0 "Analytics Profile: $($aprof.name)"
+WriteWordLine 4 0 "Analytics Profile: $($aprof.name)"
 WriteWordLine 0 0 " "
 
 
@@ -5467,12 +5551,12 @@ $Table = $null
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Auditing"
 Set-Progress -Status "Citrix ADC Auditing"
-WriteWordLine 1 0 "Citrix ADC Auditing"
+WriteWordLine 2 0 "Citrix ADC Auditing"
 WriteWordLine 0 0 " "
 
 #region Syslog Parameters
 Set-Progress -Status "Citrix ADC Syslog Parameters"
-WriteWordLine 2 0 "Syslog Parameters"
+WriteWordLine 3 0 "Syslog Parameters"
 WriteWordLine 0 0 " "
 
 $syslogparams = Get-vNetScalerObject -Object auditsyslogparams;
@@ -5523,7 +5607,7 @@ $Table = $null
 ##BUG Does not report on no configured syslog policies
 ##Fixed AM 09/05/2017
 Set-Progress -Status "Citrix ADC Syslog Policies"
-WriteWordLine 2 0 "Syslog Policies"
+WriteWordLine 3 0 "Syslog Policies"
 WriteWordLine 0 0 " "
 Write-Verbose "$(Get-Date): `tSyslog Policies"
 
@@ -5572,7 +5656,7 @@ foreach ($syslogpolicy in $syslogpolicies) {
 ##BUG Does not report on no configured syslog policies
 ##Fixed AM 09/05/2017
 Set-Progress -Status "Citrix ADC Syslog Servers"
-WriteWordLine 2 0 "Syslog Servers"
+WriteWordLine 3 0 "Syslog Servers"
 WriteWordLine 0 0 " "
 
 $syslogserverscounter = Get-vNetScalerObjectCount -Container config -Object auditsyslogaction; 
@@ -5588,7 +5672,7 @@ $syslogservers = Get-vNetScalerObject -Container config -Object auditsyslogactio
 
 foreach ($syslogserver in $syslogservers) {
   $syslogservername = $syslogserver.name
-  WriteWordLine 3 0 "Syslog Server: $syslogservername"
+  WriteWordLine 4 0 "Syslog Server: $syslogservername"
   WriteWordLine 0 0 " "
 
   [System.Collections.Hashtable[]] $SYSLOGSRVH = @(
@@ -5641,8 +5725,11 @@ $Table = $null
 
 #endregion Citrix ADC Auditing
 
+} #End Section Control for Core
+
 #region Citrix ADC Clustering
 
+If ($sectAll -or $sectCluster) {
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Clustering"
 Set-Progress -Status "Citrix ADC Cluster"
@@ -5754,10 +5841,12 @@ $Table = $null
 #endregion Cluster Nodes
 } #end if
 
+} #End Section Control Cluster
 #endregion Citrix ADC Clustering
 
 #endregion Citrix ADC System Information
 
+If ($sectAll -or $sectCore) { #Start section control for Core (Networking)
 #region Citrix ADC Networking
 
 $Chapter++
@@ -5790,6 +5879,14 @@ if($InterfaceCounter.__count -le 0) { WriteWordLine 0 0 "No Interface has been c
     @{ Column1 = "HA Heartbeats"; Column2 = $interface.haheartbeat; }
     @{ Column1 = "MAC Address"; Column2 = $interface.mac; }
     @{ Column1 = "Tag All VLANs"; Column2 = $interface.tagall; }
+    @{ Column1 = "Speed"; Column2 = $interface.speed; }
+    @{ Column1 = "Duplex"; Column2 = $interface.duplex; }
+    @{ Column1 = "MTU"; Column2 = $interface.mtu; }
+    @{ Column1 = "LACP Mode"; Column2 = $interface.lacpmode; }
+    @{ Column1 = "LACP Key"; Column2 = $interface.lacpkey; }
+    @{ Column1 = "LACP Priority"; Column2 = $interface.lacppriority; }
+    @{ Column1 = "LACP Timeout"; Column2 = $interface.lacptimeout; }
+    @{ Column1 = "Throughput"; Column2 = $interface.throughput; }
     );
 
     ## IB - Create the parameters to pass to the AddWordTable function
@@ -6248,6 +6345,8 @@ if($TDcounter.__count -le 0) { WriteWordLine 0 0 "No Traffic Domains have been c
     
 #endregion Citrix ADC Traffic Domains
 
+
+
 #region Citrix ADC DNS Configuration
 $selection.InsertNewPage()
 Set-Progress -Status "Citrix ADC DNS Configuration"
@@ -6256,42 +6355,9 @@ WriteWordLine 0 0 " "
 
 #region dns name servers
 Set-Progress -Status "Citrix ADC DNS Name Servers"
-WriteWordLine 2 0 "Citrix ADC DNS Name Servers"
-WriteWordLine 0 0 " "
 
-$dnsnameservercounter = Get-vNetScalerObjectCount -Container config -Object dnsnameserver; 
+New-HeadedTable -SectionHeading "Citrix ADC DNS Name Servers" -SectionHeadingLevel 2 -Object dnsnameserver -Properties "state,ip,dnsvservername,local,type,dnsprofilename" -Headers "State,IP,vServer Name,Local,Type,Profile Name"
 
-$dnsnameservers = Get-vNetScalerObject -Container config -Object dnsnameserver;
-
-if($dnsnameservercounter.__count -le 0) { WriteWordLine 0 0 "No DNS Name Server has been configured"} else {
-    
-    ## IB - Use an array of hashtable to store the rows
-    [System.Collections.Hashtable[]] $DNSNAMESERVERH = @();
-
-    foreach ($DNSNAMESERVER in $DNSNAMESERVERS) {
-        $DNSNAMESERVERH += @{
-            DNSServer = $dnsnameserver.ip;
-            State = $dnsnameserver.state;
-            Prot = $dnsnameserver.type;
-            }
-        }
-
-        if ($DNSNAMESERVERH.Length -gt 0) {
-            $Params = $null
-            $Params = @{
-                Hashtable = $DNSNAMESERVERH;
-                Columns = "DNSServer","State","Prot";
-                Headers = "DNS Name Server","State","Protocol";;
-                Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
-                AutoFit = $wdAutoFitContent;
-                }
-            $Table = AddWordTable @Params;
-            FindWordDocumentEnd;
-            WriteWordLine 0 0 " "
-            $Table = $null
-            }
-        }
-      
 #endregion dns name servers
 
 #region DNS Name Suffix
@@ -6662,6 +6728,7 @@ if($nsaclCounter.__count -le 0) { WriteWordLine 0 0 "No Extended ACL has been co
 
 #endregion Citrix ADC Networking
 
+
 #region Citrix ADC Authentication
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Authentication"
@@ -6974,10 +7041,11 @@ WriteWordLine 0 0 " "
 #endregion NetScaler Authentication
 
 #endregion Citrix ADC System Information
+} #End Section Control for Core (Networking)
 
 #region traffic management
 Set-Progress -Status "Citrix ADC Traffic Management"
-
+If ($sectAll -or $sectContentSwitching) { #Section control for Content Switching
 #region Citrix ADC Content Switches
 Set-Progress -Status "Citrix ADC Content Switches"
 $Chapter++
@@ -7168,7 +7236,9 @@ If ($csvserverscount.__count -le 0) {
 }
 
 #endregion Citrix ADC Content Switches
+}
 
+If ($sectAll -or $sectLoadBalancing) { #Section Control for Load Balancing
 #region Citrix ADC Load Balancers
 Set-Progress -Status "Citrix ADC Load Balancing"
 $Chapter++
@@ -7448,7 +7518,8 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
 
 	FindWordDocumentEnd;
 	$TableRange = $Null
-	$Table = $Null
+    $Table = $Null
+    WriteWordLine 0 0 " "
 
 
     #endregion advanced
@@ -7507,7 +7578,9 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
     }
 }
 #endregion Citrix ADC Load Balancers
+} #End Section Control for Load Balancing
 
+if ($sectAll -or $sectCacheRedirection) { #Section Control for Cache Redirection
 #region Citrix ADC Cache Redirection
 $Chapter++
 Set-Progress -Status "Citrix ADC Cache Redirection"
@@ -7555,6 +7628,9 @@ if($crservercounter.__count -le 0) { WriteWordLine 0 0 "No Cache Redirection has
 $selection.InsertNewPage()
 
 #endregion Citrix ADC Cache Redirection
+} #End Section Control for Cache Redirection
+
+If ($sectAll -or $sectServices) { #Section Control for Services
 
 #region Citrix ADC Services
 Set-Progress -Status "Citrix ADC Services"
@@ -7910,6 +7986,9 @@ if($servercounter.__count -le 0) { WriteWordLine 0 0 "No Server has been configu
 $selection.InsertNewPage()    
 #endregion Citrix ADC Servers
 
+} #End Section Control for Services
+
+If ($sectAll -or $sectGSLB) { #Section Control for GSLB
 #region Global Server Load Balancing
 Set-Progress -Status "Citrix ADC GSLB"
 $Chapter++
@@ -8373,7 +8452,9 @@ $Table = $null
 $selection.InsertNewPage()
 
 #endregion Global Server Load Balancing
+} #End Section Control for GSLB
 
+If ($sectAll -or $sectSSL) { #Section Control for SSL
 #region Citrix ADC SSL
 Set-Progress -Status "Citrix ADC SSL"
 WriteWordLine 1 0 "Citrix ADC SSL"
@@ -8746,9 +8827,10 @@ WriteWordLine 0 0 "No SSL Profiles have been configured."
 
 
 #endregion Citrix ADC SSL
-
+} #End Section Control for SSL
 #endregion traffic management
 
+If ($sectAll -or $sectAppExpert) { #Start Section Control for AppExpert
 #region AppExpert
 Set-Progress -Status "Citrix ADC AppExpert"
 $Chapter++
@@ -9626,7 +9708,9 @@ $Table = $null
 #endregion AppQoE
 
 #endregion AppExpert
+} #End Section Control for AppExpert
 
+If ($sectAll -or $sectSecurity) { #Start Section Control for Security
 #region Citrix ADC Security
 Set-Progress -Status "Citrix ADC Security"
 $Chapter++
@@ -9637,6 +9721,13 @@ WriteWordLine 0 0 " "
 #region AAA
 Set-Progress -Status "Citrix ADC AAA"
 WriteWordLine 2 0 "Citrix ADC AAA - Application Traffic"
+WriteWordLine 0 0 " "
+
+#Authentication Profiles
+New-HeadedTable -SectionHeading "Authentication Profiles" -SectionHeadingLevel 3 -Object authenticationauthnprofile -Properties "name,authnvsname,authenticationhost,authenticationdomain,authenticationlevel" -Headers "Name,Auth vServer Name, Auth Host,Auth Domain, Auth Level"
+
+#region VirtualServers
+WriteWordLine 3 0 "Virtual Servers"
 WriteWordLine 0 0 " "
 
 $aaavserverscount = Get-vNetScalerObjectCount -Container config -Object authenticationvserver;
@@ -9652,7 +9743,7 @@ WriteWordLine 0 0 " "
 foreach ($aaavserver in $aaavservers) {
         $aaavservername = $aaavserver.name
 
-        WriteWordLine 3 0 "Citrix ADC AAA Virtual Server: $aaavservername";
+        WriteWordLine 4 0 "Citrix ADC AAA Virtual Server: $aaavservername";
 
 #region AAA vServer Basic Config
 
@@ -9696,7 +9787,7 @@ foreach ($aaavserver in $aaavservers) {
     @{ Column1 = "Comment"; Column2 = $aaavserver.comment; }
     @{ Column1 = "Enable AppFlow"; Column2 = $aaavserver.appflowlog; }
     @{ Column1 = "Virtual Server Type"; Column2 = $aaavserver.vstype; }
-    @{ Column1 = "Citrix ADC Gateway Name"; Column2 = $aaavserver.ngname; }
+    @{ Column1 = "Citrix Gateway Name"; Column2 = $aaavserver.ngname; }
     @{ Column1 = "Max Login Attempts"; Column2 = $aaavserver.maxloginattempts; }
     @{ Column1 = "Failed Login Timeout"; Column2 = $aaavserver.failedlogintimeout; }
     @{ Column1 = "Secondary"; Column2 = $aaavserver.secondary; }
@@ -9723,10 +9814,15 @@ WriteWordLine 0 0 " "
 $Table = $null
 #endregion AAA vServer Basic Config
 
+#region Authentication Policy Bindings
+New-PolicyBindingTable -Object $aaavservername -BindingType authenticationvserver_authenticationpolicy_binding -BindingTypeName "Authentication Policies" -Properties "priority,name,policy,nextfactor,gotopriorityexpression" -Headers "Priority,Name,Policy,Next Factor,GoTo" -HeadingLevel 5
+ 
+#endregion Authentication Policy Bindings
+
 #region AAA Cert Policies
 
             
-        WriteWordLine 4 0 "Certificate Authentication Policies"
+        WriteWordLine 5 0 "Certificate Authentication Policies"
         WriteWordLine 0 0 " "
         
         $aaacertpolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationcertpolicy_binding -name $aaavservername
@@ -9774,7 +9870,7 @@ $Table = $null
 #region AAA LDAP Policies
 
             
-        WriteWordLine 4 0 "LDAP Authentication Policies"
+        WriteWordLine 5 0 "LDAP Authentication Policies"
         WriteWordLine 0 0 " "
         
         $aaaldappolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationldappolicy_binding -name $aaavservername
@@ -9822,7 +9918,7 @@ $Table = $null
 #region AAA Login Schema Policies
 
             
-        WriteWordLine 4 0 "Login Schema Authentication Policies"
+        WriteWordLine 5 0 "Login Schema Authentication Policies"
         WriteWordLine 0 0 " "
         
         $aaalspolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationloginschemapolicy_binding -name $aaavservername
@@ -9870,7 +9966,7 @@ $Table = $null
 #region AAA Negotiate Policies
 
             
-        WriteWordLine 4 0 "Negotiate Authentication Policies"
+        WriteWordLine 5 0 "Negotiate Authentication Policies"
         WriteWordLine 0 0 " "
         
         $aaanegpolscount = Get-vNetScalerObjectCount -container config -ResourceType authenticationvserver_authenticationnegotiatepolicy_binding -name $aaavservername
@@ -10155,7 +10251,7 @@ $Table = $null
 
 #region SSL Parameters
 
- WriteWordLine 4 0 "SSL Parameters"
+ WriteWordLine 5 0 "SSL Parameters"
         WriteWordLine 0 0 " "
 
         $aaasslparameters = Get-vNetScalerObject -ResourceType sslvserver -Name $aaavservername;
@@ -10214,7 +10310,7 @@ $Table = $null
 #endregion SSL Parameters
 
 #region AAA SSL Ciphers             
-        WriteWordLine 4 0 "SSL Ciphers"
+        WriteWordLine 5 0 "SSL Ciphers"
         WriteWordLine 0 0 " "
         $aaacipherbindscount = Get-vNetScalerObjectCount -container config -ResourceType sslvserver_sslciphersuite_binding -name $aaavservername;
         $aaacipherbinds = Get-vNetScalerObject -ResourceType sslvserver_sslciphersuite_binding -name $aaavservername;
@@ -10262,7 +10358,47 @@ $Table = $null
 
 } #endforeach region AAA
 } #end if AAA vServers
+#endregion VirtualServers
 
+#region Advanced Authentication
+WriteWordLine 3 0 "Advanced Authentication"
+WriteWordLine 0 0 " "
+
+#Policies
+New-HeadedTable -Object authenticationpolicy -SectionHeading "Policy" -SectionHeadingLevel 4 -Properties "name,rule,action,policysubtype" -Headers "Name,Expression,Action,Type"
+#Policy Labels
+New-HeadedTable -Object authenticationpolicylabel -SectionHeading "Policy Labels" -SectionHeadingLevel 4 -Properties "labelname,numpol,policyname" -Headers "Name,Number of bound Policies,Policy Name"
+#Actions
+WriteWordLine 4 0 "Actions"
+WriteWordLine 0 0 " "
+
+#CERT Actions
+New-HeadedTable -Object authenticationcertaction -SectionHeading "CERT" -SectionHeadingLevel 5 -Properties "name,twofactor,usernamefield,groupnamefield,defaultauthenticationgroup" -Headers "Name,Two Factor,User Name Field,Group Name Field,Default Authentication Group"
+#LDAP Actions - Summary
+New-HeadedTable -Object authenticationldapaction -SectionHeading "LDAP" -SectionHeadingLevel 5 -Properties "name,serverip,servername,serverport" -Headers "Name,Server IP,Server Name,Port"
+#NEGOTIATE
+New-HeadedTable -Object authenticationnegotiateaction -SectionHeading "Negotiate" -SectionHeadingLevel 5 -Properties "name,domain,keytab,domainuser,kcdspn" -Headers "Name,Domain Name,Keytab File Path,User Name,Host SPN"
+#OAUTH
+New-HeadedTable -Object authenticationoauthaction -SectionHeading "OAuth" -SectionHeadingLevel 5 -Properties "name,oauthtype,authorizationendpoint,tokenendpoint,clientid,clientsecret" -Headers "Name,Type,Authorization Endpoint,Token Endpoint,Client ID,Client Secret"
+#RADIUS
+New-HeadedTable -Object authenticationradiusaction -SectionHeading "RADIUS" -SectionHeadingLevel 5 -Properties "name,serverip,servername,serverport,authtimeout" -Headers "Name,Server IP,Server Name,Port,Timeout (Secs)"
+#SAML
+New-HeadedTable -Object authenticationsamlaction -SectionHeading "SAML" -SectionHeadingLevel 5 -Properties "name,samlidpcertname,samlredirecturl,metadataurl" -Headers "Name,IDP Certificate Name,Redirect URL,SAML IDP Metadata URL"
+#TACACS
+New-HeadedTable -Object authenticationtacacsaction -SectionHeading "TACACS" -SectionHeadingLevel 5 -Properties "name,serverip,serverport,authtimeout" -Headers "Name,IP Address,Port,Time-Out (Seconds)"
+#WebAuth
+New-HeadedTable -Object authenticationwebauthaction -SectionHeading "WebAuth" -SectionHeadingLevel 5 -Properties "name,serverip,serverport,scheme" -Headers "Name,Web Server IP Address,Port,Protocol"
+#Captcha
+New-HeadedTable -Object authenticationcaptchaaction -SectionHeading "Captcha" -SectionHeadingLevel 5 -Properties "name,serverURL,defaultauthenticationgroup" -Headers "Name,Server URL,Default Authentication Group"
+#EPA
+New-HeadedTable -Object authenticationepaaction -SectionHeading "EPA" -SectionHeadingLevel 5 -Properties "name,defaultepagroup,quarantinegroup,csecexpr" -Headers "Name,Default Group,Quarantine Group,Expression"
+#StoreFrontAuth
+New-HeadedTable -Object authenticationstorefrontauthaction -SectionHeading "StoreFrontAuth" -SectionHeadingLevel 5 -Properties "name,serverURL,defaultauthenticationgroup,domain" -Headers "Name,Server Authentication URL,Default Authentication Group,Domain"
+#AzureKeyVault
+New-HeadedTable -Object authenticationazurekeyvault -SectionHeading "StoreFrontAuth" -SectionHeadingLevel 5 -Properties "name,vaultname,clientid,tenantid" -Headers "Name,Vault Name,Client ID,Tenant ID"
+#Push Service
+New-HeadedTable -Object authenticationpushservice -SectionHeading "Push Service" -SectionHeadingLevel 5 -Properties "name,namespace,clientid,pushservicestatus,clientsecret,customerid" -Headers "Name,Namespace,Client ID,Status,Client Secret,Customer ID"
+#endregion Advanced Authentication
 #region AAA Users
 
 WriteWordLine 3 0 "AAA Users"
@@ -10286,9 +10422,9 @@ New-HeadedTable -Object aaauser -SectionHeading "All Users Accounts" -Properties
       #Group Bindings
       New-PolicyBindingTable -Object $user.username -BindingType aaauser_aaagroup_binding -BindingTypeName "Groups" -Properties "groupname" -Headers "Group Name" -HeadingLevel 5
       #Authorization Policies
-      New-PolicyBindingTable -Object $user.username -BindingType aaauser_authorizationpolicy_binding -BindingTypeName "Authorization Policies" -Properties "groupname" -Headers "Group Name" -HeadingLevel 5
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_authorizationpolicy_binding -BindingTypeName "Authorization Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
       #Intranet IP Bindings
-      New-PolicyBindingTable -Object $user.username -BindingType aaauser_intranetip_binding -BindingTypeName "Intranet IP" -Properties "intranetip,netmask" -Headers "Intranet IP,NetMask" --HeadingLevel 5
+      New-PolicyBindingTable -Object $user.username -BindingType aaauser_intranetip_binding -BindingTypeName "Intranet IP" -Properties "intranetip,netmask" -Headers "Intranet IP,NetMask" -HeadingLevel 5
       #Traffic Management Session Policy Bindings
       New-PolicyBindingTable -Object $user.username -BindingType aaauser_tmsessionpolicy_binding -BindingTypeName "Traffic Management Session Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
       #VPN Intranet Applications
@@ -10329,9 +10465,9 @@ New-HeadedTable -Object aaagroup -SectionHeading "All Groups" -Properties "group
       #User Bindings
       New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_aaauser_binding -BindingTypeName "Users" -Properties "username" -Headers "User Name" -HeadingLevel 5
       #Authorization Policies
-      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_authorizationpolicy_binding -BindingTypeName "Authorization Policies" -Properties "groupname" -Headers "Group Name" -HeadingLevel 5
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_authorizationpolicy_binding -BindingTypeName "Authorization Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
       #Intranet IP Bindings
-      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_intranetip_binding -BindingTypeName "Intranet IP" -Properties "intranetip,netmask" -Headers "Intranet IP,NetMask" --HeadingLevel 5
+      New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_intranetip_binding -BindingTypeName "Intranet IP" -Properties "intranetip,netmask" -Headers "Intranet IP,NetMask" -HeadingLevel 5
       #Traffic Management Session Policy Bindings
       New-PolicyBindingTable -Object $group.groupname -BindingType aaagroup_tmsessionpolicy_binding -BindingTypeName "Traffic Management Session Policies" -Properties "priority,policy,type,gotopriorityexpression" -Headers "Priority,Policy,Type,GoTo" -HeadingLevel 5
       #VPN Intranet Applications
@@ -10612,18 +10748,20 @@ WriteWordLine 0 0 " "
 
 
 #endregion Citrix ADC Security
+} #End Section Control for Security
 
+If ($sectAll -or $sectGateway) { #Start Section Control for Gateway
 #region Citrix ADC Gateway
 Set-Progress -Status "Citrix Gateway"
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC (Access) Gateway"
-WriteWordLine 1 0 "Citrix ADC (Access) Gateway"
+WriteWordLine 1 0 "Citrix Gateway"
 WriteWordLine 0 0 " "
 
 #region Citrix ADC Gateway CAG Global
 
-WriteWordLine 2 0 "Citrix ADC Gateway Global Settings"
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Global Settings"
+WriteWordLine 2 0 "Citrix Gateway Global Settings"
+Write-Verbose "$(Get-Date): `tCitrix Gateway Global Settings"
 WriteWordLine 0 0 " "
 #region GlobalNetwork
 <#
@@ -10871,8 +11009,7 @@ $cagaaa = Get-vNetScalerObject -Object aaaparameter;
     @{ Column1 = "Enable Static Page Caching"; Column2 = $cagaaa.enablestaticpagecaching; }
     @{ Column1 = "Enable Enhanced Authentication Feedback"; Column2 = $cagaaa.enableenhancedauthfeedback; }
     @{ Column1 = "Enable Session Stickiness"; Column2 = $cagaaa.enablesessionstickiness; }
-   
-    
+
 );
 
 ## IB - Create the parameters to pass to the AddWordTable function
@@ -10893,8 +11030,8 @@ $Table = $null
 #endregion GlobalAAAParams
 
 #region Citrix ADC Gateway Intranet Applications
-WriteWordLine 2 0 "Citrix ADC Gateway Intranet Applications";
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Intranet Applications"
+WriteWordLine 2 0 "Citrix Gateway Intranet Applications";
+Write-Verbose "$(Get-Date): `tCitrix Gateway Intranet Applications"
 WriteWordLine 0 0 " ";
 $vpnintappscount = Get-vNetScalerObjectCount -Container config -Object vpnintranetapplication;
 $vpnintapps = Get-vNetScalerObject -Container config -Object vpnintranetapplication;
@@ -10904,7 +11041,7 @@ if($vpnintappscount.__count -le 0) { WriteWordLine 0 0 "No Intranet Applications
     foreach ($vpnintapp in $vpnintapps) {
         $vpnintappname = $vpnintapp.intranetapplication
 
-        WriteWordLine 3 0 "Citrix ADC Gateway Intranet Application: $vpnintappname";
+        WriteWordLine 3 0 "Citrix Gateway Intranet Application: $vpnintappname";
         WriteWordLine 0 0 " "
 
 
@@ -10951,10 +11088,10 @@ $Table = $null
 }
 #endregion Citrix ADC Gateway Intranet Applications
 
-#region Citrix ADC Gateway Bookmarks
+#region Citrix Gateway Bookmarks
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "Citrix ADC Gateway Bookmarks";
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Bookmarks"
+WriteWordLine 2 0 "Citrix Gateway Bookmarks";
+Write-Verbose "$(Get-Date): `tCitrix Gateway Bookmarks"
 WriteWordLine 0 0 " ";
 $vpnurlscount = Get-vNetScalerObjectCount -Container config -Object vpnurl;
 $vpnurls = Get-vNetScalerObject -Container config -Object vpnurl;
@@ -10964,7 +11101,7 @@ if($vpnurlscount.__count -le 0) { WriteWordLine 0 0 "No Bookmarks have been conf
     foreach ($vpnurl in $vpnurls) {
         $vpnurlname = $vpnurl.urlname
 
-        WriteWordLine 3 0 "Citrix ADC Gateway Bookmark: $vpnurlname";
+        WriteWordLine 3 0 "Citrix Gateway Bookmark: $vpnurlname";
         WriteWordLine 0 0 " "
 
 
@@ -11008,16 +11145,16 @@ $Table = $null
 }
 #endregion Citrix ADC Gateway Bookmarks
 
-#region Citrix ADC Gateway PCOIP
+#region Citrix Gateway PCOIP
 
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "Citrix ADC Gateway PCoIP";
+WriteWordLine 2 0 "Citrix Gateway PCoIP";
 WriteWordLine 0 0 " "
 
-#region Citrix ADC Gateway PCoIP vServer Profiles
+#region Citrix Gateway PCoIP vServer Profiles
 WriteWordLine 0 0 " "
-WriteWordLine 3 0 "Citrix ADC Gateway PCoIP vServer Profiles";
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway PCoIP vServer Profiles"
+WriteWordLine 3 0 "Citrix Gateway PCoIP vServer Profiles";
+Write-Verbose "$(Get-Date): `tCitrix Gateway PCoIP vServer Profiles"
 WriteWordLine 0 0 " ";
 $pcoipvprofilescount = Get-vNetScalerObjectCount -Container config -Object vpnpcoipvserverprofile;
 $pcoipvprofiles = Get-vNetScalerObject -Container config -Object vpnpcoipvserverprofile;
@@ -11056,12 +11193,12 @@ WriteWordLine 0 0 " "
 $Table = $null
   
 }
-#endregion Citrix ADC Gateway PCOIP vServer Profiles
+#endregion Citrix Gateway PCOIP vServer Profiles
 
-#region Citrix ADC Gateway PCOIP Profiles
+#region Citrix Gateway PCOIP Profiles
 WriteWordLine 0 0 " "
-WriteWordLine 3 0 "Citrix ADC Gateway PCoIP Profiles";
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway PCoIP Profiles"
+WriteWordLine 3 0 "Citrix Gateway PCoIP Profiles";
+Write-Verbose "$(Get-Date): `tCitrix Gateway PCoIP Profiles"
 WriteWordLine 0 0 " ";
 $pcoipprofilescount = Get-vNetScalerObjectCount -Container config -Object vpnpcoipprofile;
 
@@ -11108,13 +11245,13 @@ $Table = $null
 #region Citrix ADC Gateway RDP
 
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "Citrix ADC Gateway RDP";
+WriteWordLine 2 0 "Citrix Gateway RDP";
 WriteWordLine 0 0 " "
 
 #region Citrix ADC Gateway RDP Server Profiles
 WriteWordLine 0 0 " "
-WriteWordLine 3 0 "Citrix ADC Gateway RDP Server Profiles";
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway RDP Server Profiles"
+WriteWordLine 3 0 "Citrix Gateway RDP Server Profiles";
+Write-Verbose "$(Get-Date): `tCitrix Gateway RDP Server Profiles"
 WriteWordLine 0 0 " ";
 $rdpsrvprofilescount = Get-vNetScalerObjectCount -Container config -Object rdpserverprofile;
 
@@ -11162,8 +11299,8 @@ $Table = $null
 
 #region Citrix ADC Gateway RDP Client Profiles
 WriteWordLine 0 0 " "
-WriteWordLine 3 0 "Citrix ADC Gateway RDP Client Profiles";
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway RDP Client Profiles"
+WriteWordLine 3 0 "Citrix Gateway RDP Client Profiles";
+Write-Verbose "$(Get-Date): `tCitrix Gateway RDP Client Profiles"
 WriteWordLine 0 0 " ";
 $rdpcltprofilescount = Get-vNetScalerObjectCount -Container config -Object rdpclientprofile;
 
@@ -12921,12 +13058,12 @@ $selection.InsertNewPage()
 $vpnvserverscount = Get-vNetScalerObjectCount -Container config -Object vpnvserver;
 $vpnvservers = Get-vNetScalerObject -Container config -Object vpnvserver;
 
-if($vpnvserverscount.__count -le 0) { WriteWordLine 0 0 "No Citrix ADC Gateways have been configured"} else {
+if($vpnvserverscount.__count -le 0) { WriteWordLine 0 0 "No Citrix Gateway vServers have been configured"} else {
 
     foreach ($vpnvserver in $vpnvservers) {
         $vpnvservername = $vpnvserver.name
 
-        WriteWordLine 2 0 "Citrix ADC Gateway Virtual Server: $vpnvservername";
+        WriteWordLine 2 0 "Citrix Gateway Virtual Server: $vpnvservername";
 #region CAG vServer basic configuration
 
 
@@ -12956,6 +13093,16 @@ if($vpnvserverscount.__count -le 0) { WriteWordLine 0 0 "No Citrix ADC Gateways 
     @{ Column1 = "Mac EPA Plugin Upgrade"; Column2 = $vpnvserver.macepapluginupgrade; }
     @{ Column1 = "ICA Proxy Session Migration"; Column2 = $vpnvserver.icaproxysessionmigration; }
     @{ Column1 = "Enable Device Certificates"; Column2 = $vpnvserver.devicecert; }
+    @{ Column1 = "Device Certificate CA(s)"; Column2 = $vpnvserver.certkeynames; }
+    @{ Column1 = "Advanced EPA"; Column2 = $vpnvserver.advancedepa; }
+    @{ Column1 = "Enable Device Certificates"; Column2 = $vpnvserver.devicecert; }
+    @{ Column1 = "TCP Profile"; Column2 = $vpnvserver.tcpprofilename; }
+    @{ Column1 = "HTTP Profile"; Column2 = $vpnvserver.httpprofilename; }
+    @{ Column1 = "AppFlow"; Column2 = $vpnvserver.appflowlog; }
+    @{ Column1 = "Logout on Smartcard Removal"; Column2 = $vpnvserver.logoutonsmartcardremoval; }
+    @{ Column1 = "User Domains"; Column2 = $vpnvserver.userdomains; }
+    @{ Column1 = "Authentication Profile"; Column2 = $vpnvserver.authnprofile; }
+
 
    
     
@@ -13620,9 +13767,9 @@ Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC (Access) Gatew
 ##WriteWordLine 2 0 "Citrix ADC Gateway Policies"
 
 ##WriteWordLine 0 0 " "
-WriteWordLine 2 0 "Citrix ADC Gateway Session Policies"
+WriteWordLine 2 0 "Citrix Gateway Session Policies"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Session Policies"
+Write-Verbose "$(Get-Date): `tCitrix Gateway Session Policies"
 
 $vpnsessionpolicies = Get-vNetScalerObject -Container config -Object vpnsessionpolicy;
 $vpnsessionpoliciescount = Get-vNetScalerObjectCount -Container config -Object vpnsessionpolicy;
@@ -13636,7 +13783,7 @@ WriteWordLine 0 0 " "
 
     foreach ($vpnsessionpolicy in $vpnsessionpolicies) {
         $sesspolname = $vpnsessionpolicy.name
-        WriteWordLine 3 0 "Citrix ADC Gateway Session Policy: $sesspolname";
+        WriteWordLine 3 0 "Citrix Gateway Session Policy: $sesspolname";
         WriteWordLine 0 0 " "
 
         ## IB - Create an array of hashtables to store our columns. Note: If we need the
@@ -13665,9 +13812,9 @@ WriteWordLine 0 0 " "
 }
 #region alwayson policies
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "Citrix ADC Gateway AlwaysON Policies"
+WriteWordLine 2 0 "Citrix Gateway AlwaysON Policies"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway AlwaysON Policies"
+Write-Verbose "$(Get-Date): `tCitrix Gateway AlwaysON Policies"
 
 $vpnalwaysonpolicies = Get-vNetScalerObject -Container config -Object vpnalwaysonprofile;
 $vpnalwaysonpoliciescount = Get-vNetScalerObjectCount -Container config -Object vpnalwaysonprofile;
@@ -13681,7 +13828,7 @@ WriteWordLine 0 0 " "
 
     foreach ($vpnalwaysonpolicy in $vpnalwaysonpolicies) {
     $policynameAO = $vpnalwaysonpolicy.name
-        WriteWordLine 3 0 "Citrix ADC Gateway AlwaysON Policy: $policynameAO";
+        WriteWordLine 3 0 "Citrix Gateway AlwaysON Policy: $policynameAO";
 
         ## IB - Use an array of hashtable to store the rows
         [System.Collections.Hashtable[]] $AOPOLCONFH = @(
@@ -13716,9 +13863,9 @@ WriteWordLine 0 0 " "
 
 #region CAG Session Actions
 WriteWordLine 0 0 " "
-WriteWordLine 2 0 "Citrix ADC Gateway Session Actions"
+WriteWordLine 2 0 "Citrix Gateway Session Actions"
 WriteWordLine 0 0 " "
-Write-Verbose "$(Get-Date): `tCitrix ADC Gateway Session Actions"
+Write-Verbose "$(Get-Date): `tCitrix Gateway Session Actions"
 
 $vpnsessionactions = Get-vNetScalerObject -Container config -Object vpnsessionaction;
 $vpnsessionactionscount = Get-vNetScalerObjectCount -Container config -Object vpnsessionaction;
@@ -13732,7 +13879,7 @@ WriteWordLine 0 0 " "
 
     foreach ($vpnsessionaction in $vpnsessionactions) {
     $sessactname = $vpnsessionaction.name
-    WriteWordLine 3 0 "Citrix ADC Gateway Session Action: $sessactname";
+    WriteWordLine 3 0 "Citrix Gateway Session Action: $sessactname";
     WriteWordLine 0 0 " "
 #region ClientExperience
 
@@ -13928,7 +14075,9 @@ $Table = $null
 #endregion CAG Actions
 
 #endregion Citrix ADC Gateway
+} #End Section Control for Gateway
 
+If ($sectAll -or $sectMonitors) { #Start Section Control for Monitors
 #region Citrix ADC Monitors
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Monitors"
@@ -13975,7 +14124,9 @@ foreach ($MONITOR in $MONITORS) {
 $selection.InsertNewPage()
 
 #endregion Citrix ADC Monitors
+} #End Section Control for Monitors
 
+If ($sectAll -or $sectPolicies) { #Start Section Control for Policies
 #region Citrix ADC Policies
 $Chapter++
 Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Policies"
@@ -14301,6 +14452,8 @@ $selection.InsertNewPage()
 #endregion Citrix ADC Network Profiles
 
 #endregion Citrix ADC Profiles
+
+} #End Section Control for Policies
 
 #region Logout
 Set-Progress -Status "Logging out of Citrix ADC"
