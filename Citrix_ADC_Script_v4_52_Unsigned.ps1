@@ -987,7 +987,12 @@ If($MSWord -or $PDF)
 	[int]$wdStyleHeading1 = -2
 	[int]$wdStyleHeading2 = -3
 	[int]$wdStyleHeading3 = -4
-	[int]$wdStyleHeading4 = -5
+    [int]$wdStyleHeading4 = -5
+    [int]$wdStyleHeading5 = -6
+    [int]$wdStyleHeading6 = -7
+    [int]$wdStyleHeading7 = -8
+    [int]$wdStyleHeading8 = -9
+    [int]$wdStyleHeading9 = -10
 	[int]$wdStyleNoSpacing = -158
 	[int]$wdTableGrid = -155
 
@@ -1178,7 +1183,12 @@ Function SetWordHashTable
 	$Script:myHash.Word_Heading1        = $wdStyleheading1
 	$Script:myHash.Word_Heading2        = $wdStyleheading2
 	$Script:myHash.Word_Heading3        = $wdStyleheading3
-	$Script:myHash.Word_Heading4        = $wdStyleheading4
+    $Script:myHash.Word_Heading4        = $wdStyleheading4
+    $Script:myHash.Word_Heading5        = $wdStyleheading5
+    $Script:myHash.Word_Heading6        = $wdStyleheading6
+    $Script:myHash.Word_Heading7        = $wdStyleheading7
+    $Script:myHash.Word_Heading8        = $wdStyleheading8
+    $Script:myHash.Word_Heading9        = $wdStyleheading9
 	$Script:myHash.Word_TableGrid       = $wdTableGrid
 }
 
@@ -2094,6 +2104,10 @@ Function WriteWordLine
 		3 {$Script:Selection.Style = $Script:MyHash.Word_Heading3; Break}
         4 {$Script:Selection.Style = $Script:MyHash.Word_Heading4; Break}
         5 {$Script:Selection.Style = $Script:MyHash.Word_Heading5; Break}
+        6 {$Script:Selection.Style = $Script:MyHash.Word_Heading6; Break}
+        7 {$Script:Selection.Style = $Script:MyHash.Word_Heading7; Break}
+        8 {$Script:Selection.Style = $Script:MyHash.Word_Heading8; Break}
+        9 {$Script:Selection.Style = $Script:MyHash.Word_Heading9; Break}
 		Default {$Script:Selection.Style = $Script:MyHash.Word_NoSpacing; Break}
 	}
 	
@@ -3735,6 +3749,7 @@ Write-Log "Params - Object: $vServerName,BindingType:$BindingType,BindingTypeNam
 $BindingCount = Get-vNetScalerObjectCount -Container Config -Object $BindingType -ResourceName $vServerName
 Write-Log "Number of Bindings: $($BindingCount.__Count)"
 If ($BindingCount.__Count -gt 0) {
+    Write-Log "Retrieving object"
     $BindingObject = Get-vNetScalerObject -Container Config -Object $BindingType -ResourceName $vServerName
     Switch($HeadingLevel) {
         1 {WriteWordLine 1 0 "$BindingTypeName"}
@@ -3756,6 +3771,7 @@ If ($BindingCount.__Count -gt 0) {
             foreach ($objProperty in $ArrProperties) {
 
                 $objValue = $Binding."$objProperty"
+                Write-Log "Adding $objValue to $objProperty"
                 Try {
                 $TempHash.Add($objProperty,$objValue);
                 } Catch {
@@ -3790,6 +3806,104 @@ If ($BindingCount.__Count -gt 0) {
   $BindingCount = $null
 }
 
+Function New-DetailsTable {
+
+        <#
+.SYNOPSIS
+    Create a detailed settings table for each object returned
+#>
+[CmdletBinding()]
+param (
+    # Binding Type to Query
+    [Parameter(Mandatory)] [System.String] $Object,
+    # The property to use from the returned object to use as a section heading
+    [Parameter()] [System.String[]] $SectionHeadingProperty,
+    # The property to use from the returned object to use as a section heading
+    [Parameter()] [Bool] $CreateHeading = $False,
+    # Array of Object Properties to output
+    [Parameter(Mandatory)] [System.String[]] $Properties,
+    # Retrieve Headers to use in Table
+    [Parameter(Mandatory)] [System.String[]] $Headers,
+    # Heading level to use for the section heading
+    [Parameter()] [System.Int32] $SectionHeadingLevel = 4
+
+)
+Write-Log "Creating a new Details table for object: $Object"
+$ObjectCount = Get-vNetScalerObjectCount -Container Config -Object $Object
+
+    If ($ObjectCount.__Count -gt 0) {
+        #Get Response Object
+        $NSObjects = Get-vNetScalerObject -Container Config -Object $Object
+        #Foreach object returned
+        foreach ($subObject in $NSObjects){
+            If ($CreateHeading){
+                $SectionHeading = $subObject."$SectionHeadingProperty"
+                    Switch($SectionHeadingLevel) {
+                        1 {WriteWordLine 1 0 "$SectionHeading"}
+                        2 {WriteWordLine 2 0 "$SectionHeading"}
+                        3 {WriteWordLine 3 0 "$SectionHeading"}
+                        4 {WriteWordLine 4 0 "$SectionHeading"}
+                        5 {WriteWordLine 5 0 "$SectionHeading"}
+                        6 {WriteWordLine 6 0 "$SectionHeading"}
+                        7 {WriteWordLine 7 0 "$SectionHeading"}
+                    }
+            }
+
+            WriteWordLine 0 0 " "
+        [System.Collections.Hashtable[]] $DETAILSH = @();
+        #[System.Collections.HashTable] $TempHash = @{};
+        $ArrProperties = $Properties.split(",")
+        $ArrHeaders = $Headers.Split(",")
+        
+            
+        
+        #Loop through the provided properties we want to find
+        [int]$PropCount=0 
+                foreach ($objProperty in $ArrProperties) {
+                #Create temporary HashTable
+                [System.Collections.HashTable] $TempHash = @{};
+                    $objValue = $subObject."$objProperty"
+                    If ($null -eq $objValue){
+                        $objValue = "Not Configured"
+                    }
+                    Try {
+                        Write-Log "Header: $($ArrHeaders[$PropCount])) - Property: $objProperty"
+                        #Add Setting and Value to temp hashtable
+                        $TempHash.Add("Setting", $ArrHeaders[$PropCount]);
+                        $TempHash.Add("Value", $objValue);
+                        #Add temp hashtable to the the primary hashtable
+                        $DETAILSH += $TempHash;
+                    } Catch {
+                    Write-Log $_.exception
+                    }
+                #Increment the property counter    
+                $PropCount++
+
+                }
+        
+        
+        $Params = $null
+        $Params = @{
+            Hashtable = $DETAILSH;
+            Columns = "Setting","Value";
+            Headers = "Setting","Value";
+            AutoFit = $wdAutoFitContent;
+            Format = -235; ## IB - Word constant for Light List Accent 5
+        }
+            ## IB - Add the table to the document, splatting the parameters
+            $Table = AddWordTable @Params;
+            ## IB - Set the header background and bold font
+            SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
+            FindWordDocumentEnd;
+            $Table = $null   
+            WriteWordLine 0 0 " "     
+
+
+        }
+
+    }
+}
+
 Function New-HeadedTable {
     #Params
     #Vserver Name
@@ -3799,7 +3913,7 @@ Function New-HeadedTable {
     #Array of Descriptions
     <#
 .SYNOPSIS
-    Creates a Word Table for LB vServer Policy Bindings
+    Creates a Word Table for Policy Bindings
 #>
 [CmdletBinding()]
 param (
@@ -3815,6 +3929,7 @@ param (
     [Parameter()] [System.Int32] $SectionHeadingLevel = 4
 
 )
+Write-Log "Enter: New Headed Table for $Object"
 
 $ObjectCount = Get-vNetScalerObjectCount -Container Config -Object $Object
 
@@ -7976,7 +8091,7 @@ if($servercounter.__count -le 0) { WriteWordLine 0 0 "No Server has been configu
                 Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
                 AutoFit = $wdAutoFitContent;
                 }
-            $Table = AddWordTable @Params -List;
+            $Table = AddWordTable @Params;
             FindWordDocumentEnd;
             WriteWordLine 0 0 " "
             $Table = $null
@@ -10376,6 +10491,8 @@ WriteWordLine 0 0 " "
 New-HeadedTable -Object authenticationcertaction -SectionHeading "CERT" -SectionHeadingLevel 5 -Properties "name,twofactor,usernamefield,groupnamefield,defaultauthenticationgroup" -Headers "Name,Two Factor,User Name Field,Group Name Field,Default Authentication Group"
 #LDAP Actions - Summary
 New-HeadedTable -Object authenticationldapaction -SectionHeading "LDAP" -SectionHeadingLevel 5 -Properties "name,serverip,servername,serverport" -Headers "Name,Server IP,Server Name,Port"
+#LDAP Details
+New-DetailsTable -Object authenticationldapaction -CreateHeading $true -SectionHeadingProperty "name" -SectionHeadingLevel 6 -Properties "name,serverip,servername,serverport,authtimeout,ldapbase,ldapbinddn,ldaploginname,searchfilter,groupattname,subattributename,sectype,svrtype,ssoattribute,authentication,requireuser,passwdchange,nestedgroupextraction,maxnestinglevel,followreferals,maxldapreferrals,referraldnslookup,mssrvrecordlocation,validateservercert,ldaphostname,groupnameidentifier,groupsearchattribute,groupsearchsubattribute,groupsearchfilter,defaultauthenticationgroup" -Headers "Name,Server IP,Server Name,Server Port,Authentication Timeout,LDAP Base DN,LDAP Bind DN,LDAP Login Name,LDAP Search Filter,Group Attribute Name,Sub Attribute Name,Security Type,Server Type,SSO Name Attribute,Authentication,Require User,Enable Password Change,Nested Group Extraction,Maximum Group Nesting level,Follow LDAP Referrals,Maximum LDAP Referrals,Referral DNS Lookup Type,MS SRV Record Location,Validate Server Certificate,LDAP Hostname,Group Name Identifier,Group Search Atribute,Group Search Sub-Attribute,Group Seach Filter,Default Authentication Group"
 #NEGOTIATE
 New-HeadedTable -Object authenticationnegotiateaction -SectionHeading "Negotiate" -SectionHeadingLevel 5 -Properties "name,domain,keytab,domainuser,kcdspn" -Headers "Name,Domain Name,Keytab File Path,User Name,Host SPN"
 #OAUTH
