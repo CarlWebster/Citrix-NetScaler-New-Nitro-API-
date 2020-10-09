@@ -10512,7 +10512,7 @@ New-HeadedTable -Object authenticationepaaction -SectionHeading "EPA" -SectionHe
 #StoreFrontAuth
 New-HeadedTable -Object authenticationstorefrontauthaction -SectionHeading "StoreFrontAuth" -SectionHeadingLevel 5 -Properties "name,serverURL,defaultauthenticationgroup,domain" -Headers "Name,Server Authentication URL,Default Authentication Group,Domain"
 #AzureKeyVault
-New-HeadedTable -Object authenticationazurekeyvault -SectionHeading "StoreFrontAuth" -SectionHeadingLevel 5 -Properties "name,vaultname,clientid,tenantid" -Headers "Name,Vault Name,Client ID,Tenant ID"
+New-HeadedTable -Object authenticationazurekeyvault -SectionHeading "Azure Key Vault" -SectionHeadingLevel 5 -Properties "name,vaultname,clientid,tenantid" -Headers "Name,Vault Name,Client ID,Tenant ID"
 #Push Service
 New-HeadedTable -Object authenticationpushservice -SectionHeading "Push Service" -SectionHeadingLevel 5 -Properties "name,namespace,clientid,pushservicestatus,clientsecret,customerid" -Headers "Name,Namespace,Client ID,Status,Client Secret,Customer ID"
 #endregion Advanced Authentication
