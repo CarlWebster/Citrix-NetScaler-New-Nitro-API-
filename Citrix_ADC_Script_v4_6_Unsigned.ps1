@@ -155,7 +155,7 @@
 	This parameter is disabled by default.
 	This parameter has an alias of SI.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -166,7 +166,7 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -PDF
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -PDF
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -177,21 +177,21 @@
 	Sideline for the Cover Page format.
 	Administrator for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_5_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_6_Signed.ps1 -CompanyName "Carl Webster Consulting" -CoverPage "Mod" -UserName "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name.
 		Mod for the Cover Page format.
 		Carl Webster for the User Name.
 .EXAMPLE
-	PS C:\PSScript .\Citrix_ADC_Script_V4_5_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
+	PS C:\PSScript .\Citrix_ADC_Script_V4_6_Signed.ps1 -CN "Carl Webster Consulting" -CP "Mod" -UN "Carl Webster"
 
 	Will use:
 		Carl Webster Consulting for the Company Name (alias CN).
 		Mod for the Cover Page format (alias CP).
 		Carl Webster for the User Name (alias UN).
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -AddDateTime
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -207,7 +207,7 @@
 	June 1, 2020 at 6PM is 2020-06-01_1800.
 	Output filename will be Script_Template_2020-06-01_1800.docx
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -PDF -AddDateTime
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -PDF -AddDateTime
 	
 	Will use all default values and save the document as a PDF file.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -223,7 +223,7 @@
 	June 1, 2020 at 6PM is 2020-06-01_1800.
 	Output filename will be Script_Template_2020-06-01_1800.PDF
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Folder \\FileServer\ShareName
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -Folder \\FileServer\ShareName
 	
 	Will use all default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -236,7 +236,7 @@
 
 	Output file will be saved in the path \\FileServer\ShareName
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -SmtpServer mail.domain.tld -From XDAdmin@domain.tld -To ITGroup@domain.tld
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -251,7 +251,7 @@
 	Script will use the default SMPTP port 25 and will not use SSL.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -SmtpServer smtp.office365.com -SmtpPort 587 -UseSSL -From Webster@CarlWebster.com -To ITGroup@CarlWebster.com
 	
 	Will use all Default values.
 	HKEY_CURRENT_USER\Software\Microsoft\Office\Common\UserInfo\CompanyName="Carl Webster" or
@@ -265,35 +265,35 @@
 	Script will use the email server smtp.office365.com on port 587 using SSL, sending from webster@carlwebster.com, sending to ITGroup@carlwebster.com.
 	If the current user's credentials are not valid to send email, the user will be prompted to enter valid credentials.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Export
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -Export
       OR
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Offline
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -Offline
 
     Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\PSScript\ADCDocsExport\.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Export -ExportPath "C:\ADCExport"
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -Export -ExportPath "C:\ADCExport"
       OR
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Offline -OfflinePath "C:\ADCExport"
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -Offline -OfflinePath "C:\ADCExport"
 
     Will run without MS Word installed and create an export of API data to create a configuration report on another machine. API data will be exported to C:\ADCExport\.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Import
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -Import
 
     Will create a configuration report using the API data stored in C:\PSScript\ADCDocsExport.
 .EXAMPLE 
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -Import -ImportPath "C:\ADCExport"
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -Import -ImportPath "C:\ADCExport"
 
     Will create a configuration report using the API data stored in C:\ADCExport.
 .EXAMPLE
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -NSIP 172.16.20.10 -Credential $MyCredentials
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -NSIP 172.16.20.10 -Credential $MyCredentials
 
     Will execute the script silently connecting to an ADC appliance on 172.16.20.10 using credentials stored in the PSCredential Object $Mycredentials
 .EXAMPLE
-    PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -NSIP 172.16.20.10 -NSUserName nsroot -NSPassword nsroot
+    PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 -NSIP 172.16.20.10 -NSUserName nsroot -NSPassword nsroot
 
     Will execute the script silently connecting to an ADC appliance on 172.16.20.10 using credentials nsroot/nsroot
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 
 	-SmtpServer mail.domain.tld
 	-From XDAdmin@domain.tld 
 	-To ITGroup@domain.tld	
@@ -306,7 +306,7 @@
 	If the current user's credentials are not valid to send email, 
 	the user will be prompted to enter valid credentials.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 
 	-SmtpServer mailrelay.domain.tld
 	-From Anonymous@domain.tld 
 	-To ITGroup@domain.tld	
@@ -332,7 +332,7 @@
 	The script will generate an anonymous secure password for the anonymous@domain.tld 
 	account.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 
 	-SmtpServer labaddomain-com.mail.protection.outlook.com
 	-UseSSL
 	-From SomeEmailAddress@labaddomain.com 
@@ -351,7 +351,7 @@
 
 	The script will use the default SMTP port 25 and will use SSL.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 
 	-SmtpServer smtp.office365.com 
 	-SmtpPort 587
 	-UseSSL 
@@ -364,7 +364,7 @@
 	If the current user's credentials are not valid to send email, 
 	the user will be prompted to enter valid credentials.
 .EXAMPLE
-	PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 
+	PS C:\PSScript > .\Citrix_ADC_Script_V4_6_Signed.ps1 
 	-SmtpServer smtp.gmail.com 
 	-SmtpPort 587
 	-UseSSL 
@@ -388,12 +388,12 @@
 	No objects are output from this script.  
 	This script creates a Word, PDF, Formatted Text or HTML document.
 .NOTES
-    NAME: Citrix_ADC_Script_v4_52.ps1
-	VERSION Citrix ADC Script: 4.52
+    NAME: Citrix_ADC_Script_v4_6.ps1
+	VERSION Citrix ADC Script: 4.6
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: May 6th 2020
+	LASTEDIT: October 9th 2020
 #>
 
 #region changelog
@@ -401,12 +401,27 @@
 .COMMENT
     If you find issues with saving the final document or table layout is messed up please use the X86 version of Powershell!
 .Citrix ADC Documentation Script
-    NAME: Citrix_ADC_Script_v4_52.ps1
-	VERSION Citrix ADC Script: 4.52
+    NAME: Citrix_ADC_Script_v4_6.ps1
+	VERSION Citrix ADC Script: 4.6
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
     AUTHOR Citrix ADC script functions: Iain Brighton
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
-	LASTEDIT: May 6, 2020
+    LASTEDIT: October 9, 2020
+
+.Release Notes version 4.6
+# Added AAA Users and Groups and associated bindings
+# Experimental: Added new parameter "Feaures" to enable processing of only specific features.
+# 	Example (process all sections - Default) - Citrix_ADC_Script_v4_6_Signed.ps1 -Features ALL
+#	Example (process only core configuration) - Citrix_ADC_Script_v4_6_Signed.ps1 -Features Core
+#	Example (process core and LB configuration) - Citrix_ADC_Script_v4_6_Signed.ps1 -Feaures Core,LB
+#	Available Options are: all,core,dns,cluster,contentswitching,cs,lb,loadbalancing,cacheredirection,services,gslb,ssl,appexpert,security,gateway,monitors,policies
+# Added Table creation functions for simplifying code structure
+# Added Timeout, Command Policy bindings and External Authentication settings for system users
+# Added Timeout and Command Policy Bindings for system groups
+# Restructured Headings layout to more closely align to ADC Console
+# Added Speed, Dublex, MTU, LACP and Throughput to Interfaces output
+# Added Advanced Authentication Actions - CERT, LDAP, Negotiate, OAuth, RADIUS, SAML, TACACS, WebAuth, Captcha, EPA, StoreFrontAuth, Azure Key Vault, Push
+# Added Citrix Gateway Settings: Device Certificate CA's, Advanced EPA, Device Certificate, TCP Profile, HTTP Profile, AppFlow Setting, Smart Card logout, User Domains, Authentication Profile
 	
 .Release Notes version 4.52
 #	Add checking for a Word version of 0, which indicates the Office installation needs repairing
