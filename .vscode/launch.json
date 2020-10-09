@@ -9,7 +9,7 @@
             "type": "PowerShell",
             "request": "launch",
             "script": "${file}",
-            "args": ["-NSIP 10.0.0.10 -Verbose -Log"],
+            "args": ["-NSIP 10.0.0.10 -Verbose -Log -Features 'security'"],
             "cwd": "${file}"
         },
         {
