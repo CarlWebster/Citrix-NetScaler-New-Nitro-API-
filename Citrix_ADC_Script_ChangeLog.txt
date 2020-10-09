@@ -2,6 +2,24 @@
 #All Word related PowerShell functionality has been provided by Carl Webster
 #Please provide feedback or feature requests to amccullough84@gmail.com
 
+.Release Notes version 4.6
+# Added AAA Users and Groups and associated bindings
+# Experimental: Added new parameter "Feaures" to enable processing of only specific features.
+# 	Example (process all sections - Default) - Citrix_ADC_Script_v4_6_Signed.ps1 -Features ALL
+#	Example (process only core configuration) - Citrix_ADC_Script_v4_6_Signed.ps1 -Features Core
+#	Example (process core and LB configuration) - Citrix_ADC_Script_v4_6_Signed.ps1 -Feaures Core,LB
+#	Available Options are: all,core,dns,cluster,contentswitching,cs,lb,loadbalancing,cacheredirection,services,gslb,ssl,appexpert,security,gateway,monitors,policies
+# Added Table creation functions for simplifying code structure
+# Added Timeout, Command Policy bindings and External Authentication settings for system users
+# Added Timeout and Command Policy Bindings for system groups
+# Restructured Headings layout to more closely align to ADC Console
+# Added Speed, Dublex, MTU, LACP and Throughput to Interfaces output
+# Added Advanced Authentication Actions - CERT, LDAP, Negotiate, OAuth, RADIUS, SAML, TACACS, WebAuth, Captcha, EPA, StoreFrontAuth, Azure Key Vault, Push
+# Added Citrix Gateway Settings: Device Certificate CA's, Advanced EPA, Device Certificate, TCP Profile, HTTP Profile, AppFlow Setting, Smart Card logout, User Domains, Authentication Profile
+
+
+
+
 .Release Notes version 4.52
 #	Add checking for a Word version of 0, which indicates the Office installation needs repairing
 #	Change location of the -Dev, -Log, and -ScriptInfo output files from the script folder to the -Folder location (Thanks to Guy Leech for the "suggestion")
@@ -29,8 +47,7 @@
     * FIX: NSGW Session Profiles using wrong value for SSO Domain
     * FIX: Formatting issue for HTTP Callouts 
 
-#Version 4.6
-	* Added AAA Users and Groups and associated bindings
+
 .EXAMPLE
     PS C:\PSScript > .\Citrix_ADC_Script_V4_5_Signed.ps1 -NSIP 172.16.20.10 -Credential $MyCredentials
 
