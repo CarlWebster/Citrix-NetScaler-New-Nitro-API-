@@ -3511,10 +3511,11 @@ function Connect-vNetScalerSession {
         else { $protocol = 'http'; }
         $script:nsSession = @{ Address = $ComputerName; UseNSSSL = $UseNSSSL }
         $json = '{{ "login": {{ "username": "{0}", "password": "{1}", "timeout": {2} }} }}';
+        $SafePassword = $Credential.GetNetworkCredential().Password | Convertto-Json
         $invokeRestMethodParams = @{
             Uri = ('{0}://{1}/nitro/v1/config/login' -f $protocol, $ComputerName);
             Method = 'Post';
-            Body = ($json -f $Credential.UserName, $Credential.GetNetworkCredential().Password, $Timeout);
+            Body = ($json -f $Credential.UserName, $SafePassword, $Timeout);
             ContentType = 'application/json';
             SessionVariable = 'nsSessionCookie';
             ErrorAction = 'Stop';
