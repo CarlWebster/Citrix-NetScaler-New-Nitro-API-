@@ -3756,6 +3756,8 @@ param (
     [Parameter(Mandatory)] [System.String[]] $Properties,
     # Retrieve Headers to use in Table
     [Parameter(Mandatory)] [System.String[]] $Headers,
+    # Retrieve Headers to use in Table
+    [Parameter()] [Switch] $NoSectionHeading,
     # Heading level to use for the section heading
     [Parameter()] [System.Int32] $HeadingLevel = 4
 
@@ -3767,13 +3769,15 @@ Write-Log "Number of Bindings: $($BindingCount.__Count)"
 If ($BindingCount.__Count -gt 0) {
     Write-Log "Retrieving object"
     $BindingObject = Get-vNetScalerObject -Container Config -Object $BindingType -ResourceName $vServerName
-    Switch($HeadingLevel) {
-        1 {WriteWordLine 1 0 "$BindingTypeName"}
-        2 {WriteWordLine 2 0 "$BindingTypeName"}
-        3 {WriteWordLine 3 0 "$BindingTypeName"}
-        4 {WriteWordLine 4 0 "$BindingTypeName"}
-        5 {WriteWordLine 5 0 "$BindingTypeName"}
-    }
+      If (!$NoSectionHeading) {
+        Switch($HeadingLevel) {
+            1 {WriteWordLine 1 0 "$BindingTypeName"}
+            2 {WriteWordLine 2 0 "$BindingTypeName"}
+            3 {WriteWordLine 3 0 "$BindingTypeName"}
+            4 {WriteWordLine 4 0 "$BindingTypeName"}
+            5 {WriteWordLine 5 0 "$BindingTypeName"}
+        }
+      }  
     
     WriteWordLine 0 0 " "
     [System.Collections.Hashtable[]] $POLICIESH = @();
@@ -6495,7 +6499,9 @@ New-HeadedTable -SectionHeading "Citrix ADC DNS Name Servers" -SectionHeadingLev
 #region DNS Name Suffix
 WriteWordLine 0 0 " "
 Set-Progress -Status "Citrix ADC DNS Name Suffixes"
-WriteWordLine 2 0 "Citrix ADC DNS Name Suffixes"
+
+New-HeadedTable -SectionHeading "Citrix ADC DNS Name Suffixes" -SectionHeadingLevel 2 -Object dnssuffix -Properties "dnssuffix" -Headers "DNS Suffix"
+<# WriteWordLine 2 0 "Citrix ADC DNS Name Suffixes"
 WriteWordLine 0 0 " "
 $dnssuffixcounter = Get-vNetScalerObjectCount -Container config -Object dnssuffix; 
 $dnssuffixcount = $dnssuffixcounter.__count
@@ -6525,7 +6531,7 @@ if($dnssuffixcounter.__count -le 0) { WriteWordLine 0 0 "No DNS Name Suffixes ha
             WriteWordLine 0 0 " "
             $Table = $null
             }
-        }
+        } #>
 
 #endregion DNS Address Records
 
@@ -7065,8 +7071,8 @@ WriteWordLine 0 0 " "
 
 #region Authentication SAML Policies
 $Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters NetScaler SAML Authentication"
-WriteWordLine 2 0 "NetScaler SAML Policies"
+Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC SAML Authentication"
+WriteWordLine 2 0 "Citrix ADC SAML Policies"
 WriteWordLine 0 0 " "
 $authpolssamlcount = Get-vNetScalerObjectCount -Container config -Object authenticationsamlpolicy
 $authpolssaml = Get-vNetScalerObject -Container config -Object authenticationsamlpolicy;
@@ -9042,13 +9048,19 @@ $pattsetpolicies = Get-vNetScalerObject -Container config -Object policypatset;
 
 foreach ($patternsetpolicy in $pattsetpolicies) {
 
-$patternset = Get-vNetScalerObject -Container config -Object policypatset_binding -Name $patternsetpolicy.name;
+    #$patternset = Get-vNetScalerObject -Container config -Object policypatset_binding -Name $patternsetpolicy.name;
 
-$patsetname = $patternsetpolicy.name
+    $patsetname = $patternsetpolicy.name
 
-WriteWordLine 3 0 "Pattern Set: $patsetname"
-WriteWordLine 0 0 " "
-[System.Collections.Hashtable[]] $PATSETS = @();
+
+
+    WriteWordLine 3 0 "Pattern Set: $patsetname"
+    WriteWordLine 0 0 " "
+
+    New-PolicyBindingTable -vServerName $patsetname -BindingType "policypatset_binding" -BindingTypeName "Pattern Set" -Properties "string,charset,index" -Headers "Pattern,Charset,Index" -NoSectionHeading
+} #End for-each pattern set
+
+<# [System.Collections.Hashtable[]] $PATSETS = @();
 
 foreach ($patternsetentry in $patternset.policypatset_pattern_binding) {
 
@@ -9082,7 +9094,7 @@ $Table = AddWordTable @Params;
 FindWordDocumentEnd;
 WriteWordLine 0 0 " "
 }
-
+ #>
 
 
     
