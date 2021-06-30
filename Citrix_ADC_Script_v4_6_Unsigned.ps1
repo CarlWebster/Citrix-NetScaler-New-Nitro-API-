@@ -404,7 +404,7 @@
     NAME: Citrix_ADC_Script_v4_6.ps1
 	VERSION Citrix ADC Script: 4.6
 	AUTHOR Citrix ADC script: Barry Schiffer & Andy McCullough
-    AUTHOR Citrix ADC script functions: Iain Brighton
+    AUTHOR Citrix ADC script functions: Iain Brighton & Andy McCullough
     AUTHOR Script template: Carl Webster, Michael B. Smith, Iain Brighton, Jeff Wouters
     LASTEDIT: October 9, 2020
 
@@ -1543,7 +1543,7 @@ Function CheckWordPrereq
 	$SessionID = (Get-Process -PID $PID).SessionId
 	
 	#Find out if winword is running in our session
-	[bool]$wordrunning = ((Get-Process 'WinWord' -ea 0)|?{$_.SessionId -eq $SessionID}) -ne $Null
+	[bool]$wordrunning = ((Get-Process 'WinWord' -ea 0)| Where-Object {$_.SessionId -eq $SessionID}) -ne $Null
 	If($wordrunning)
 	{
 		$ErrorActionPreference = $SaveEAPreference
@@ -1578,7 +1578,7 @@ Function _SetDocumentProperty
 	#jeff hicks
 	Param([object]$Properties,[string]$Name,[string]$Value)
 	#get the property object
-	$prop = $properties | ForEach { 
+	$prop = $properties | ForEach-Object { 
 		$propname=$_.GetType().InvokeMember("Name","GetProperty",$Null,$_,$Null)
 		If($propname -eq $Name) 
 		{
@@ -1875,13 +1875,13 @@ Function SetupWord
 
 	$Script:Word.Templates.LoadBuildingBlocks()
 	#word 2010/2013/2016
-	$BuildingBlocksCollection = $Script:Word.Templates | Where {$_.name -eq "Built-In Building Blocks.dotx"}
+	$BuildingBlocksCollection = $Script:Word.Templates | Where-Object {$_.name -eq "Built-In Building Blocks.dotx"}
 
 	Write-Verbose "$(Get-Date): Attempt to load cover page $($CoverPage)"
 	$part = $Null
 
 	$BuildingBlocksCollection | 
-	ForEach{
+	ForEach-Object{
 		If ($_.BuildingBlockEntries.Item($CoverPage).Name -eq $CoverPage) 
 		{
 			$BuildingBlocks = $_
@@ -2037,10 +2037,10 @@ Function UpdateDocumentProperties
 			_SetDocumentProperty $Script:Doc.BuiltInDocumentProperties "Subject" $SubjectTitle
 
 			#Get the Coverpage XML part
-			$cp = $Script:Doc.CustomXMLParts | Where {$_.NamespaceURI -match "coverPageProps$"}
+			$cp = $Script:Doc.CustomXMLParts | Where-Object {$_.NamespaceURI -match "coverPageProps$"}
 
 			#get the abstract XML part
-			$ab = $cp.documentelement.ChildNodes | Where {$_.basename -eq "Abstract"}
+			$ab = $cp.documentelement.ChildNodes | Where-Object {$_.basename -eq "Abstract"}
 
 			#set the text
 			If([String]::IsNullOrEmpty($Script:CoName))
@@ -2054,7 +2054,7 @@ Function UpdateDocumentProperties
 
 			$ab.Text = $abstract
 
-			$ab = $cp.documentelement.ChildNodes | Where {$_.basename -eq "PublishDate"}
+			$ab = $cp.documentelement.ChildNodes | Where-Object {$_.basename -eq "PublishDate"}
 			#set the text
 			[string]$abstract = (Get-Date -Format d).ToString()
 			$ab.Text = $abstract
@@ -2632,9 +2632,9 @@ Function validStateProp( [object] $object, [string] $topLevel, [string] $secondL
 	#function created 8-jan-2014 by Michael B. Smith
 	If( $object )
 	{
-		If((gm -Name $topLevel -InputObject $object))
+		If((Get-Member -Name $topLevel -InputObject $object))
 		{
-			If((gm -Name $secondLevel -InputObject $object.$topLevel))
+			If((Get-Member -Name $secondLevel -InputObject $object.$topLevel))
 			{
 				Return $True
 			}
@@ -2806,7 +2806,7 @@ Function SaveandCloseDocumentandShutdownWord
 					$SessionID = (Get-Process -PID $PID).SessionId
 					
 					#Find out if winword is running in our session
-					$wordprocess = ((Get-Process 'WinWord' -ea 0)|?{$_.SessionId -eq $SessionID}).Id
+					$wordprocess = ((Get-Process 'WinWord' -ea 0)|Where-Object{$_.SessionId -eq $SessionID}).Id
 					If($wordprocess -gt 0)
 					{
 						Write-Verbose "$(Get-Date): Attempting to stop WinWord process # $($wordprocess)"
@@ -2835,7 +2835,7 @@ Function SaveandCloseDocumentandShutdownWord
 
 	#Find out if winword is running in our session
 	$wordprocess = $Null
-	$wordprocess = ((Get-Process 'WinWord' -ea 0)|?{$_.SessionId -eq $SessionID}).Id
+	$wordprocess = ((Get-Process 'WinWord' -ea 0)|Where-Object{$_.SessionId -eq $SessionID}).Id
 	If($null -ne $wordprocess -and $wordprocess -gt 0)
 	{
 		Write-Verbose "$(Get-Date): WinWord process is still running. Attempting to stop WinWord process # $($wordprocess)"
@@ -2965,11 +2965,11 @@ Function ProcessScriptEnd
 	$ErrorActionPreference = $SaveEAPreference
 	[gc]::collect()
 			
-	Write-Host "                                                                                    " -BackgroundColor Black -ForegroundColor White
+	<# Write-Host "                                                                                    " -BackgroundColor Black -ForegroundColor White
 	Write-Host "               This FREE script was brought to you by Conversant Group              " -BackgroundColor Black -ForegroundColor White
 	Write-Host "We design, build, and manage infrastructure for a secure, dependable user experience" -BackgroundColor Black -ForegroundColor White
 	Write-Host "                       Visit our website conversantgroup.com                        " -BackgroundColor Black -ForegroundColor White
-	Write-Host "                                                                                    " -BackgroundColor Black -ForegroundColor White
+	Write-Host "                                                                                    " -BackgroundColor Black -ForegroundColor White #>
 }
 #endregion
 
@@ -3440,8 +3440,8 @@ function InvokevNetScalerNitroMethod {
         [Parameter(Mandatory)] [ValidateSet('Stat','Config')] [string] $Container
     )
     begin {
-        if ($script:nsSession -eq $null) { throw 'No valid Citrix ADC session configuration.'; }
-        if ($script:nsSession.Session -eq $null -or $script:nsSession.Expiry -eq $null) { throw 'Invalid Citrix ADC session cookie.'; }
+        if ($null -eq $script:nsSession) { throw 'No valid Citrix ADC session configuration.'; }
+        if ($null -eq $script:nsSession.Session -or $null -eq $script:nsSession.Expiry) { throw 'Invalid Citrix ADC session cookie.'; }
         if ($script:nsSession.Expiry -lt (Get-Date)) { throw 'Citrix ADC session has expired.'; }
     }
     process {
@@ -3510,7 +3510,7 @@ function Connect-vNetScalerSession {
         if ($UseNSSSL) { $protocol = 'https'; }
         else { $protocol = 'http'; }
         $script:nsSession = @{ Address = $ComputerName; UseNSSSL = $UseNSSSL }
-        $json = '{{ "login": {{ "username": "{0}", "password": "{1}", "timeout": {2} }} }}';
+        $json = '{{ "login": {{ "username": "{0}", "password": {1}, "timeout": {2} }} }}';
         $SafePassword = $Credential.GetNetworkCredential().Password | Convertto-Json
         $invokeRestMethodParams = @{
             Uri = ('{0}://{1}/nitro/v1/config/login' -f $protocol, $ComputerName);
@@ -3594,7 +3594,7 @@ function Get-vNetScalerObjectCount {
 
     begin {
         ## Check session cookie
-        if ($script:nsSession.Session -eq $null) { throw 'Invalid Citrix ADC session cookie.'; }
+        if ($null -eq $script:nsSession.Session) { throw 'Invalid Citrix ADC session cookie.'; }
         if ($script:nsSession.UseNSSSL) { $protocol = 'https'; }
         else { $protocol = 'http'; }
     }
@@ -4030,7 +4030,7 @@ Return $VerbosePreference
 }
 
 function IsNull($objectToCheck) {
-    if ($objectToCheck -eq $null) {
+    if ($null -eq $objectToCheck) {
         return $true
     }
 
@@ -4262,8 +4262,8 @@ WriteWordLine 2 0 "Citrix ADC Edition"
 WriteWordLine 0 0 " "
 $License = Get-vNetScalerObject -Container config -Object nslicense;
 If ($license.isstandardlic -eq $True){$LIC = "Standard"}
-If ($license.isenterpriselic -eq $True){$LIC = "Enterprise"}
-If ($license.isplatinumlic -eq $True){$LIC = "Platinum"}
+If ($license.isenterpriselic -eq $True){$LIC = "Advanced"}
+If ($license.isplatinumlic -eq $True){$LIC = "Premium"}
 If ($license.f_sslvpn_users -eq "4294967295"){$sslvpnlicenses = "Unlimited"} else {$sslvpnlicenses = $license.f_sslvpn_users}
 $Params = $null
 $Params = @{
@@ -4920,7 +4920,7 @@ $rpcnodecounter = Get-vNetScalerObjectCount -Container config -Object nsrpcnode;
 $rpcnodecount = $rpcnodecounter.__count
 $rpcnodes = Get-vNetScalerObject -Container config -Object nsrpcnode;
 
-if($rpcnodecounter.__count -le 0) { WriteWordLine 0 0 "No RPC Nodes have been configured"} else {
+if($rpcnodecount -le 0) { WriteWordLine 0 0 "No RPC Nodes have been configured"} else {
     
     ## IB - Use an array of hashtable to store the rows
     [System.Collections.Hashtable[]] $RPCCONFIGH = @();
@@ -5037,7 +5037,9 @@ WriteWordLine 0 0 " "
     @{ Description = "Front End Optimization"; Value = $FEATfeo }
     @{ Description = "Large Scale NAT"; Value = $FEATlsn }
     @{ Description = "RDP Proxy"; Value = $FEATrdpproxy }
-    @{ Description = "Reputation"; Value = $FEATrep }
+    @{ Description = "Content Accelerator"; Value = $FEATcontentaccelerator }
+    @{ Description = "RISE"; Value = $FEATrise }
+    @{ Description = "IP Reputation"; Value = $FEATrep }
     @{ Description = "URL Filtering"; Value = $FEATurl }
     @{ Description = "Video Optimization"; Value = $FEATvideo }
     @{ Description = "Forward Proxy"; Value = $FEATfp }
@@ -5990,7 +5992,6 @@ Set-Progress -Status "Citrix ADC Interfaces"
 WriteWordLine 2 0 "Citrix ADC Interfaces"
 WriteWordLine 0 0 " "
 $InterfaceCounter = Get-vNetScalerObjectCount -Container config -Object interface; 
-$InterfaceCount = $InterfaceCounter.__count
 $Interfaces = Get-vNetScalerObject -Container config -Object interface;
 
 if($InterfaceCounter.__count -le 0) { WriteWordLine 0 0 "No Interface has been configured"} else {
@@ -6046,7 +6047,7 @@ Set-Progress -Status "Citrix ADC Channels"
 WriteWordLine 2 0 "Citrix ADC Channels"
 WriteWordLine 0 0 " "
 $ChannelCounter = Get-vNetScalerObjectCount -Container config -Object channel; 
-$ChannelCount = $ChannelCounter.__count
+
 $Channels = Get-vNetScalerObject -Container config -Object interface;
 
 if($ChannelCounter.__count -le 0) { 
@@ -6130,7 +6131,7 @@ Set-Progress -Status "Citrix ADC VLANs"
 WriteWordLine 2 0 "Citrix ADC vLANs"
 WriteWordLine 0 0 " "
 $VLANCounter = Get-vNetScalerObjectCount -Container config -Object vlan; 
-$VLANCount = $VLANCounter.__count
+
 $VLANS = Get-vNetScalerObject -Container config -Object vlan;
 
 if($VLANCounter.__count -le 0) { WriteWordLine 0 0 "No vLAN has been configured"} else {
@@ -6179,7 +6180,7 @@ Set-Progress -Status "Citrix ADC VXLANs"
 WriteWordLine 2 0 "Citrix ADC VXLANs"
 WriteWordLine 0 0 " "
 $VXLANCounter = Get-vNetScalerObjectCount -Container config -Object vxlan; 
-$VXLANCount = $VXLANCounter.__count
+
 $VXLANS = Get-vNetScalerObject -Container config -Object vxlan;
 
 if($VXLANCounter.__count -le 0) { WriteWordLine 0 0 "No VXLANs have been configured"} else {
@@ -11401,7 +11402,7 @@ $rdpsrvprofiles = Get-vNetScalerObject -Container config -Object rdpserverprofil
 
     foreach ($rdpsrvprofile in $rdpsrvprofiles) {
 
-       $PSK = Get-NonEmptyString $rdpsrvprofile.psk
+       #$PSK = Get-NonEmptyString $rdpsrvprofile.psk
        
         $RDPSRVPROFH += @{ 
             NAME = $rdpsrvprofile.name; 
@@ -11661,286 +11662,286 @@ foreach ($vpnportaltheme in $vpnportalthemes) {
 
   #region English Strings
   #Login Page
-  $enLogonPage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $enLogonPage = $enxmlcontents.Resources.Partition | Where-Object {$_.id -eq "logon"}
   $ENPageTitle = $enLogonPage.Title
-  $ENFormTitle = $enLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
-  $ENUserName = $enLogonPage.String | ? {$_.id -eq "User_name"} 
-  $ENPassword = $enLogonPage.String | ? {$_.id -eq "Password"} 
-  $ENPassword2 = $enLogonPage.String | ? {$_.id -eq "Password2"} 
+  $ENFormTitle = $enLogonPage.String | Where-Object {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $ENUserName = $enLogonPage.String | Where-Object {$_.id -eq "User_name"} 
+  $ENPassword = $enLogonPage.String | Where-Object {$_.id -eq "Password"} 
+  $ENPassword2 = $enLogonPage.String | Where-Object {$_.id -eq "Password2"} 
 
   # Home Page
-  $enPortalPage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
-  $enFTPage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
-  $enBookmark = $enxmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+  $enPortalPage = $enxmlcontents.Resources.Partition | Where-Object {$_.id -eq "portal"}
+  $enFTPage = $enxmlcontents.Resources.Partition | Where-Object {$_.id -eq "ftlist"}
+  $enBookmark = $enxmlcontents.Resources.Partition | Where-Object {$_.id -eq "bookmark"}
 
-  $ENWebApps = $enPortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
-  $ENEntWebApps = $enBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
-  $ENPersWebApps = $enBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
-  $ENApps = $enPortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
-  $ENFileTrans = $enPortalPage.String | ? {$_.id -eq "id_FileTransfer"}
-  $ENEntFile = $enFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
-  $ENPersFile = $enFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
-  $ENEmail = $enPortalPage.String | ? {$_.id -eq "id_Email"}
+  $ENWebApps = $enPortalPage.String | Where-Object {$_.id -eq "ctl00_webSites_label"} 
+  $ENEntWebApps = $enBookmark.String | Where-Object {$_.id -eq "id_EnterpriseWebSites"}
+  $ENPersWebApps = $enBookmark.String | Where-Object {$_.id -eq "id_PersonalWebSites"}
+  $ENApps = $enPortalPage.String | Where-Object {$_.id -eq "ctl00_applications_label"}
+  $ENFileTrans = $enPortalPage.String | Where-Object {$_.id -eq "id_FileTransfer"}
+  $ENEntFile = $enFTPage.String | Where-Object {$_.id -eq "id_EnterpriseFileShares"}
+  $ENPersFile = $enFTPage.String | Where-Object {$_.id -eq "id_PersonalFileShares"}
+  $ENEmail = $enPortalPage.String | Where-Object {$_.id -eq "id_Email"}
 
   #VPN Connection
-  $enVPNpage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
-  $enVPNpagemac = $enxmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
-  $enVPNWaitmsg = $enVPNPage.String | ? {$_.id -eq "waitingmsg"}
-  $enVPNproxy = $enVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
-  $enVPNnoplugin = $enVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $enVPNnopluginmac = $enVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $enVPNnopluginlinux = $enVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+  $enVPNpage = $enxmlcontents.Resources.Partition | Where-Object {$_.id -eq "f_services"}
+  $enVPNpagemac = $enxmlcontents.Resources.Partition | Where-Object {$_.id -eq "m_services"}
+  $enVPNWaitmsg = $enVPNPage.String | Where-Object {$_.id -eq "waitingmsg"}
+  $enVPNproxy = $enVPNPage.String | Where-Object {$_.id -eq "If a proxy server is configured"}
+  $enVPNnoplugin = $enVPNPage.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $enVPNnopluginmac = $enVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $enVPNnopluginlinux = $enVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
 
   #EPA Page
-  $enEPApage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
-  $enEPATitle = $enEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
-  $enEPAIntro = $enEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
-  $enEPAPlugin = $enEPApage.String | ? {$_.id -eq "AppINFO"}
-  $enEPADownload = $enEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
-  $enEPAPluginError = $enEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
-  $enEPASoftDownload = $enEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  $enEPApage = $enxmlcontents.Resources.Partition | Where-Object {$_.id -eq "epa"}
+  $enEPATitle = $enEPApage.String | Where-Object {$_.id -eq "loginAgentCdaHeaderText"}
+  $enEPAIntro = $enEPApage.String | Where-Object {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $enEPAPlugin = $enEPApage.String | Where-Object {$_.id -eq "AppINFO"}
+  $enEPADownload = $enEPApage.String | Where-Object {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $enEPAPluginError = $enEPApage.String | Where-Object {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $enEPASoftDownload = $enEPApage.String | Where-Object {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
   
   #EPA Error Page
-  $enEPAErrorpage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
-  $enEPAErrorTitle = $enEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
-  $enEPADeviceReqs = $enEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
-  $enEPAMacError = $enEPApage.String | ? {$_.id -eq "End point analysis failed"}
-  $enEPAErrorMessage = $enEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
-  $enEPAErrorCert = $enEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+  $enEPAErrorpage = $enxmlcontents.Resources.Partition | Where-Object {$_.id -eq "epaerrorpage"}
+  $enEPAErrorTitle = $enEPAErrorpage.String | Where-Object {$_.id -eq "Access Denied"}
+  $enEPADeviceReqs = $enEPAErrorpage.String | Where-Object {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $enEPAMacError = $enEPApage.String | Where-Object {$_.id -eq "End point analysis failed"}
+  $enEPAErrorMessage = $enEPAErrorpage.String | Where-Object {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $enEPAErrorCert = $enEPApage.String | Where-Object {$_.id -eq "Device certificate check failed"}
 
   #Post EPA Page
-  $enEPAPostpage = $enxmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
-  $enEPAPostTitle = $enEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
-  $enEPAPostFail = $enEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
-  $enEPAPostSkipped = $enEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  $enEPAPostpage = $enxmlcontents.Resources.Partition | Where-Object {$_.id -eq "postepa"}
+  $enEPAPostTitle = $enEPAPostpage.String | Where-Object {$_.id -eq "Checking Your Device"}
+  $enEPAPostFail = $enEPAPostpage.String | Where-Object {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $enEPAPostSkipped = $enEPAPostpage.String | Where-Object {$_.id -eq "The user skipped the scan"}
   
   #endregion English Strings
 
   #region French Strings
   #Login Page
-  $frLogonPage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $frLogonPage = $frxmlcontents.Resources.Partition | Where-Object {$_.id -eq "logon"}
   $FRPageTitle = $frLogonPage.Title
-  $FRFormTitle = $frLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
-  $frUserName = $frLogonPage.String | ? {$_.id -eq "User_name"} 
-  $frPassword = $frLogonPage.String | ? {$_.id -eq "Password"} 
-  $frPassword2 = $frLogonPage.String | ? {$_.id -eq "Password2"} 
+  $FRFormTitle = $frLogonPage.String | Where-Object {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $frUserName = $frLogonPage.String | Where-Object {$_.id -eq "User_name"} 
+  $frPassword = $frLogonPage.String | Where-Object {$_.id -eq "Password"} 
+  $frPassword2 = $frLogonPage.String | Where-Object {$_.id -eq "Password2"} 
 
   # Home Page
-  $frPortalPage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
-  $frFTPage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
-  $frBookmark = $frxmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+  $frPortalPage = $frxmlcontents.Resources.Partition | Where-Object {$_.id -eq "portal"}
+  $frFTPage = $frxmlcontents.Resources.Partition | Where-Object {$_.id -eq "ftlist"}
+  $frBookmark = $frxmlcontents.Resources.Partition | Where-Object {$_.id -eq "bookmark"}
 
-  $frWebApps = $frPortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
-  $frEntWebApps = $frBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
-  $frPersWebApps = $frBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
-  $frApps = $frPortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
-  $frFileTrans = $frPortalPage.String | ? {$_.id -eq "id_FileTransfer"}
-  $frEntFile = $frFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
-  $frPersFile = $frFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
-  $frEmail = $frPortalPage.String | ? {$_.id -eq "id_Email"}
+  $frWebApps = $frPortalPage.String | Where-Object {$_.id -eq "ctl00_webSites_label"} 
+  $frEntWebApps = $frBookmark.String | Where-Object {$_.id -eq "id_EnterpriseWebSites"}
+  $frPersWebApps = $frBookmark.String | Where-Object {$_.id -eq "id_PersonalWebSites"}
+  $frApps = $frPortalPage.String | Where-Object {$_.id -eq "ctl00_applications_label"}
+  $frFileTrans = $frPortalPage.String | Where-Object {$_.id -eq "id_FileTransfer"}
+  $frEntFile = $frFTPage.String | Where-Object {$_.id -eq "id_EnterpriseFileShares"}
+  $frPersFile = $frFTPage.String | Where-Object {$_.id -eq "id_PersonalFileShares"}
+  $frEmail = $frPortalPage.String | Where-Object {$_.id -eq "id_Email"}
 
   #VPN Connection
-  $frVPNpage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
-  $frVPNpagemac = $frxmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
-  $frVPNWaitmsg = $frVPNPage.String | ? {$_.id -eq "waitingmsg"}
-  $frVPNproxy = $frVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
-  $frVPNnoplugin = $frVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $frVPNnopluginmac = $frVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $frVPNnopluginlinux = $frVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+  $frVPNpage = $frxmlcontents.Resources.Partition | Where-Object {$_.id -eq "f_services"}
+  $frVPNpagemac = $frxmlcontents.Resources.Partition | Where-Object {$_.id -eq "m_services"}
+  $frVPNWaitmsg = $frVPNPage.String | Where-Object {$_.id -eq "waitingmsg"}
+  $frVPNproxy = $frVPNPage.String | Where-Object {$_.id -eq "If a proxy server is configured"}
+  $frVPNnoplugin = $frVPNPage.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $frVPNnopluginmac = $frVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $frVPNnopluginlinux = $frVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
 
   #EPA Page
-  $frEPApage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
-  $frEPATitle = $frEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
-  $frEPAIntro = $frEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
-  $frEPAPlugin = $frEPApage.String | ? {$_.id -eq "AppINFO"}
-  $frEPADownload = $frEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
-  $frEPAPluginError = $frEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
-  $frEPASoftDownload = $frEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  $frEPApage = $frxmlcontents.Resources.Partition | Where-Object {$_.id -eq "epa"}
+  $frEPATitle = $frEPApage.String | Where-Object {$_.id -eq "loginAgentCdaHeaderText"}
+  $frEPAIntro = $frEPApage.String | Where-Object {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $frEPAPlugin = $frEPApage.String | Where-Object {$_.id -eq "AppINFO"}
+  $frEPADownload = $frEPApage.String | Where-Object {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $frEPAPluginError = $frEPApage.String | Where-Object {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $frEPASoftDownload = $frEPApage.String | Where-Object {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
   
   #EPA Error Page
-  $frEPAErrorpage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
-  $frEPAErrorTitle = $frEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
-  $frEPADeviceReqs = $frEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
-  $frEPAMacError = $frEPApage.String | ? {$_.id -eq "End point analysis failed"}
-  $frEPAErrorMessage = $frEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
-  $frEPAErrorCert = $frEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+  $frEPAErrorpage = $frxmlcontents.Resources.Partition | Where-Object {$_.id -eq "epaerrorpage"}
+  $frEPAErrorTitle = $frEPAErrorpage.String | Where-Object {$_.id -eq "Access Denied"}
+  $frEPADeviceReqs = $frEPAErrorpage.String | Where-Object {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $frEPAMacError = $frEPApage.String | Where-Object {$_.id -eq "End point analysis failed"}
+  $frEPAErrorMessage = $frEPAErrorpage.String | Where-Object {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $frEPAErrorCert = $frEPApage.String | Where-Object {$_.id -eq "Device certificate check failed"}
 
   #Post EPA Page
-  $frEPAPostpage = $frxmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
-  $frEPAPostTitle = $frEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
-  $frEPAPostFail = $frEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
-  $frEPAPostSkipped = $frEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  $frEPAPostpage = $frxmlcontents.Resources.Partition | Where-Object {$_.id -eq "postepa"}
+  $frEPAPostTitle = $frEPAPostpage.String | Where-Object {$_.id -eq "Checking Your Device"}
+  $frEPAPostFail = $frEPAPostpage.String | Where-Object {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $frEPAPostSkipped = $frEPAPostpage.String | Where-Object {$_.id -eq "The user skipped the scan"}
   
   #endregion French Strings
 
   #region German Strings
   #Login Page
-  $deLogonPage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $deLogonPage = $dexmlcontents.Resources.Partition | Where-Object {$_.id -eq "logon"}
   $dePageTitle = $deLogonPage.Title
-  $deFormTitle = $deLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
-  $deUserName = $deLogonPage.String | ? {$_.id -eq "User_name"} 
-  $dePassword = $deLogonPage.String | ? {$_.id -eq "Password"} 
-  $dePassword2 = $deLogonPage.String | ? {$_.id -eq "Password2"} 
+  $deFormTitle = $deLogonPage.String | Where-Object {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $deUserName = $deLogonPage.String | Where-Object {$_.id -eq "User_name"} 
+  $dePassword = $deLogonPage.String | Where-Object {$_.id -eq "Password"} 
+  $dePassword2 = $deLogonPage.String | Where-Object {$_.id -eq "Password2"} 
 
   # Home Page
-  $dePortalPage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
-  $deFTPage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
-  $deBookmark = $dexmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+  $dePortalPage = $dexmlcontents.Resources.Partition | Where-Object {$_.id -eq "portal"}
+  $deFTPage = $dexmlcontents.Resources.Partition | Where-Object {$_.id -eq "ftlist"}
+  $deBookmark = $dexmlcontents.Resources.Partition | Where-Object {$_.id -eq "bookmark"}
 
-  $deWebApps = $dePortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
-  $deEntWebApps = $deBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
-  $dePersWebApps = $deBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
-  $deApps = $dePortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
-  $deFileTrans = $dePortalPage.String | ? {$_.id -eq "id_FileTransfer"}
-  $deEntFile = $deFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
-  $dePersFile = $deFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
-  $deEmail = $dePortalPage.String | ? {$_.id -eq "id_Email"}
+  $deWebApps = $dePortalPage.String | Where-Object {$_.id -eq "ctl00_webSites_label"} 
+  $deEntWebApps = $deBookmark.String | Where-Object {$_.id -eq "id_EnterpriseWebSites"}
+  $dePersWebApps = $deBookmark.String | Where-Object {$_.id -eq "id_PersonalWebSites"}
+  $deApps = $dePortalPage.String | Where-Object {$_.id -eq "ctl00_applications_label"}
+  $deFileTrans = $dePortalPage.String | Where-Object {$_.id -eq "id_FileTransfer"}
+  $deEntFile = $deFTPage.String | Where-Object {$_.id -eq "id_EnterpriseFileShares"}
+  $dePersFile = $deFTPage.String | Where-Object {$_.id -eq "id_PersonalFileShares"}
+  $deEmail = $dePortalPage.String | Where-Object {$_.id -eq "id_Email"}
 
   #VPN Connection
-  $deVPNpage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
-  $deVPNpagemac = $dexmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
-  $deVPNWaitmsg = $deVPNPage.String | ? {$_.id -eq "waitingmsg"}
-  $deVPNproxy = $deVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
-  $deVPNnoplugin = $deVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $deVPNnopluginmac = $deVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $deVPNnopluginlinux = $deVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+  $deVPNpage = $dexmlcontents.Resources.Partition | Where-Object {$_.id -eq "f_services"}
+  $deVPNpagemac = $dexmlcontents.Resources.Partition | Where-Object {$_.id -eq "m_services"}
+  $deVPNWaitmsg = $deVPNPage.String | Where-Object {$_.id -eq "waitingmsg"}
+  $deVPNproxy = $deVPNPage.String | Where-Object {$_.id -eq "If a proxy server is configured"}
+  $deVPNnoplugin = $deVPNPage.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $deVPNnopluginmac = $deVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $deVPNnopluginlinux = $deVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
 
   #EPA Page
-  $deEPApage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
-  $deEPATitle = $deEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
-  $deEPAIntro = $deEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
-  $deEPAPlugin = $deEPApage.String | ? {$_.id -eq "AppINFO"}
-  $deEPADownload = $deEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
-  $deEPAPluginError = $deEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
-  $deEPASoftDownload = $deEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  $deEPApage = $dexmlcontents.Resources.Partition | Where-Object {$_.id -eq "epa"}
+  $deEPATitle = $deEPApage.String | Where-Object {$_.id -eq "loginAgentCdaHeaderText"}
+  $deEPAIntro = $deEPApage.String | Where-Object {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $deEPAPlugin = $deEPApage.String | Where-Object {$_.id -eq "AppINFO"}
+  $deEPADownload = $deEPApage.String | Where-Object {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $deEPAPluginError = $deEPApage.String | Where-Object {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $deEPASoftDownload = $deEPApage.String | Where-Object {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
   
   #EPA Error Page
-  $deEPAErrorpage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
-  $deEPAErrorTitle = $deEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
-  $deEPADeviceReqs = $deEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
-  $deEPAMacError = $deEPApage.String | ? {$_.id -eq "End point analysis failed"}
-  $deEPAErrorMessage = $deEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
-  $deEPAErrorCert = $deEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+  $deEPAErrorpage = $dexmlcontents.Resources.Partition | Where-Object {$_.id -eq "epaerrorpage"}
+  $deEPAErrorTitle = $deEPAErrorpage.String | Where-Object {$_.id -eq "Access Denied"}
+  $deEPADeviceReqs = $deEPAErrorpage.String | Where-Object {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $deEPAMacError = $deEPApage.String | Where-Object {$_.id -eq "End point analysis failed"}
+  $deEPAErrorMessage = $deEPAErrorpage.String | Where-Object {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $deEPAErrorCert = $deEPApage.String | Where-Object {$_.id -eq "Device certificate check failed"}
 
   #Post EPA Page
-  $deEPAPostpage = $dexmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
-  $deEPAPostTitle = $deEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
-  $deEPAPostFail = $deEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
-  $deEPAPostSkipped = $deEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  $deEPAPostpage = $dexmlcontents.Resources.Partition | Where-Object {$_.id -eq "postepa"}
+  $deEPAPostTitle = $deEPAPostpage.String | Where-Object {$_.id -eq "Checking Your Device"}
+  $deEPAPostFail = $deEPAPostpage.String | Where-Object {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $deEPAPostSkipped = $deEPAPostpage.String | Where-Object {$_.id -eq "The user skipped the scan"}
   
   #endregion German Strings
 
   #region Spanish Strings
   #Login Page
-  $esLogonPage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $esLogonPage = $esxmlcontents.Resources.Partition | Where-Object {$_.id -eq "logon"}
   $esPageTitle = $esLogonPage.Title
-  $esFormTitle = $esLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
-  $esUserName = $esLogonPage.String | ? {$_.id -eq "User_name"} 
-  $esPassword = $esLogonPage.String | ? {$_.id -eq "Password"} 
-  $esPassword2 = $esLogonPage.String | ? {$_.id -eq "Password2"} 
+  $esFormTitle = $esLogonPage.String | Where-Object {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $esUserName = $esLogonPage.String | Where-Object {$_.id -eq "User_name"} 
+  $esPassword = $esLogonPage.String | Where-Object {$_.id -eq "Password"} 
+  $esPassword2 = $esLogonPage.String | Where-Object {$_.id -eq "Password2"} 
 
   # Home Page
-  $esPortalPage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
-  $esFTPage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
-  $esBookmark = $esxmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+  $esPortalPage = $esxmlcontents.Resources.Partition | Where-Object {$_.id -eq "portal"}
+  $esFTPage = $esxmlcontents.Resources.Partition | Where-Object {$_.id -eq "ftlist"}
+  $esBookmark = $esxmlcontents.Resources.Partition | Where-Object {$_.id -eq "bookmark"}
 
-  $esWebApps = $esPortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
-  $esEntWebApps = $esBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
-  $esPersWebApps = $esBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
-  $esApps = $esPortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
-  $esFileTrans = $esPortalPage.String | ? {$_.id -eq "id_FileTransfer"}
-  $esEntFile = $esFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
-  $esPersFile = $esFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
-  $esEmail = $esPortalPage.String | ? {$_.id -eq "id_Email"}
+  $esWebApps = $esPortalPage.String | Where-Object {$_.id -eq "ctl00_webSites_label"} 
+  $esEntWebApps = $esBookmark.String | Where-Object {$_.id -eq "id_EnterpriseWebSites"}
+  $esPersWebApps = $esBookmark.String | Where-Object {$_.id -eq "id_PersonalWebSites"}
+  $esApps = $esPortalPage.String | Where-Object {$_.id -eq "ctl00_applications_label"}
+  $esFileTrans = $esPortalPage.String | Where-Object {$_.id -eq "id_FileTransfer"}
+  $esEntFile = $esFTPage.String | Where-Object {$_.id -eq "id_EnterpriseFileShares"}
+  $esPersFile = $esFTPage.String | Where-Object {$_.id -eq "id_PersonalFileShares"}
+  $esEmail = $esPortalPage.String | Where-Object {$_.id -eq "id_Email"}
 
   #VPN Connection
-  $esVPNpage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
-  $esVPNpagemac = $esxmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
-  $esVPNWaitmsg = $esVPNPage.String | ? {$_.id -eq "waitingmsg"}
-  $esVPNproxy = $esVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
-  $esVPNnoplugin = $esVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $esVPNnopluginmac = $esVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $esVPNnopluginlinux = $esVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+  $esVPNpage = $esxmlcontents.Resources.Partition | Where-Object {$_.id -eq "f_services"}
+  $esVPNpagemac = $esxmlcontents.Resources.Partition | Where-Object {$_.id -eq "m_services"}
+  $esVPNWaitmsg = $esVPNPage.String | Where-Object {$_.id -eq "waitingmsg"}
+  $esVPNproxy = $esVPNPage.String | Where-Object {$_.id -eq "If a proxy server is configured"}
+  $esVPNnoplugin = $esVPNPage.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $esVPNnopluginmac = $esVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $esVPNnopluginlinux = $esVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
 
   #EPA Page
-  $esEPApage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
-  $esEPATitle = $esEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
-  $esEPAIntro = $esEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
-  $esEPAPlugin = $esEPApage.String | ? {$_.id -eq "AppINFO"}
-  $esEPADownload = $esEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
-  $esEPAPluginError = $esEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
-  $esEPASoftDownload = $esEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  $esEPApage = $esxmlcontents.Resources.Partition | Where-Object {$_.id -eq "epa"}
+  $esEPATitle = $esEPApage.String | Where-Object {$_.id -eq "loginAgentCdaHeaderText"}
+  $esEPAIntro = $esEPApage.String | Where-Object {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $esEPAPlugin = $esEPApage.String | Where-Object {$_.id -eq "AppINFO"}
+  $esEPADownload = $esEPApage.String | Where-Object {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $esEPAPluginError = $esEPApage.String | Where-Object {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $esEPASoftDownload = $esEPApage.String | Where-Object {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
   
   #EPA Error Page
-  $esEPAErrorpage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
-  $esEPAErrorTitle = $esEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
-  $esEPADeviceReqs = $esEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
-  $esEPAMacError = $esEPApage.String | ? {$_.id -eq "End point analysis failed"}
-  $esEPAErrorMessage = $esEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
-  $esEPAErrorCert = $esEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+  $esEPAErrorpage = $esxmlcontents.Resources.Partition | Where-Object {$_.id -eq "epaerrorpage"}
+  $esEPAErrorTitle = $esEPAErrorpage.String | Where-Object {$_.id -eq "Access Denied"}
+  $esEPADeviceReqs = $esEPAErrorpage.String | Where-Object {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $esEPAMacError = $esEPApage.String | Where-Object {$_.id -eq "End point analysis failed"}
+  $esEPAErrorMessage = $esEPAErrorpage.String | Where-Object {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $esEPAErrorCert = $esEPApage.String | Where-Object {$_.id -eq "Device certificate check failed"}
 
   #Post EPA Page
-  $esEPAPostpage = $esxmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
-  $esEPAPostTitle = $esEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
-  $esEPAPostFail = $esEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
-  $esEPAPostSkipped = $esEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  $esEPAPostpage = $esxmlcontents.Resources.Partition | Where-Object {$_.id -eq "postepa"}
+  $esEPAPostTitle = $esEPAPostpage.String | Where-Object {$_.id -eq "Checking Your Device"}
+  $esEPAPostFail = $esEPAPostpage.String | Where-Object {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $esEPAPostSkipped = $esEPAPostpage.String | Where-Object {$_.id -eq "The user skipped the scan"}
   
   #endregion Spanish Strings
 
   #region Japanese Strings
   #Login Page
-  $jaLogonPage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "logon"}
+  $jaLogonPage = $jaxmlcontents.Resources.Partition | Where-Object {$_.id -eq "logon"}
   $jaPageTitle = $jaLogonPage.Title
-  $jaFormTitle = $jaLogonPage.String | ? {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
-  $jaUserName = $jaLogonPage.String | ? {$_.id -eq "User_name"} 
-  $jaPassword = $jaLogonPage.String | ? {$_.id -eq "Password"} 
-  $jaPassword2 = $jaLogonPage.String | ? {$_.id -eq "Password2"} 
+  $jaFormTitle = $jaLogonPage.String | Where-Object {$_.id -eq "ctl08_loginAgentCdaHeaderText2"} 
+  $jaUserName = $jaLogonPage.String | Where-Object {$_.id -eq "User_name"} 
+  $jaPassword = $jaLogonPage.String | Where-Object {$_.id -eq "Password"} 
+  $jaPassword2 = $jaLogonPage.String | Where-Object {$_.id -eq "Password2"} 
 
   # Home Page
-  $jaPortalPage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "portal"}
-  $jaFTPage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "ftlist"}
-  $jaBookmark = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "bookmark"}
+  $jaPortalPage = $jaxmlcontents.Resources.Partition | Where-Object {$_.id -eq "portal"}
+  $jaFTPage = $jaxmlcontents.Resources.Partition | Where-Object {$_.id -eq "ftlist"}
+  $jaBookmark = $jaxmlcontents.Resources.Partition | Where-Object {$_.id -eq "bookmark"}
 
-  $jaWebApps = $jaPortalPage.String | ? {$_.id -eq "ctl00_webSites_label"} 
-  $jaEntWebApps = $jaBookmark.String | ? {$_.id -eq "id_EnterpriseWebSites"}
-  $jaPersWebApps = $jaBookmark.String | ? {$_.id -eq "id_PersonalWebSites"}
-  $jaApps = $jaPortalPage.String | ? {$_.id -eq "ctl00_applications_label"}
-  $jaFileTrans = $jaPortalPage.String | ? {$_.id -eq "id_FileTransfer"}
-  $jaEntFile = $jaFTPage.String | ? {$_.id -eq "id_EnterpriseFileShares"}
-  $jaPersFile = $jaFTPage.String | ? {$_.id -eq "id_PersonalFileShares"}
-  $jaEmail = $jaPortalPage.String | ? {$_.id -eq "id_Email"}
+  $jaWebApps = $jaPortalPage.String | Where-Object {$_.id -eq "ctl00_webSites_label"} 
+  $jaEntWebApps = $jaBookmark.String | Where-Object {$_.id -eq "id_EnterpriseWebSites"}
+  $jaPersWebApps = $jaBookmark.String | Where-Object {$_.id -eq "id_PersonalWebSites"}
+  $jaApps = $jaPortalPage.String | Where-Object {$_.id -eq "ctl00_applications_label"}
+  $jaFileTrans = $jaPortalPage.String | Where-Object {$_.id -eq "id_FileTransfer"}
+  $jaEntFile = $jaFTPage.String | Where-Object {$_.id -eq "id_EnterpriseFileShares"}
+  $jaPersFile = $jaFTPage.String | Where-Object {$_.id -eq "id_PersonalFileShares"}
+  $jaEmail = $jaPortalPage.String | Where-Object {$_.id -eq "id_Email"}
 
   #VPN Connection
-  $jaVPNpage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "f_services"}
-  $jaVPNpagemac = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "m_services"}
-  $jaVPNWaitmsg = $jaVPNPage.String | ? {$_.id -eq "waitingmsg"}
-  $jaVPNproxy = $jaVPNPage.String | ? {$_.id -eq "If a proxy server is configured"}
-  $jaVPNnoplugin = $jaVPNPage.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $jaVPNnopluginmac = $jaVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Plug-in is not installed"}
-  $jaVPNnopluginlinux = $jaVPNPagemac.String | ? {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
+  $jaVPNpage = $jaxmlcontents.Resources.Partition | Where-Object {$_.id -eq "f_services"}
+  $jaVPNpagemac = $jaxmlcontents.Resources.Partition | Where-Object {$_.id -eq "m_services"}
+  $jaVPNWaitmsg = $jaVPNPage.String | Where-Object {$_.id -eq "waitingmsg"}
+  $jaVPNproxy = $jaVPNPage.String | Where-Object {$_.id -eq "If a proxy server is configured"}
+  $jaVPNnoplugin = $jaVPNPage.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $jaVPNnopluginmac = $jaVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Plug-in is not installed"}
+  $jaVPNnopluginlinux = $jaVPNPagemac.String | Where-Object {$_.id -eq "If the Access Gateway Linux-Plug-in is not installed"}
 
   #EPA Page
-  $jaEPApage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "epa"}
-  $jaEPATitle = $jaEPApage.String | ? {$_.id -eq "loginAgentCdaHeaderText"}
-  $jaEPAIntro = $jaEPApage.String | ? {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
-  $jaEPAPlugin = $jaEPApage.String | ? {$_.id -eq "AppINFO"}
-  $jaEPADownload = $jaEPApage.String | ? {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
-  $jaEPAPluginError = $jaEPApage.String | ? {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
-  $jaEPASoftDownload = $jaEPApage.String | ? {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
+  $jaEPApage = $jaxmlcontents.Resources.Partition | Where-Object {$_.id -eq "epa"}
+  $jaEPATitle = $jaEPApage.String | Where-Object {$_.id -eq "loginAgentCdaHeaderText"}
+  $jaEPAIntro = $jaEPApage.String | Where-Object {$_.id -eq "The Access Gateway must confirm that you have the minimum requirements on your device before you can log on."}
+  $jaEPAPlugin = $jaEPApage.String | Where-Object {$_.id -eq "AppINFO"}
+  $jaEPADownload = $jaEPApage.String | Where-Object {$_.id -eq "You do not have the latest version of Endpoint Analysis plug-in installed. Please download the updated plug-in from the link provided"}
+  $jaEPAPluginError = $jaEPApage.String | Where-Object {$_.id -eq "Endpoint Analysis plug-in is either not launched/installed. Please launch or click on the download link provided."}
+  $jaEPASoftDownload = $jaEPApage.String | Where-Object {$_.id -eq "Your device is checked automatically if the Citrix Endpoint Analysis Plug-in software is already installed."}
   
   #EPA Error Page
-  $jaEPAErrorpage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "epaerrorpage"}
-  $jaEPAErrorTitle = $jaEPAErrorpage.String | ? {$_.id -eq "Access Denied"}
-  $jaEPADeviceReqs = $jaEPAErrorpage.String | ? {$_.id -eq "Your device does not meet the requirements for logging on."}
-  $jaEPAMacError = $jaEPApage.String | ? {$_.id -eq "End point analysis failed"}
-  $jaEPAErrorMessage = $jaEPAErrorpage.String | ? {$_.id -eq "For more information, contact your help desk and provide the following information:"}
-  $jaEPAErrorCert = $jaEPApage.String | ? {$_.id -eq "Device certificate check failed"}
+  $jaEPAErrorpage = $jaxmlcontents.Resources.Partition | Where-Object {$_.id -eq "epaerrorpage"}
+  $jaEPAErrorTitle = $jaEPAErrorpage.String | Where-Object {$_.id -eq "Access Denied"}
+  $jaEPADeviceReqs = $jaEPAErrorpage.String | Where-Object {$_.id -eq "Your device does not meet the requirements for logging on."}
+  $jaEPAMacError = $jaEPApage.String | Where-Object {$_.id -eq "End point analysis failed"}
+  $jaEPAErrorMessage = $jaEPAErrorpage.String | Where-Object {$_.id -eq "For more information, contact your help desk and provide the following information:"}
+  $jaEPAErrorCert = $jaEPApage.String | Where-Object {$_.id -eq "Device certificate check failed"}
 
   #Post EPA Page
-  $jaEPAPostpage = $jaxmlcontents.Resources.Partition | ? {$_.id -eq "postepa"}
-  $jaEPAPostTitle = $jaEPAPostpage.String | ? {$_.id -eq "Checking Your Device"}
-  $jaEPAPostFail = $jaEPAPostpage.String | ? {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
-  $jaEPAPostSkipped = $jaEPAPostpage.String | ? {$_.id -eq "The user skipped the scan"}
+  $jaEPAPostpage = $jaxmlcontents.Resources.Partition | Where-Object {$_.id -eq "postepa"}
+  $jaEPAPostTitle = $jaEPAPostpage.String | Where-Object {$_.id -eq "Checking Your Device"}
+  $jaEPAPostFail = $jaEPAPostpage.String | Where-Object {$_.id -eq "The Endpoint Analysis Plug-in failed to start. "}
+  $jaEPAPostSkipped = $jaEPAPostpage.String | Where-Object {$_.id -eq "The user skipped the scan"}
   
   #endregion Japanese Strings
 
@@ -13066,7 +13067,7 @@ WriteWordLine 0 0 " "
 WriteWordLine 3 0 "System Templates"
 WriteWordLine 0 0 " "
 
-$SystemContent = Get-vNetScalerFile -FileName system.json -FileLocation "/var/app_catalog" | Select -ExpandProperty filecontent
+$SystemContent = Get-vNetScalerFile -FileName system.json -FileLocation "/var/app_catalog" | Select-Object -ExpandProperty filecontent
 $SystemTemplates = $null
 $SystemTemplates = Get-StringFromBase64 -Object $SystemContent -Encoding UTF8 | ConvertFrom-Json
 
@@ -13123,7 +13124,7 @@ $Table = $null
 WriteWordLine 3 0 "User Templates"
 WriteWordLine 0 0 " "
 
-$UserContent = Get-vNetScalerFile -FileName user.json -FileLocation "/var/app_catalog" | Select -ExpandProperty filecontent
+$UserContent = Get-vNetScalerFile -FileName user.json -FileLocation "/var/app_catalog" | Select-Object -ExpandProperty filecontent
 $UserTemplates = $null
 $UserTemplates = Get-StringFromBase64 -Object $UserContent -Encoding UTF8 | ConvertFrom-Json
 
