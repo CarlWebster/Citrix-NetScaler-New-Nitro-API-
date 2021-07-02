@@ -3451,6 +3451,7 @@ function InvokevNetScalerNitroMethod {
             WebSession = $script:nsSession.Session;
             ErrorAction = 'Continue';
             Verbose = ($PSBoundParameters['Debug'] -eq $true);
+            DisableKeepAlive = $false;
         }
         If (!$Import) {
           [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.SecurityProtocolType]::Tls12
@@ -3520,6 +3521,7 @@ function Connect-vNetScalerSession {
             SessionVariable = 'nsSessionCookie';
             ErrorAction = 'Stop';
             Verbose = ($PSBoundParameters['Debug'] -eq $true);
+            DisableKeepAlive = $false;
         }
         If (!$Import) {
         Try {
@@ -3566,6 +3568,7 @@ function Logout-vNetScalerSession {
             WebSession = $script:nsSession.Session;
             ErrorAction = 'Stop';
             Verbose = ($PSBoundParameters['Debug'] -eq $true);
+            DisableKeepAlive = $false;
         }
         If (!$Import) {
         $restResponse = Invoke-RestMethod @irmParameters;
@@ -3732,6 +3735,123 @@ Function Get-AttributeFromCSS {
 #endregion CSS Functions
 
 #region Policy Functions
+
+Function New-SectionWithDetailsForEachSubObject {
+    #Params
+    #ObjectType
+    #SectionHeadingName
+    #SubsectionPrefix
+    #SubSectionHeadingProperty
+    #SectionHeadingLevel
+    #Binding Type
+    #Policy Type (String)
+    #Array of Properties
+    #Array of Descriptions
+
+    [CmdletBinding()]
+    param (
+        # Object Name to query 
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName=$True)] [System.String] $Object,
+        # Heading to use for the main section header 
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName=$True)] [System.String] $SectionHeadingName,
+        # Prefix to use for subsections - e.g. LDAP Server: 
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName=$True)] [System.String] $SubSectionHeadingPrefix,
+        # Property from the sub-object to use in the sub-section header 
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName=$True)] [System.String] $SubSectionHeadingProperty,
+        # Array of Object Properties to output for each subsection details table
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName=$True)] [System.String[]] $Properties,
+        # Retrieve Headers to use in Table - this will be a details table output
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName=$True)] [System.String[]] $Headers,
+        # Heading level to use for the section heading
+        [Parameter(ValueFromPipelineByPropertyName=$True)] [System.Int32] $HeadingLevel = 4
+    
+    )
+
+    Write-Log "Enter New-SectionWithDetailsForEachSubObject"
+    $BindingCount = Get-vNetScalerObjectCount -Container Config -Object $Object
+    Write-Log "Number of $vServerName Objects: $($BindingCount.__Count)"
+    If ($BindingCount.__Count -gt 0) {
+        #Write the Section Heading
+        Switch($HeadingLevel) {
+            1 {WriteWordLine 1 0 "$SectionHeadingName"}
+            2 {WriteWordLine 2 0 "$SectionHeadingName"}
+            3 {WriteWordLine 3 0 "$SectionHeadingName"}
+            4 {WriteWordLine 4 0 "$SectionHeadingName"}
+            5 {WriteWordLine 5 0 "$SectionHeadingName"}
+        }
+        WriteWordLine 0 0 ""
+
+        #Get the Object to work
+        #WIP
+        
+        $MainObject = Get-vNetScalerObject -Container Config -Object $Object
+        
+        Foreach ($SubObject in $MainObject ) {
+            $strHeading = "$($SubSectionHeadingPrefix): $($SubObject."$SubSectionHeadingProperty")"
+            Write-Log "Sub-Section Heading will be: $strHeading"
+            Switch($HeadingLevel+1) {
+                1 {WriteWordLine 1 0 "$StrHeading"}
+                2 {WriteWordLine 2 0 "$StrHeading"}
+                3 {WriteWordLine 3 0 "$StrHeading"}
+                4 {WriteWordLine 4 0 "$StrHeading"}
+                5 {WriteWordLine 5 0 "$StrHeading"}
+            }
+            WriteWordLine 0 0 ""
+
+            [System.Collections.Hashtable[]] $DETAILSH = @();
+            #[System.Collections.HashTable] $TempHash = @{};
+            $ArrProperties = $Properties.split(",")
+            $ArrHeaders = $Headers.Split(",")
+            
+                
+            
+            #Loop through the provided properties we want to find
+            [int]$PropCount=0 
+                    foreach ($objProperty in $ArrProperties) {
+                    #Create temporary HashTable
+                    [System.Collections.HashTable] $TempHash = @{};
+                        $objValue = $subObject."$objProperty"
+                        If ($null -eq $objValue){
+                            $objValue = "Not Configured"
+                        }
+                        Try {
+                            Write-Log "Header: $($ArrHeaders[$PropCount])) - Property: $objProperty"
+                            #Add Setting and Value to temp hashtable
+                            $TempHash.Add("Setting", $ArrHeaders[$PropCount]);
+                            $TempHash.Add("Value", $objValue);
+                            #Add temp hashtable to the the primary hashtable
+                            $DETAILSH += $TempHash;
+                        } Catch {
+                        Write-Log $_.exception
+                        }
+                    #Increment the property counter    
+                    $PropCount++
+
+                    }
+            
+            
+            $Params = $null
+            $Params = @{
+                Hashtable = $DETAILSH;
+                Columns = "Setting","Value";
+                Headers = "Setting","Value";
+                AutoFit = $wdAutoFitContent;
+                Format = -235; ## IB - Word constant for Light List Accent 5
+            }
+                ## IB - Add the table to the document, splatting the parameters
+                $Table = AddWordTable @Params;
+                ## IB - Set the header background and bold font
+                SetWordCellFormat -Collection $Table.Rows.First.Cells -BackgroundColor $wdColorGray15 -Bold;
+                FindWordDocumentEnd;
+                $Table = $null   
+                WriteWordLine 0 0 " "     
+
+        } #end foreach sub-object
+
+    } #end if binding count gt 0
+
+}
+
 
 Function New-PolicyBindingTable {
     #Params
@@ -4834,7 +4954,8 @@ WriteWordLine 0 0 " "
 
 #region SMPP Users
 Set-Progress -Status "Citrix ADC SMPP Users"
-WriteWordLine 3 0 "Citrix ADC SMPP Users"
+New-HeadedTable --Object smppuser -SectionHeading "Citrix ADC SMPP Users" -SectionHeadingLevel 3 -Properties "username" -Headers "SMPP User"
+<# WriteWordLine 3 0 "Citrix ADC SMPP Users"
 WriteWordLine 0 0 " "
 $nssmppusercounter = Get-vNetScalerObjectCount -Container config -Object smppuser; 
 
@@ -4867,13 +4988,14 @@ if ($SMPPUserH.Length -gt 0) {
     FindWordDocumentEnd;
     $Table = $null
     }
-}
+} #>
 WriteWordLine 0 0 " "
 #endregion SMPP Users
 
 #region Command Policies
 Set-Progress -Status "Citrix ADC Command Policies"
-WriteWordLine 3 0 "Citrix ADC Command Policies"
+New-HeadedTable -Object "systemcmdpolicy" -SectionHeading "Citrix ADC Command Policies" -SectionHeadingLevel 3 -Properties "policyname,action,cmdspec" -Headers "Policy Name,Action,Command Policy"
+<# WriteWordLine 3 0 "Citrix ADC Command Policies"
 WriteWordLine 0 0 " "
 $nscmdpolcounter = Get-vNetScalerObjectCount -Container config -Object systemcmdpolicy; 
 
@@ -4912,7 +5034,7 @@ if ($CMDPOLH.Length -gt 0) {
     FindWordDocumentEnd;
     $Table = $null
     }
-}
+} #>
 WriteWordLine 0 0 " "
 #endregion SMPP Users
 
@@ -6865,321 +6987,196 @@ if($nsaclCounter.__count -le 0) { WriteWordLine 0 0 "No Extended ACL has been co
 #endregion Citrix ADC ACL
 
 #endregion Citrix ADC Networking
+} #End Section Control for Core (Networking)
 
+If ($sectAll -or $sectSecurity) {
+    #region Citrix ADC Authentication
+    $Chapter++
+    Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Authentication"
 
-#region Citrix ADC Authentication
-$Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Authentication"
-
-$selection.InsertNewPage()
-Set-Progress -Status "Citrix ADC Authentication"
-WriteWordLine 1 0 "Citrix ADC Authentication"
-WriteWordLine 0 0 " "
-#region Authentication LDAP Policies
-$Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC LDAP Authentication"
-Set-Progress -Status "Citrix ADC Status"
-WriteWordLine 2 0 "Citrix ADC LDAP Policies"
-WriteWordLine 0 0 " "
-$authpolsldapcount = Get-vNetScalerObjectCount -Container config -Object authenticationldappolicy;
-$authpolsldap = Get-vNetScalerObject -Container config -Object authenticationldappolicy;
-
-If ($authpolsldapcount.__Count -le 0) {
-WriteWordLine 0 0 "There are no LDAP authentication policies configured. "
-} Else {
-
-## IB - Use an array of hashtable to store the rows
-[System.Collections.Hashtable[]] $AUTHLDAPPOLH = @();
-
-foreach ($authpolldap in $authpolsldap) {
-                
-    ## IB - Create parameters for the hashtable so that we can splat them otherwise the
-    ## IB - command will be about 400 characters wide!
-    $AUTHLDAPPOLH += @{
-            Policy = $authpolldap.name;
-            Expression = $authpolldap.rule;
-            Action = $authpolldap.reqaction;
-    }
-}
-        
-if ($AUTHLDAPPOLH.Length -gt 0) {
-    $Params = $null
-    $Params = @{
-        Hashtable = $AUTHLDAPPOLH;
-        Columns = "Policy","Expression","Action";
-        Headers = "LDAP Policy","Expression","LDAP Action";
-        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
-        AutoFit = $wdAutoFitContent;
-        }
-    $Table = AddWordTable @Params;
-    FindWordDocumentEnd;
-
-    }
-
-}
-
-WriteWordLine 0 0 " "
-$Table = $null
-
-#endregion Authentication LDAP Policies
-
-#region Authentication LDAP
-WriteWordLine 2 0 "Citrix ADC LDAP authentication Servers"
-WriteWordLine 0 0 " "
-$authactsldapcount = Get-vNetScalerObjectCount -Container config -Object authenticationldapaction;
-$authactsldap = Get-vNetScalerObject -Container config -Object authenticationldapaction;
-If ($authactsldapcount.__Count -le 0) {
- WriteWordLine 0 0 "There are no LDAP authentication servers configured. "
-} Else {
-
-  foreach ($authactldap in $authactsldap) {
-    $ACTNAMELDAP = $authactldap.name
-    WriteWordLine 3 0 "LDAP Authentication Server $ACTNAMELDAP";
-    WriteWordLine 0 0 " "
-    ## IB - Use an array of hashtable to store the rows
-    [System.Collections.Hashtable[]] $LDAPCONFIG = @(
-    @{ Description = "Description"; Value = "Configuration"; }
-    @{ Description = "LDAP Server IP"; Value = $authactldap.serverip; }
-    @{ Description = "LDAP Server Port"; Value = $authactldap.serverport; }
-    @{ Description = "LDAP Server Time-Out"; Value = $authactldap.authtimeout; }
-    @{ Description = "Validate Certificate"; Value = $authactldap.validateservercert; }
-    @{ Description = "LDAP Base OU"; Value = $authactldap.ldapbase; }
-    @{ Description = "LDAP Bind DN"; Value = $authactldap.ldapbinddn; }
-    @{ Description = "Login Name"; Value = $authactldap.ldaploginname; }
-    @{ Description = "Sub Attribute Name"; Value = $authactldap.ssonameattribute; }
-    @{ Description = "Security Type"; Value = $authactldap.sectype; }   
-    @{ Description = "Password Changes"; Value = $authactldap.passwdchange; }
-    @{ Description = "Group attribute name"; Value = $authactldap.groupattrname; }
-    @{ Description = "LDAP Single Sign On Attribute"; Value = $authactldap.ssonameattribute; }
-    @{ Description = "Authentication"; Value = $authactldap.authentication; }
-    @{ Description = "User Required"; Value = $authactldap.requireuser; }
-    @{ Description = "LDAP Referrals"; Value = $authactldap.maxldapreferrals; }
-    @{ Description = "Nested Group Extraction"; Value = $authactldap.nestedgroupextraction; }
-    @{ Description = "Maximum Nesting level"; Value = $authactldap.maxnestinglevel; }
-    );
-
-    ## IB - Create the parameters to pass to the AddWordTable function
-    $Params = $null
-    $Params = @{
-        Hashtable = $LDAPCONFIG;
-        Columns = "Description","Value";
-        AutoFit = $wdAutoFitContent
-        Format = -235; ## IB - Word constant for Light List Accent 5
-    }
-    ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -List;
-
-	FindWordDocumentEnd;
-	$TableRange = $Null
-	$Table = $Null
     $selection.InsertNewPage()
-}
-
-}
-
-WriteWordLine 0 0 " "
-#endregion Authentication LDAP
-
-#region Authentication Radius Policies
-$Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Radius Authentication"
-WriteWordLine 2 0 "Citrix ADC Radius Policies"
-WriteWordLine 0 0 " "
-$authpolsradiuscount = Get-vNetScalerObjectCount -Container config -Object authenticationradiuspolicy;
-$authpolsradius = Get-vNetScalerObject -Container config -Object authenticationradiuspolicy;
-
-If ($authpolsradiuscount.__Count -le 0) {
-  WriteWordLine 0 0 "There are no RADIUS authentication policies configured."
-} Else {
-## IB - Use an array of hashtable to store the rows
-[System.Collections.Hashtable[]] $AUTHRADIUSPOLH = @();
-
-foreach ($authpolradius in $authpolsradius) {
-                
-    ## IB - Create parameters for the hashtable so that we can splat them otherwise the
-    ## IB - command will be about 400 characters wide!
-    $AUTHRADIUSPOLH += @{
-            Policy = $authpolradius.name;
-            Expression = $authpolradius.rule;
-            Action = $authpolradius.reqaction;
-    }
-}
-        
-if ($AUTHRADIUSPOLH.Length -gt 0) {
-    $Params = $null
-    $Params = @{
-        Hashtable = $AUTHRADIUSPOLH;
-        Columns = "Policy","Expression","Action";
-        Headers = "RADIUS Policy","Expression","LDAP Action";
-        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
-        AutoFit = $wdAutoFitContent;
-        }
-    $Table = AddWordTable @Params;
-    FindWordDocumentEnd;
-}
-
-}
-WriteWordLine 0 0 " "
-$Table = $null
-
-#endregion Authentication Radius Policies
-
-#region Authentication RADIUS
-WriteWordLine 2 0 "Citrix ADC Radius authentication Servers"
-WriteWordLine 0 0 " "
-$authactsradiusCount = Get-vNetScalerObjectCount -Container config -Object authenticationradiusaction
-$authactsradius = Get-vNetScalerObject -Container config -Object authenticationradiusaction;
-If ($authactsradiusCount.__Count -le 0) {
-  WriteWordLine 0 0 "There are no RADIUS authentication Servers configured."
-} Else {
-    foreach ($authactradius in $authactsradius) {
-    $ACTNAMERADIUS = $authactradius.name
-    WriteWordLine 3 0 "Radius Authentication Server $ACTNAMERADIUS";
+    Set-Progress -Status "Citrix ADC Authentication"
+    WriteWordLine 1 0 "Citrix ADC Authentication"
     WriteWordLine 0 0 " "
-    ## IB - Use an array of hashtable to store the rows
-    [System.Collections.Hashtable[]] $RADUIUSCONFIG = @(
-    @{ Description = "Description"; Value = "Configuration"; }
-    @{ Description = "RADIUS Server IP"; Value = $authactradius.serverip; }
-    @{ Description = "RADIUS Server Port"; Value = $authactradius.serverport; }
-    @{ Description = "RADIUS Server Time-Out"; Value = $authactradius.authtimeout; }
-    @{ Description = "Radius NAS IP"; Value = $authactradius.radnasip; }
-    @{ Description = "IP Vendor ID"; Value = $authactradius.ipvendorid; }
-    @{ Description = "Accounting"; Value = $authactradius.accounting; }
-    @{ Description = "Calling Station ID"; Value = $authactradius.callingstationid; }
-    );
+    #region Authentication LDAP Policies
+    $Chapter++
+    Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC LDAP Authentication"
+    Set-Progress -Status "Citrix ADC LDAP"
+    New-HeadedTable -Object "authenticationldappolicy" -SectionHeading "Citrix ADC LDAP Policies" -SectionHeadingLevel 2 -Properties "name,rule,reqaction" -Headers "Policy,Expression,Action"
+ 
+    #endregion Authentication LDAP Policies
 
-    ## IB - Create the parameters to pass to the AddWordTable function
+    #region Authentication LDAP
     $Params = $null
     $Params = @{
-        Hashtable = $RADUIUSCONFIG;
-        Columns = "Description","Value";
-        AutoFit = $wdAutoFitContent
-        Format = -235; ## IB - Word constant for Light List Accent 5
-    }
-    ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -List;
-
-	FindWordDocumentEnd;
-	$TableRange = $Null
-	$Table = $Null
-    $selection.InsertNewPage()
-}
-}
-
-WriteWordLine 0 0 " "
-#endregion Authentication RADIUS
-
-#region Authentication SAML Policies
-$Chapter++
-Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC SAML Authentication"
-WriteWordLine 2 0 "Citrix ADC SAML Policies"
-WriteWordLine 0 0 " "
-$authpolssamlcount = Get-vNetScalerObjectCount -Container config -Object authenticationsamlpolicy
-$authpolssaml = Get-vNetScalerObject -Container config -Object authenticationsamlpolicy;
-
-If ($authpolssamlcount.__Count -le 0) {
-  WriteWordLine 0 0 "There are no SAML authentication policies configured. "
-} Else {
-
-## IB - Use an array of hashtable to store the rows
-[System.Collections.Hashtable[]] $AUTHSAMLPOLH = @();
-
-foreach ($authpolsaml in $authpolssaml) {
-                
-    ## IB - Create parameters for the hashtable so that we can splat them otherwise the
-    ## IB - command will be about 400 characters wide!
-    $AUTHSAMLPOLH += @{
-            Policy = $authpolsaml.name;
-            Expression = $authpolsaml.rule;
-            Action = $authpolsaml.reqaction;
-    }
-}
-        
-if ($AUTHSAMLPOLH.Length -gt 0) {
-    $Params = $null
-    $Params = @{
-        Hashtable = $AUTHSAMLPOLH;
-        Columns = "Policy","Expression","Action";
-        Headers = "SAML Policy","Expression","SAML Action";
-        Format = -235; ## IB - Word constant for Light Grid Accent 5 (could use -207 for Accent 3 (grey))
-        AutoFit = $wdAutoFitContent;
-        }
-    $Table = AddWordTable @Params;
-    FindWordDocumentEnd;
+        Object = "authenticationldapaction";
+        SectionHeadingName = "Citrix ADC LDAP Authentication Servers";
+        HeadingLevel = 2;
+        SubSectionHeadingPrefix = "LDAP Authentication Server";
+        SubSectionHeadingProperty = "name";
+        Properties = "serverip,serverport,authtimeout,validateservercert,ldapbase,ldapbinddn,ldaploginname,ssonameattribute,sectype,passwdchange,groupattrname,ssonameattribute,authentication,requireuser,maxldapreferrals,nestedgroupextraction,maxnestinglevel";
+        Headers = "LDAP Server IP,LDAP Server Port,LDAP Server Time-Out,Validate Certificate,LDAP Base OU,LDAP Bind DN,Login Name,Sub Attribute Name,Security Type,Password Changes,Group Attribute Name,LDAP SSO Attribute, Authentication,User Required,LDAP Referrals,Nested Group Extraction,Max Nesting Levels";
 
     }
+    New-SectionWithDetailsForEachSubObject @Params
+    
 
- }
-
-WriteWordLine 0 0 " "
-$Table = $null
-
-#endregion Authentication SAML Policies
-
-#region Authentication SAML Servers
-WriteWordLine 2 0 "NetScaler SAML authentication Servers"
-WriteWordLine 0 0 " "
-$authactssamlcount = Get-vNetScalerObjectCount -Container config -Object authenticationsamlaction
-$authactssaml = Get-vNetScalerObject -Container config -Object authenticationsamlaction;
-
-If ($authactssamlcount.__Count -le 0) {
- WriteWordLine 0 0 "There are no SAML authentication servers configured. "
-} Else {
-
-foreach ($authactsaml in $authactssaml) {
-    $ACTNAMESAML = $authactsaml.name
-    WriteWordLine 3 0 "SAML Authentication Server $ACTNAMESAML";
     WriteWordLine 0 0 " "
-    ## IB - Use an array of hashtable to store the rows
-    [System.Collections.Hashtable[]] $SAMLCONFIG = @(
-    @{ Description = "Description"; Value = "Configuration"; }
-        @{ Description = "IDP Certificate Name"; Value = $authactsaml.samlidpcertname; }
-        @{ Description = "Signing Certificate Name"; Value = $authactsaml.samlsigningcertname; }
-        @{ Description = "Redirect URL"; Value = $authactsaml.samlredirecturl; }
-        @{ Description = "Assertion Consumer Service Index"; Value = $authactsaml.samlacsindex; }
-        @{ Description = "User Field"; Value = $authactsaml.samluserfield;}
-        @{ Description = "Reject Unsigned Authentication"; Value = $authactsaml.samlrejectunsignedassertion; }
-        @{ Description = "Issuer Name"; Value = $authactsaml.samlissuername; }
-        @{ Description = "Two factor"; Value = $authactsaml.samltwofactor; }
-        @{ Description = "Signature Algorithm"; Value = $authactsaml.signaturealg; }
-        @{ Description = "Digest Method"; Value = $authactsaml.digestmethod; }
-        @{ Description = "Requested Authentication Context"; Value = $authactsaml.requestedauthncontext; }
-        @{ Description = "Binding"; Value = $authactsaml.samlbinding; }
-        @{ Description = "Attribute Consuming Service Index"; Value = $authactsaml.attributeconsumingserviceindex; }
-        @{ Description = "Send Thumb Print"; Value = $authactsaml.sendthumbprint; }
-        @{ Description = "Enforce User Name"; Value = $authactsaml.enforceusername; }
-        @{ Description = "Single Logout URL"; Value = $authactsaml.logouturl; }
-        @{ Description = "Skew Time"; Value = $authactsaml.skewtime; }
-        @{ Description = "Force Authentication"; Value = $authactsaml.forceauthn; }
-    );
+    #endregion Authentication LDAP
 
-    ## IB - Create the parameters to pass to the AddWordTable function
+    #region Authentication Radius Policies
+    $Chapter++
+    Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC Radius Authentication"
+    New-HeadedTable -Object "authenticationradiuspolicy" -SectionHeading "Citrix ADC Radius Policies" -SectionHeadingLevel 2 -Properties "name,rule,reqaction" -Headers "Policy,Expression,Action"
+    
+
+    #endregion Authentication Radius Policies
+
+    #region Authentication RADIUS
     $Params = $null
     $Params = @{
-        Hashtable = $SAMLCONFIG;
-        Columns = "Description","Value";
-        AutoFit = $wdAutoFitContent
-        Format = -235; ## IB - Word constant for Light List Accent 5
+        Object = "authenticationradiusaction";
+        SectionHeadingName = "Citrix ADC RADIUS Authentication Servers";
+        HeadingLevel = 2;
+        SubSectionHeadingPrefix = "RADIUS Authentication Server";
+        SubSectionHeadingProperty = "name";
+        Properties = "serverip,serverport,authtimeout,radnasip,ipvendorid,accounting,callingstationid";
+        Headers = "LDAP Server IP,LDAP Server Port,LDAP Server Time-Out,RADIUS NAS IP,IP Vendor ID,Accounting,Calling Station ID";
+
     }
-    ## IB - Add the table to the document, splatting the parameters
-    $Table = AddWordTable @Params -List;
+    New-SectionWithDetailsForEachSubObject @Params
+    <# WriteWordLine 2 0 "Citrix ADC Radius authentication Servers"
+    WriteWordLine 0 0 " "
+    $authactsradiusCount = Get-vNetScalerObjectCount -Container config -Object authenticationradiusaction
+    $authactsradius = Get-vNetScalerObject -Container config -Object authenticationradiusaction;
+    If ($authactsradiusCount.__Count -le 0) {
+    WriteWordLine 0 0 "There are no RADIUS authentication Servers configured."
+    } Else {
+        foreach ($authactradius in $authactsradius) {
+        $ACTNAMERADIUS = $authactradius.name
+        WriteWordLine 3 0 "Radius Authentication Server $ACTNAMERADIUS";
+        WriteWordLine 0 0 " "
+        ## IB - Use an array of hashtable to store the rows
+        [System.Collections.Hashtable[]] $RADUIUSCONFIG = @(
+        @{ Description = "Description"; Value = "Configuration"; }
+        @{ Description = "RADIUS Server IP"; Value = $authactradius.serverip; }
+        @{ Description = "RADIUS Server Port"; Value = $authactradius.serverport; }
+        @{ Description = "RADIUS Server Time-Out"; Value = $authactradius.authtimeout; }
+        @{ Description = "Radius NAS IP"; Value = $authactradius.radnasip; }
+        @{ Description = "IP Vendor ID"; Value = $authactradius.ipvendorid; }
+        @{ Description = "Accounting"; Value = $authactradius.accounting; }
+        @{ Description = "Calling Station ID"; Value = $authactradius.callingstationid; }
+        );
 
-	FindWordDocumentEnd;
-	$TableRange = $Null
-	$Table = $Null
-    $selection.InsertNewPage()
+        ## IB - Create the parameters to pass to the AddWordTable function
+        $Params = $null
+        $Params = @{
+            Hashtable = $RADUIUSCONFIG;
+            Columns = "Description","Value";
+            AutoFit = $wdAutoFitContent
+            Format = -235; ## IB - Word constant for Light List Accent 5
+        }
+        ## IB - Add the table to the document, splatting the parameters
+        $Table = AddWordTable @Params -List;
+
+        FindWordDocumentEnd;
+        $TableRange = $Null
+        $Table = $Null
+        $selection.InsertNewPage()
+    }
+    }
+ #>
+    WriteWordLine 0 0 " "
+    #endregion Authentication RADIUS
+
+    #region Authentication SAML Policies
+    $Chapter++
+    Write-Verbose "$(Get-Date): Chapter $Chapter/$Chapters Citrix ADC SAML Authentication"
+    New-HeadedTable -Object "authenticationsamlpolicy" -SectionHeading "Citrix ADC SAML Policies" -SectionHeadingLevel 2 -Properties "name,rule,reqaction" -Headers "Policy,Expression,Action"
+    
+
+    WriteWordLine 0 0 " "
+    
+
+    #endregion Authentication SAML Policies
+
+    #region Authentication SAML Servers
+    $Params = $null
+    $Params = @{
+        Object = "authenticationsamlaction";
+        SectionHeadingName = "Citrix ADC SAML Authentication Actions";
+        HeadingLevel = 2;
+        SubSectionHeadingPrefix = "SAML Action";
+        SubSectionHeadingProperty = "name";
+        Properties = "samlidpcertname,samlsigningcertname,samlredirecturl,samlacsindex,samluserfield,samlrejectunsignedassertion,samlissuername,samltwofactor,signaturealg,digestmethod,requestedauthncontext,samlbinding,attributeconsumingserviceindex,sendthumbprint,enforceusername,logouturl,skewtime,forceauthn";
+        Headers = "IDP Certificate Name,Signing Certificate Name,Redirect URL,Assertion Consumer Service Index,User Field,Reject Unsigned Assertion,Issuer Name,Two Factor,Signature Algorithm,Digest Method,Requested Authentication Context,Binding,Attribute Consuming Service Index,Send Thumb Print,Enforce Username,Logout URL,Skew Time,Force Authentication";
+
+    }
+    New-SectionWithDetailsForEachSubObject @Params
+    <# WriteWordLine 2 0 "NetScaler SAML authentication Servers"
+    WriteWordLine 0 0 " "
+    $authactssamlcount = Get-vNetScalerObjectCount -Container config -Object authenticationsamlaction
+    $authactssaml = Get-vNetScalerObject -Container config -Object authenticationsamlaction;
+
+    If ($authactssamlcount.__Count -le 0) {
+    WriteWordLine 0 0 "There are no SAML authentication servers configured. "
+    } Else {
+
+    foreach ($authactsaml in $authactssaml) {
+        $ACTNAMESAML = $authactsaml.name
+        WriteWordLine 3 0 "SAML Authentication Server $ACTNAMESAML";
+        WriteWordLine 0 0 " "
+        ## IB - Use an array of hashtable to store the rows
+        [System.Collections.Hashtable[]] $SAMLCONFIG = @(
+        @{ Description = "Description"; Value = "Configuration"; }
+            @{ Description = "IDP Certificate Name"; Value = $authactsaml.samlidpcertname; }
+            @{ Description = "Signing Certificate Name"; Value = $authactsaml.samlsigningcertname; }
+            @{ Description = "Redirect URL"; Value = $authactsaml.samlredirecturl; }
+            @{ Description = "Assertion Consumer Service Index"; Value = $authactsaml.samlacsindex; }
+            @{ Description = "User Field"; Value = $authactsaml.samluserfield;}
+            @{ Description = "Reject Unsigned Authentication"; Value = $authactsaml.samlrejectunsignedassertion; }
+            @{ Description = "Issuer Name"; Value = $authactsaml.samlissuername; }
+            @{ Description = "Two factor"; Value = $authactsaml.samltwofactor; }
+            @{ Description = "Signature Algorithm"; Value = $authactsaml.signaturealg; }
+            @{ Description = "Digest Method"; Value = $authactsaml.digestmethod; }
+            @{ Description = "Requested Authentication Context"; Value = $authactsaml.requestedauthncontext; }
+            @{ Description = "Binding"; Value = $authactsaml.samlbinding; }
+            @{ Description = "Attribute Consuming Service Index"; Value = $authactsaml.attributeconsumingserviceindex; }
+            @{ Description = "Send Thumb Print"; Value = $authactsaml.sendthumbprint; }
+            @{ Description = "Enforce User Name"; Value = $authactsaml.enforceusername; }
+            @{ Description = "Single Logout URL"; Value = $authactsaml.logouturl; }
+            @{ Description = "Skew Time"; Value = $authactsaml.skewtime; }
+            @{ Description = "Force Authentication"; Value = $authactsaml.forceauthn; }
+        );
+
+        ## IB - Create the parameters to pass to the AddWordTable function
+        $Params = $null
+        $Params = @{
+            Hashtable = $SAMLCONFIG;
+            Columns = "Description","Value";
+            AutoFit = $wdAutoFitContent
+            Format = -235; ## IB - Word constant for Light List Accent 5
+        }
+        ## IB - Add the table to the document, splatting the parameters
+        $Table = AddWordTable @Params -List;
+
+        FindWordDocumentEnd;
+        $TableRange = $Null
+        $Table = $Null
+        $selection.InsertNewPage()
+    }
+    } #>
+
+    WriteWordLine 0 0 " "
+    #endregion Authentication SAML Servers
+
+
+
+    #endregion NetScaler Authentication
 }
-}
-
-WriteWordLine 0 0 " "
-#endregion Authentication SAML Servers
-
-
-
-#endregion NetScaler Authentication
 
 #endregion Citrix ADC System Information
-} #End Section Control for Core (Networking)
+
 
 #region traffic management
 Set-Progress -Status "Citrix ADC Traffic Management"
@@ -7631,7 +7628,7 @@ if($lbvserverscount.__count -le 0) { WriteWordLine 0 0 "No Load Balancer has bee
         @{ Description = "Time period a backup persistence session"; Value = $LoadBalancer.backuppersistencetimeout; }
         @{ Description = "Use priority queuing"; Value = $LoadBalancer.pq; }
         @{ Description = "Use SureConnect"; Value = $LoadBalancer.sc; }
-        @{ Description = "Use network address translation"; Value = $LoadBalancer.rtspnat; }
+        @{ Description = "Use Network Address Translation"; Value = $LoadBalancer.rtspnat; }
         @{ Description = "Use Layer 2 parameter"; Value = $LoadBalancer.l2conn; }
         @{ Description = "How the Citrix ADC appliance responds to ping requests"; Value = $LoadBalancer.icmpvsrresponse; }
         @{ Description = "Route cacheable requests to a cache redirection server"; Value = $LoadBalancer.cacheable; }
